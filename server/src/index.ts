@@ -8,6 +8,7 @@ import { UserResolver } from "./resolvers/users";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
 import * as dotenv from "dotenv";
+import cors from "cors";
 import { __prod__ } from "./constants";
 import { MyContext } from "./types";
 
@@ -20,6 +21,13 @@ const main = async () => {
     const app = express();
 
     const pgSession = connectPg(session)
+
+    app.use(
+        cors({
+            origin: "http://localhost:3000",
+            credentials: true,
+        })
+    )
 
     app.use(
         session({
@@ -51,7 +59,10 @@ const main = async () => {
         context: ({ req, res }): MyContext => ({ em: orm.em, req, res })
     });
 
-    apolloServer.applyMiddleware({ app });
+    apolloServer.applyMiddleware({
+        app,
+        cors: false
+    });
 
     app.listen(4000, () => {
         console.log("server started on localhost:4000");

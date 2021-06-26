@@ -44,25 +44,20 @@ export class UserResolver {
         return em.findOne(User, { id });
     }
 
-    @Query(() => UserResponse, { nullable: true })
+    @Query(() => User, { nullable: true })
     async me(
         @Ctx() { em, req }: MyContext
-    ): Promise<UserResponse | null> {
+    ): Promise<User | null> {
         if (!req.session.userId) {
             return null;
         }
 
         const user = await em.findOne(User, { id: req.session.userId })
         if (!user) {
-            return {
-                errors: [{
-                    field: "id",
-                    message: "user id does not exist"
-                }]
-            };
+            return null
         };
 
-        return { user };
+        return user;
     }
 
     @Mutation(() => UserResponse)
@@ -141,5 +136,19 @@ export class UserResolver {
         req.session!.userId = user.id;
 
         return { user };
+    }
+
+    @Mutation(() => Boolean)
+    logout(
+        @Ctx() { req, res }: MyContext,
+    ): Promise<Boolean> {
+        return new Promise(resolve => req.session.destroy(err => {
+            res.clearCookie("qid");
+            if (err) {
+                resolve(false);
+                return;
+            }
+            resolve(true);
+        })) 
     }
 }

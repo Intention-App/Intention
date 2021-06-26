@@ -1,0 +1,40 @@
+/*==================================
+Material Margins & Body
+==================================*/
+
+.container-size {
+    margin: 0 auto;
+    width: 1040px;
+}
+
+@media only screen and (max-width: 1439px) {
+    .container-size {
+        margin: 0 200px;
+        width: auto;
+    }
+}
+
+@media only screen and (max-width: 1239px) {
+    .container-size {
+        margin: auto;
+        width: 840px;
+    }
+}
+
+@media only screen and (max-width: 904px) {
+    .container-size {
+        margin: 0 32px;
+        width: auto;
+    }
+}
+
+@media only screen and (max-width: 599px) {
+    .container-size {
+        margin: 0 16px;
+        width: auto;
+    }
+}
+
+.nav-button-focus:focus {
+    background-color: #f5f5f5;
+}
