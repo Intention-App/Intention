@@ -2,7 +2,7 @@ import { TextField } from "@material-ui/core";
 import { Field, FieldProps } from "formik";
 import React, { InputHTMLAttributes, useState } from "react";
 
-interface InputProps extends React.DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
+interface InputFieldProps extends React.DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
     label: string;
     helper?: string;
     name: string;
@@ -11,7 +11,7 @@ interface InputProps extends React.DetailedHTMLProps<InputHTMLAttributes<HTMLInp
     variant?: "filled" | "outlined" | "standard";
 };
 
-export const InputField: React.FC<InputProps> = ({
+export const InputField: React.FC<InputFieldProps> = ({
     name,
     label,
     helper,

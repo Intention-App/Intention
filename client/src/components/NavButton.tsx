@@ -26,7 +26,10 @@ const StyledButton = withStyles({
         justifyContent: "space-between"
     },
     root: {
-        backgroundColor: "var(--bg-primary)"
+        backgroundColor: "var(--bg-primary)",
+        "&:focus": {
+            backgroundColor: "var(--bg-hover)"
+        }
     }
 })(Button);
 
@@ -44,6 +47,7 @@ export const NavButton: React.FC<NavButtonProps> = ({ children, Icon, small = fa
                 width: small ? "95%" : "100%",
                 paddingRight: small ? 12 : 16,
                 zIndex: active ? 1 : "inherit",
+                border: active ? "1px solid var(--border)" : "none",
                 ...buttonStyle
             }}
             variant="contained"
@@ -53,7 +57,6 @@ export const NavButton: React.FC<NavButtonProps> = ({ children, Icon, small = fa
                 color: "var(--icon)",
             }} />}
             disableFocusRipple
-            focusVisibleClassName={materialStyles["nav-button-focus"]}
             onClick={() => {
                 router.push(href)
             }}

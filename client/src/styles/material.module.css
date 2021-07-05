@@ -34,7 +34,3 @@ Material Margins & Body
         width: auto;
     }
 }
-
-.nav-button-focus:focus {
-    background-color: #f5f5f5;
-}

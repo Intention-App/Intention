@@ -1,0 +1,11 @@
+mutation UpdateEntry ($id: Int!, $title: String, $content: JSON) {
+  updateEntry(
+    id: $id,
+    options: {
+      title: $title,
+      content: $content
+    }
+  ) {
+      ...RegularEntry
+  }
+}

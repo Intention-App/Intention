@@ -1,26 +1,39 @@
 import "reflect-metadata";
-import { MikroORM } from "@mikro-orm/core";
 import { ApolloServer } from "apollo-server-express";
 import express from "express";
 import { buildSchema } from "type-graphql";
-import mikroConfig from "./mikro-orm.config";
 import { UserResolver } from "./resolvers/users";
+import redis from "redis";
 import session from "express-session";
-import connectPg from "connect-pg-simple";
+import connectRedis from "connect-redis";
 import * as dotenv from "dotenv";
 import cors from "cors";
-import { __prod__ } from "./constants";
+import { COOKIE_NAME, __prod__ } from "./constants";
 import { MyContext } from "./types";
+import { EntryResolver } from "./resolvers/entries";
+import { FolderResolver } from "./resolvers/folders";
+import { createConnection } from "typeorm";
+import { Entry } from "./entities/Entry";
+import { Folder } from "./entities/Folder";
+import { User } from "./entities/User";
 
 const main = async () => {
     dotenv.config();
 
-    const orm = await MikroORM.init(mikroConfig);
-    await orm.getMigrator().up();
+    const conn = await createConnection({
+        type: "postgres",
+        database: "intention",
+        username: process.env.USER,
+        password: process.env.PASSWORD,
+        logging: true,
+        synchronize: true,
+        entities: [User, Entry, Folder]
+    });
 
     const app = express();
 
-    const pgSession = connectPg(session)
+    const RedisStore = connectRedis(session);
+    const redisClient = redis.createClient();
 
     app.use(
         cors({
@@ -31,13 +44,9 @@ const main = async () => {
 
     app.use(
         session({
-            name: "qid",
-            store: new pgSession({
-                conObject: {
-                    database: "intention",
-                    user: process.env.USER,
-                    password: process.env.PASSWORD
-                }
+            name: COOKIE_NAME,
+            store: new RedisStore({
+                client: redisClient,
             }),
             cookie: {
                 maxAge: 1000 * 60 * 60 * 24 * 7,
@@ -53,10 +62,10 @@ const main = async () => {
 
     const apolloServer = new ApolloServer({
         schema: await buildSchema({
-            resolvers: [UserResolver],
+            resolvers: [UserResolver, EntryResolver, FolderResolver],
             validate: false
         }),
-        context: ({ req, res }): MyContext => ({ em: orm.em, req, res })
+        context: ({ req, res }): MyContext => ({ req, res })
     });
 
     apolloServer.applyMiddleware({

@@ -1,0 +1,5 @@
+query myEntries ($rootFolderId: Int) {
+  myEntries (rootFolderId: $rootFolderId) {
+    ...RegularEntry
+  }
+}

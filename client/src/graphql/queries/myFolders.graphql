@@ -1,0 +1,5 @@
+query myFolders ($rootFolderId: Int) {
+  myFolders (rootFolderId: $rootFolderId) {
+    ...RegularFolder
+  }
+}

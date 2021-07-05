@@ -1,23 +1,27 @@
 import { User } from "../entities/User";
-import { MyContext } from "src/types";
-import { Arg, Ctx, Field, InputType, Int, Mutation, ObjectType, Query, Resolver } from "type-graphql";
+import { MyContext } from "../types";
+import { Arg, Ctx, Field, InputType, Int, Mutation, ObjectType, Query, Resolver, UseMiddleware } from "type-graphql";
 import argon2 from "argon2";
+import { COOKIE_NAME } from "../constants";
+import { FieldError } from "./FieldError";
+import { isAuth } from "../middleware/isAuth";
 
 @InputType()
 class UsernamePasswordInput {
     @Field()
     username: string;
     @Field()
+    email: string;
+    @Field()
     password: string;
 }
 
-@ObjectType()
-class FieldError {
+@InputType()
+class UsernameOrEmailInput {
     @Field()
-    field: string;
-
+    username: string;
     @Field()
-    message: string;
+    password: string;
 }
 
 @ObjectType()
@@ -32,37 +36,31 @@ class UserResponse {
 @Resolver()
 export class UserResolver {
     @Query(() => [User])
-    users(@Ctx() { em }: MyContext): Promise<User[]> {
-        return em.find(User, {});
+    users(): Promise<User[]> {
+        return User.find({});
     }
 
     @Query(() => User, { nullable: true })
     user(
-        @Ctx() { em }: MyContext,
         @Arg("id", () => Int) id: number
-    ): Promise<User | null> {
-        return em.findOne(User, { id });
+    ): Promise<User | undefined> {
+        return User.findOne({ id });
     }
 
     @Query(() => User, { nullable: true })
+    @UseMiddleware(isAuth)
     async me(
-        @Ctx() { em, req }: MyContext
-    ): Promise<User | null> {
-        if (!req.session.userId) {
-            return null;
-        }
+        @Ctx() { req }: MyContext
+    ): Promise<User | undefined> {
 
-        const user = await em.findOne(User, { id: req.session.userId })
-        if (!user) {
-            return null
-        };
+        const user = await User.findOne({ id: req.session.userId })
 
         return user;
     }
 
     @Mutation(() => UserResponse)
     async register(
-        @Ctx() { em, req }: MyContext,
+        @Ctx() { req }: MyContext,
         @Arg("options") options: UsernamePasswordInput,
     ): Promise<UserResponse> {
         if (options.username.length <= 3) {
@@ -85,12 +83,13 @@ export class UserResolver {
         }
 
         const hashedPassword = await argon2.hash(options.password)
-        const user = em.create(User, {
+        const user = await User.create( {
             username: options.username,
+            email: options.email,
             password: hashedPassword
         });
         try {
-            await em.persistAndFlush(user);
+            await user.save()
         }
         catch (err) {
             if (err.code === "23505") {
@@ -110,10 +109,10 @@ export class UserResolver {
 
     @Mutation(() => UserResponse)
     async login(
-        @Ctx() { em, req }: MyContext,
-        @Arg("options") options: UsernamePasswordInput,
+        @Ctx() { req }: MyContext,
+        @Arg("options") options: UsernameOrEmailInput,
     ): Promise<UserResponse> {
-        const user = await em.findOne(User, { username: options.username });
+        const user = await User.findOne({ username: options.username });
         if (!user) {
             return {
                 errors: [{
@@ -143,7 +142,7 @@ export class UserResolver {
         @Ctx() { req, res }: MyContext,
     ): Promise<Boolean> {
         return new Promise(resolve => req.session.destroy(err => {
-            res.clearCookie("qid");
+            res.clearCookie(COOKIE_NAME);
             if (err) {
                 resolve(false);
                 return;

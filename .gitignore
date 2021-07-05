@@ -105,3 +105,6 @@ dist
 
 # node-gyp build file
 build
+
+#redis dump
+dump.rdb

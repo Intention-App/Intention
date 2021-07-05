@@ -13,8 +13,28 @@ a {
 
 * {
   box-sizing: border-box;
-  --primary: #130f26;
+  --primary: #5c5967;
   --secondary: #85838e;
   --bg-primary: #ffffff;
+  --bg-secondary: #f9f9f9;
+  --bg-hover: #d5d5d5;
   --icon: #4e4b5c;
+  --border: #adacb2;
+}
+
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(19, 15, 38, 0.1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(19, 15, 38, 0.15);
 }

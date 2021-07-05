@@ -1,0 +1,7 @@
+fragment RegularFolder on Folder {
+    id
+    title
+    rootFolderId
+    createdAt
+    updatedAt
+}

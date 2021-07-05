@@ -1,0 +1,8 @@
+fragment RegularEntry on Entry {
+    id
+    title
+    content
+    rootFolderId
+    createdAt
+    updatedAt
+}
