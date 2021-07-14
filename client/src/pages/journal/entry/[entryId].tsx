@@ -1,19 +1,21 @@
-import { Box, withStyles } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { FaTrash } from "react-icons/fa";
 import { Descendant } from "slate";
 import { HeadWrapper } from "../../../components/HeadWrapper";
 import { Layout } from "../../../components/layout";
 import { RichTextEditor } from "../../../components/RichTextEditor";
-import { useMyEntryQuery, useUpdateEntryMutation } from "../../../generated/graphql";
+import { useDeleteEntryMutation, useMyEntryQuery, useUpdateEntryMutation } from "../../../generated/graphql";
 import { toHumanTime } from "../../../utils/toHumanTime";
 
 const EntryId: React.FC = ({ }) => {
 
     const router = useRouter();
     const { entryId } = router.query;
-    const [{ data, fetching }] = useMyEntryQuery({ variables: { entryId: parseInt(entryId as string) } });
-    const [{ fetching: fetchingUpdate }, updateEntry] = useUpdateEntryMutation();
+    const [{ data, fetching }] = useMyEntryQuery({ variables: { entryId: (entryId as string) } });
+    const [{ fetching: updateFetching }, updateEntry] = useUpdateEntryMutation();
+    const [, deleteEntry] = useDeleteEntryMutation();
 
     const [value, setValue] = useState<Descendant[]>(
         data?.myEntry.content
@@ -27,7 +29,7 @@ const EntryId: React.FC = ({ }) => {
     )
 
     useEffect(() => {
-        if (data?.myEntry.content) setValue(data?.myEntry.content as Descendant[]);
+        if (data?.myEntry.content && !value) setValue(data?.myEntry.content as Descendant[]);
     }, [data]);
 
     useEffect(() => {
@@ -42,24 +44,38 @@ const EntryId: React.FC = ({ }) => {
         }
     }
 
+    const handleEntryDeletion = async () => {
+        if (data?.myEntry?.id) {
+            deleteEntry({ id: data.myEntry.id });
+            router.push(data.myEntry.rootFolderId
+                ? `/journal/folder/${data.myEntry.rootFolderId}`
+                : "/journal"
+            )
+        }
+    }
+
     return (
         <Layout>
             <HeadWrapper
                 header={data?.myEntry.title ? data?.myEntry.title : ""}
+                buttonFunctions={[{
+                    name: "Delete Entry",
+                    func: handleEntryDeletion
+                }]}
+                ButtonIcon={FaTrash}
                 backlink={data?.myEntry?.rootFolderId
                     ? `/journal/folder/${data?.myEntry?.rootFolderId}`
                     : "/journal"
                 }
-                helper={fetchingUpdate ? "Saving..." : `Last edited ${toHumanTime(data?.myEntry.updatedAt)}`}
+                helper={updateFetching ? "Saving..." : `Last edited ${toHumanTime(data?.myEntry.updatedAt)}`}
                 titleChanger={handleTitleChange}
             >
-                <Box paddingX={4} padding={4} flex="300px" flexGrow={1} flexShrink={1} style={{ backgroundColor: "var(--bg-secondary)", overflowY: "scroll" }}>
-                    <RichTextEditor
-                        useValue={[value, setValue]}
-                        save={async () => {
-                            if (data?.myEntry) { updateEntry({ id: data.myEntry.id, content: value }) }
-                        }} />
-                </Box>
+                <RichTextEditor
+                    useValue={[value, setValue]}
+                    save={async () => {
+                        if (data?.myEntry) { updateEntry({ id: data.myEntry.id, content: value }) }
+                    }}
+                />
             </HeadWrapper>
         </Layout>
     );

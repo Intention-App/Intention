@@ -4,7 +4,7 @@ import React from "react";
 import { FaFileAlt } from "react-icons/fa";
 
 interface EntryProps {
-    id: number;
+    id: string;
     createdAt: string;
     updatedAt: string;
 };

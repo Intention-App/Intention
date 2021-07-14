@@ -4,7 +4,7 @@ import React from "react";
 import { FaFolder } from "react-icons/fa";
 
 interface FolderProps {
-    id: number;
+    id: string;
     createdAt: string;
     updatedAt: string;
 };

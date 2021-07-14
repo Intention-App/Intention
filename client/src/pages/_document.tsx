@@ -1,11 +1,12 @@
 import { ServerStyleSheets } from '@material-ui/core';
 import Document, { DocumentContext, Html, Head, Main, NextScript } from 'next/document'
 import React from 'react';
+import { resetServerContext } from 'react-beautiful-dnd';
 
 class MyDocument extends Document {
     static async getInitialProps(ctx: DocumentContext) {const sheets = new ServerStyleSheets();
         const originalRenderPage = ctx.renderPage;
-      
+        
         ctx.renderPage = () =>
           originalRenderPage({
             enhanceApp: (App) => (props) => sheets.collect(<App {...props} />),
@@ -13,6 +14,7 @@ class MyDocument extends Document {
       
         const initialProps = await Document.getInitialProps(ctx);
       
+        resetServerContext();
         return {
           ...initialProps,
           // Styles fragment is rendered after the app and page rendering finish.

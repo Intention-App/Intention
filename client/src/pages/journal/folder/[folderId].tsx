@@ -1,43 +1,80 @@
 import { Box } from "@material-ui/core";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { AddNew } from "../../../components/AddNew";
 import { Entry } from "../../../components/entry";
 import { Folder } from "../../../components/folder";
 import { HeadWrapper } from "../../../components/HeadWrapper";
 import { Layout } from "../../../components/layout";
-import { useCreateEntryMutation, useMyEntriesQuery, useMyFoldersQuery, useMyFolderQuery } from "../../../generated/graphql";
+import { useCreateEntryMutation, useMyEntriesQuery, useMyFoldersQuery, useMyFolderQuery, useUpdateFolderMutation, useCreateFolderMutation, useDeleteEntryMutation, useDeleteFolderMutation } from "../../../generated/graphql";
 import { toHumanTime } from "../../../utils/toHumanTime";
 
 const FolderId: React.FC = ({ }) => {
 
     const router = useRouter();
     const { folderId } = router.query;
-    const [{ data: rootFolderData, fetching: rootFolderFetching }] = useMyFolderQuery({ variables: { id: parseInt(folderId as string) } });
-    const [{ data: entryData, fetching: entryFetching }] = useMyEntriesQuery({ variables: { rootFolderId: parseInt(folderId as string) } });
-    const [{ data: folderData, fetching: folderFetching }] = useMyFoldersQuery({ variables: { rootFolderId: parseInt(folderId as string) } });
+    const [{ data, fetching }] = useMyFolderQuery({ variables: { id: (folderId as string) } });
+    const [{ fetching: updateFetching }, updateFolder] = useUpdateFolderMutation();
     const [, createEntry] = useCreateEntryMutation();
+    const [, createFolder] = useCreateFolderMutation();
+    const [, deleteFolder] = useDeleteFolderMutation();
 
     useEffect(() => {
-        if (folderId && !rootFolderFetching && !rootFolderData) {
+        if (folderId && !fetching && !data) {
             router.push("/journal/folder/error?code=404&msg=Entry Not Found&link=/journal")
         }
-    }, [folderId, rootFolderFetching, rootFolderData])
+    }, [folderId, fetching, data])
 
     const handleEntryCreation = async () => {
-        const response = await createEntry({ folderId: parseInt(folderId as string), title: "Untitled" });
+        const response = await createEntry({ folderId: (folderId as string), title: "Untitled" });
         if (response.data?.createEntry) router.push(`/journal/entry/${response.data.createEntry.id}`)
+    }
+
+    const handleFolderCreation = async () => {
+        const response = await createFolder({ folderId: (folderId as string), title: "Untitled" });
+        if (response.data?.createFolder) router.push(`/journal/folder/${response.data.createFolder.id}`)
+    }
+
+    const handleFolderDeletion = async () => {
+        if (data?.myFolder?.id) {
+            deleteFolder({ id: data.myFolder.id });
+            router.push(data.myFolder.rootFolderId
+                ? `/journal/folder/${data.myFolder.rootFolderId}`
+                : "/journal"
+            )
+        }
+    }
+
+    const handleTitleChange = (title: string) => {
+        if (data?.myFolder && title !== data?.myFolder.title) {
+            updateFolder({ id: data?.myFolder.id, title })
+        }
     }
 
     return (
         <Layout>
             <HeadWrapper
-                header={rootFolderData?.myFolder?.title ? rootFolderData.myFolder.title : "Untitled"}
-                creator={handleEntryCreation}
-                helper={rootFolderFetching ? "Saving..." : `Last edited ${toHumanTime(rootFolderData?.myFolder.updatedAt)}`}
-                backlink={rootFolderData?.myFolder?.rootFolderId
-                    ? `/journal/folder/${rootFolderData?.myFolder?.rootFolderId}`
+                header={data?.myFolder?.title ? data.myFolder.title : "Untitled"}
+                buttonFunctions={[
+                    {
+                        name: "New Entry",
+                        func: handleEntryCreation
+                    },
+                    {
+                        name: "New Folder",
+                        func: handleFolderCreation
+                    },
+                    {
+                        name: "Delete Folder",
+                        func: handleFolderDeletion
+                    }
+                ]}
+                helper={updateFetching ? "Saving..." : `Last edited ${toHumanTime(data?.myFolder.updatedAt)}`}
+                backlink={data?.myFolder?.rootFolderId
+                    ? `/journal/folder/${data?.myFolder?.rootFolderId}`
                     : "/journal"
                 }
+                titleChanger={handleTitleChange}
             >
                 <Box display="flex" flexDirection="column" height="100%" marginLeft={4} color="var(--primary)">
                     <Box
@@ -60,7 +97,7 @@ const FolderId: React.FC = ({ }) => {
                         style={{ overflowY: "scroll" }}
                         paddingRight={2.5}
                     >
-                        {folderData?.myFolders && folderData?.myFolders.map(folder =>
+                        {data?.myFolder.children && data.myFolder.children.map(folder =>
                             <Folder
                                 key={`folder-${folder.id}`}
                                 id={folder.id}
@@ -70,7 +107,7 @@ const FolderId: React.FC = ({ }) => {
                                 {folder.title}
                             </Folder>
                         )}
-                        {entryData?.myEntries && entryData?.myEntries.map(entry => {
+                        {data?.myFolder.content && data.myFolder.content.map(entry => {
                             return <Entry
                                 key={`entry-${entry.id}`}
                                 id={entry.id}
@@ -81,6 +118,16 @@ const FolderId: React.FC = ({ }) => {
                             </Entry>;
                         }
                         )}
+                        <AddNew buttonFunctions={[
+                            {
+                                name: "New Entry",
+                                func: handleEntryCreation
+                            },
+                            {
+                                name: "New Folder",
+                                func: handleFolderCreation
+                            }
+                        ]} />
                     </Box>
                 </Box>
             </HeadWrapper>
@@ -90,3 +137,7 @@ const FolderId: React.FC = ({ }) => {
 };
 
 export default FolderId;
+
+function deleteEntry(arg0: { id: string; }) {
+    throw new Error("Function not implemented.");
+}

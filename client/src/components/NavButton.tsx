@@ -3,7 +3,6 @@ import { withStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
 import React from "react";
 import { IconType } from "react-icons";
-import materialStyles from "../styles/material.module.css";
 
 interface NavButtonProps {
     Icon: IconType;

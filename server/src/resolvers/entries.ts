@@ -1,6 +1,6 @@
 import { Entry } from "../entities/Entry";
 import { MyContext } from "../types";
-import { Arg, Ctx, Field, InputType, Int, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
+import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
 import { GraphQLJSON } from 'graphql-type-json';
 import { isAuth } from "../middleware/isAuth";
 import { IsNull } from "typeorm";
@@ -11,41 +11,42 @@ class EntryOptionsInput {
     title: string;
     @Field(() => GraphQLJSON, { nullable: true })
     content: {}[];
-    @Field(() => Int, { nullable: true })
-    folderId: number;
+    @Field({ nullable: true })
+    folderId: string;
 }
 
 @Resolver()
 export class EntryResolver {
+
     @Query(() => [Entry])
     entries(): Promise<Entry[]> {
-        return Entry.find({});
+        return Entry.find({ order: { updatedAt: "DESC" } });
     }
 
     @Query(() => Entry)
     entry(
-        @Arg("id") id: number
+        @Arg("id") id: string
     ): Promise<Entry | undefined> {
-        return Entry.findOne({id});
+        return Entry.findOne({ id });
     }
 
     @Query(() => [Entry])
     @UseMiddleware(isAuth)
     myEntries(
         @Ctx() { req }: MyContext,
-        @Arg("rootFolderId", () => Int, {nullable: true}) rootFolderId: number
+        @Arg("rootFolderId", { nullable: true }) rootFolderId: string
     ): Promise<Entry[]> {
         if (rootFolderId) {
-            return Entry.find({ userId: req.session.userId, rootFolderId });
+            return Entry.find({ order: { updatedAt: "DESC" }, where: { userId: req.session.userId, rootFolderId } });
         }
-        return Entry.find({ userId: req.session.userId, rootFolderId: IsNull() });
+        return Entry.find({ order: { updatedAt: "DESC" }, where: { userId: req.session.userId, rootFolderId: IsNull() } });
     }
 
     @Query(() => Entry)
     @UseMiddleware(isAuth)
     myEntry(
         @Ctx() { req }: MyContext,
-        @Arg("id", () => Int) id: number
+        @Arg("id") id: string
     ): Promise<Entry | undefined> {
         return Entry.findOne({ id, userId: req.session.userId });
     }
@@ -66,27 +67,27 @@ export class EntryResolver {
 
     }
 
-    @Mutation(() => Boolean)
+    @Mutation(() => String, {nullable: true})
     @UseMiddleware(isAuth)
     async deleteEntry(
         @Ctx() { req }: MyContext,
-        @Arg("id", () => Int) id: number,
-    ): Promise<Boolean> {
+        @Arg("id") id: string
+    ): Promise<String | undefined> {
         try {
             Entry.delete({ id, userId: req.session.userId })
         }
         catch {
-            return false;
+            return undefined;
         }
 
-        return true;
+        return id;
     }
 
     @Mutation(() => Entry)
     @UseMiddleware(isAuth)
     async updateEntry(
         @Ctx() { req }: MyContext,
-        @Arg("id", () => Int) id: number,
+        @Arg("id") id: string,
         @Arg("options") options: EntryOptionsInput
     ): Promise<Entry | undefined> {
 

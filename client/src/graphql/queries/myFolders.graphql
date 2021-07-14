@@ -1,4 +1,4 @@
-query myFolders ($rootFolderId: Int) {
+query myFolders ($rootFolderId: String) {
   myFolders (rootFolderId: $rootFolderId) {
     ...RegularFolder
   }

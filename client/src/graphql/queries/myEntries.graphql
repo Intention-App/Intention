@@ -1,4 +1,4 @@
-query myEntries ($rootFolderId: Int) {
+query myEntries ($rootFolderId: String) {
   myEntries (rootFolderId: $rootFolderId) {
     ...RegularEntry
   }

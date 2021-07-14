@@ -1,0 +1,11 @@
+mutation UpdateFolder ($id: String!, $title: String, $folderId: String) {
+    updateFolder (
+        id: $id,
+        options: {
+            title: $title,
+            folderId: $folderId
+        }
+    ) {
+        ...RegularFolder
+    }
+}

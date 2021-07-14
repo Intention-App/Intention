@@ -1,28 +1,44 @@
 import { Box } from "@material-ui/core";
 import { useRouter } from "next/router";
 import React from "react";
+import { AddNew } from "../../components/AddNew";
 import { Entry } from "../../components/entry";
 import { Folder } from "../../components/folder";
 import { HeadWrapper } from "../../components/HeadWrapper";
 import { Layout } from "../../components/layout";
-import { useCreateEntryMutation, useMyEntriesQuery, useMyFoldersQuery } from "../../generated/graphql";
+import { useCreateEntryMutation, useCreateFolderMutation, useMyEntriesQuery, useMyFoldersQuery } from "../../generated/graphql";
 import { toHumanTime } from "../../utils/toHumanTime";
 
-const Dashboard: React.FC = ({ }) => {
+const Journal: React.FC = ({ }) => {
 
     const router = useRouter();
     const [{ data: entryData }] = useMyEntriesQuery();
     const [{ data: folderData }] = useMyFoldersQuery();
     const [, createEntry] = useCreateEntryMutation();
+    const [, createFolder] = useCreateFolderMutation();
 
     const handleEntryCreation = async () => {
         const response = await createEntry({ title: "Untitled" });
         if (response.data?.createEntry) router.push(`/journal/entry/${response.data.createEntry.id}`)
     }
 
+    const handleFolderCreation = async () => {
+        const response = await createFolder({ title: "Untitled" });
+        if (response.data?.createFolder) router.push(`/journal/folder/${response.data.createFolder.id}`)
+    }
+
     return (
         <Layout>
-            <HeadWrapper header="My Journal" creator={handleEntryCreation}>
+            <HeadWrapper header="My Journal" buttonFunctions={[
+                {
+                    name: "New Entry",
+                    func: handleEntryCreation
+                },
+                {
+                    name: "New Folder",
+                    func: handleFolderCreation
+                }
+            ]}>
                 <Box display="flex" flexDirection="column" height="100%" marginLeft={4} color="var(--primary)">
                     <Box
                         display="grid"
@@ -64,6 +80,16 @@ const Dashboard: React.FC = ({ }) => {
                                 {entry.title}
                             </Entry>
                         )}
+                        <AddNew buttonFunctions={[
+                            {
+                                name: "New Entry",
+                                func: handleEntryCreation
+                            },
+                            {
+                                name: "New Folder",
+                                func: handleFolderCreation
+                            }
+                        ]} />
                     </Box>
                 </Box>
             </HeadWrapper>
@@ -71,4 +97,4 @@ const Dashboard: React.FC = ({ }) => {
     );
 };
 
-export default Dashboard;
+export default Journal;

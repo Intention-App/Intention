@@ -1,4 +1,4 @@
-mutation UpdateEntry ($id: Int!, $title: String, $content: JSON) {
+mutation UpdateEntry ($id: String!, $title: String, $content: JSON) {
   updateEntry(
     id: $id,
     options: {

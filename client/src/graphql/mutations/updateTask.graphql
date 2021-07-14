@@ -1,0 +1,20 @@
+mutation updateTask(
+  $id: String!,
+  $title: String,
+  $dueAt: DateTime,
+  $archived: Boolean,
+  $description: String,
+  $tasklistId: String
+  ) {
+  updateTask(
+    id: $id,
+    options:{
+      title: $title,
+      dueAt: $dueAt,
+      archived: $archived,
+      description: $description,
+      tasklistId: $tasklistId
+    }) {
+    ...RegularTask
+  }
+}

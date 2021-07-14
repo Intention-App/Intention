@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from "type-graphql";
+import { Field, ObjectType } from "type-graphql";
 import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Entry } from "./Entry";
 import { User } from "./User";
@@ -7,31 +7,36 @@ import { User } from "./User";
 @Entity()
 export class Folder extends BaseEntity {
 
-    @Field(() => Int)
-    @PrimaryGeneratedColumn()
-    id!: number;
+    @Field()
+    @PrimaryGeneratedColumn("uuid")
+    id!: string;
 
     @Field()
-    @Column({default: "Untitled"})
+    @Column({ default: "Untitled" })
     title: string;
 
-    @Field(() => Int)
-    @Column()
-    userId!: number;
-
-    @ManyToOne(() => User, user => user.entries)
-    user: User;
-
-    @Field(() => Int, { nullable: true })
-    @Column({ nullable: true })
-    rootFolderId: number;
+    @Field({ nullable: true })
+    @Column({type: "uuid", nullable: true })
+    rootFolderId: string;
 
     @ManyToOne(() => Folder, folder => folder.content)
     rootFolder: Folder;
 
+    @Field(() => [Entry], { nullable: true })
     @OneToMany(() => Entry, entry => entry.rootFolder)
     content: Entry[];
     
+    @Field(() => [Folder], { nullable: true })
+    @OneToMany(() => Folder, folder => folder.rootFolder)
+    children: Folder[];
+
+    @Field()
+    @Column({ type: "uuid" })
+    userId!: string;
+
+    @ManyToOne(() => User, user => user.folders)
+    user: User;
+
     @Field()
     @CreateDateColumn()
     createdAt: Date;

@@ -16,18 +16,24 @@ import { createConnection } from "typeorm";
 import { Entry } from "./entities/Entry";
 import { Folder } from "./entities/Folder";
 import { User } from "./entities/User";
+import { Board } from "./entities/Board";
+import { Tasklist } from "./entities/Tasklist";
+import { Task } from "./entities/Task";
+import { BoardResolver } from "./resolvers/boards";
+import { TasklistResolver } from "./resolvers/tasklists";
+import { TaskResolver } from "./resolvers/tasks";
 
 const main = async () => {
     dotenv.config();
 
-    const conn = await createConnection({
+    await createConnection({
         type: "postgres",
         database: "intention",
         username: process.env.USER,
         password: process.env.PASSWORD,
         logging: true,
         synchronize: true,
-        entities: [User, Entry, Folder]
+        entities: [User, Entry, Folder, Board, Tasklist, Task]
     });
 
     const app = express();
@@ -62,7 +68,7 @@ const main = async () => {
 
     const apolloServer = new ApolloServer({
         schema: await buildSchema({
-            resolvers: [UserResolver, EntryResolver, FolderResolver],
+            resolvers: [UserResolver, EntryResolver, FolderResolver, BoardResolver, TasklistResolver, TaskResolver],
             validate: false
         }),
         context: ({ req, res }): MyContext => ({ req, res })

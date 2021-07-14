@@ -1,0 +1,10 @@
+fragment RegularTask on Task {
+    id
+    title
+    dueAt
+    archived
+    userId
+    tasklistId
+    createdAt
+    updatedAt
+}

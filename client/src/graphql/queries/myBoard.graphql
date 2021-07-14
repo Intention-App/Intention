@@ -1,0 +1,15 @@
+query myBoard ($id: String!) {
+  myBoard (id: $id) {
+    ...RegularBoard
+    
+    tasklistOrder
+    tasklists {
+      ...RegularTasklist
+
+      taskOrder
+      tasks {
+        ...RegularTask
+      }
+    }
+  }
+}

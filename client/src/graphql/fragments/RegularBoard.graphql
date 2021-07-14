@@ -1,0 +1,7 @@
+fragment RegularBoard on Board {
+    id
+    title
+    userId
+    createdAt
+    updatedAt
+}

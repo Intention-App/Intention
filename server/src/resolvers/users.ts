@@ -1,10 +1,17 @@
 import { User } from "../entities/User";
 import { MyContext } from "../types";
-import { Arg, Ctx, Field, InputType, Int, Mutation, ObjectType, Query, Resolver, UseMiddleware } from "type-graphql";
+import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Query, Resolver, UseMiddleware } from "type-graphql";
 import argon2 from "argon2";
 import { COOKIE_NAME } from "../constants";
-import { FieldError } from "./FieldError";
 import { isAuth } from "../middleware/isAuth";
+
+@ObjectType()
+class FieldError {
+    @Field()
+    field: string;
+    @Field()
+    message: string;
+}
 
 @InputType()
 class UsernamePasswordInput {
@@ -42,7 +49,7 @@ export class UserResolver {
 
     @Query(() => User, { nullable: true })
     user(
-        @Arg("id", () => Int) id: number
+        @Arg("id") id: string
     ): Promise<User | undefined> {
         return User.findOne({ id });
     }

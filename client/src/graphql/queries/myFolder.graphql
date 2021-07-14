@@ -1,5 +1,11 @@
-query myFolder ($id: Int!) {
+query myFolder ($id: String!) {
   myFolder (id: $id) {
     ...RegularFolder
+    children {
+      ...RegularFolder
+    }
+    content {
+      ...RegularEntry
+    }
   }
 }

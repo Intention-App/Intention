@@ -2,6 +2,10 @@ import { Cache, cacheExchange, QueryInput } from "@urql/exchange-graphcache";
 import { createClient, dedupExchange, fetchExchange } from "urql";
 import {
     CreateEntryMutation,
+    CreateFolderMutation,
+    DeleteEntryDocument,
+    DeleteEntryMutation,
+    DeleteEntryMutationVariables,
     LoginMutation,
     LogoutMutation,
     MeDocument,
@@ -10,8 +14,13 @@ import {
     MyEntriesQuery,
     MyEntryDocument,
     MyEntryQuery,
+    MyFolderDocument,
+    MyFolderQuery,
+    MyFoldersDocument,
+    MyFoldersQuery,
     RegisterMutation,
-    UpdateEntryMutation
+    UpdateEntryMutation,
+    UpdateFolderMutation
 } from "../generated/graphql";
 
 function betterUpdateQuery<Result, Query>(
@@ -21,6 +30,16 @@ function betterUpdateQuery<Result, Query>(
     fn: (r: Result, q: Query) => Query
 ) {
     return cache.updateQuery(qi, data => fn(result, data as any) as any)
+}
+
+function invalidateAll(cache: Cache, fieldName: string) {
+    const allFields = cache.inspectFields("Query");
+    console.log(allFields)
+    const fieldInfos = allFields.filter((info) => info.fieldName === fieldName);
+    console.log(fieldInfos)
+    fieldInfos.forEach((fi) => {
+        cache.invalidate("Query", fieldName, fi.arguments);
+    });
 }
 
 export const urqlClient = createClient({
@@ -72,43 +91,20 @@ export const urqlClient = createClient({
                     )
                 },
                 createEntry: (_result: CreateEntryMutation, args, cache, info) => {
-                    betterUpdateQuery<CreateEntryMutation, MyEntriesQuery>(
-                        cache,
-                        { query: MyEntriesDocument },
-                        _result,
-                        (result, query) => {
-                            if (!result.createEntry) {
-                                return query;
-                            } else {
-                                return {
-                                    myEntries: query.myEntries && result.createEntry
-                                        ? [...query.myEntries, result.createEntry]
-                                        : query.myEntries
-                                            ? [...query.myEntries]
-                                            : result.createEntry
-                                                ? [result.createEntry]
-                                                : []
-                                }
-                            }
-                        }
-                    )
+                   invalidateAll(cache, "myEntries");
                 },
-                updateEntry: (_result: UpdateEntryMutation, args, cache, info) => {
-                    betterUpdateQuery<UpdateEntryMutation, MyEntryQuery>(
-                        cache,
-                        { query: MyEntryDocument },
-                        _result,
-                        (result, query) => {
-                            if (!result.updateEntry) {
-                                return query;
-                            } else {
-                                return {
-                                    myEntry: result.updateEntry
-                                }
-                            }
-                        }
-                    )
-                }
+                createFolder: (_result: CreateFolderMutation, args, cache, info) => {
+                    invalidateAll(cache, "myFolders");
+                },
+                deleteEntry: (_result: DeleteEntryMutation, args, cache, info) => {
+                    cache.invalidate({
+                        __typename: "Entry",
+                        id: (args as DeleteEntryMutationVariables).id
+                    })
+                },
+                updateTasklist: (_result: CreateFolderMutation, args, cache, info) => {
+                    invalidateAll(cache, "myBoard");
+                },
             }
         }
     }), fetchExchange]
