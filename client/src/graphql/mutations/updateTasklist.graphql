@@ -1,10 +1,9 @@
-mutation updateTasklist($id: String!, $title: String, $color: String, $taskOrder: [String!]) {
+mutation updateTasklist($id: String!, $title: String, $color: String) {
   updateTasklist (
     id: $id,
     options:{
         title: $title,
         color: $color,
-        taskOrder: $taskOrder
     }
   ) {
     ...RegularTasklist

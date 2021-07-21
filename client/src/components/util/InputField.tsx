@@ -1,14 +1,15 @@
 import { TextField } from "@material-ui/core";
 import { Field, FieldProps } from "formik";
-import React, { InputHTMLAttributes, useState } from "react";
+import React, { InputHTMLAttributes } from "react";
 
 interface InputFieldProps extends React.DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
     label: string;
     helper?: string;
     name: string;
-    validate: (value: any | any[]) => string | undefined;
+    validate?: (value: any | any[]) => string | undefined;
     containerStyle?: React.CSSProperties;
     variant?: "filled" | "outlined" | "standard";
+    multiline?: boolean;
 };
 
 export const InputField: React.FC<InputFieldProps> = ({
@@ -19,6 +20,7 @@ export const InputField: React.FC<InputFieldProps> = ({
     containerStyle,
     validate,
     value: _,
+    multiline,
     ...props
 }) => {
     return (
@@ -29,8 +31,8 @@ export const InputField: React.FC<InputFieldProps> = ({
                         <TextField
                             inputProps={props}
                             {...field}
-                            id={name}
                             label={label}
+                            multiline={multiline}
                             fullWidth
                             margin="normal"
                             variant={variant}

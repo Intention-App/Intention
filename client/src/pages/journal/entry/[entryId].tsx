@@ -1,11 +1,10 @@
-import { Box } from "@material-ui/core";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import { Descendant } from "slate";
-import { HeadWrapper } from "../../../components/HeadWrapper";
-import { Layout } from "../../../components/layout";
-import { RichTextEditor } from "../../../components/RichTextEditor";
+import { HeadWrapper } from "../../../components/main/HeadWrapper";
+import { Layout } from "../../../components/main/layout";
+import { RichTextEditor } from "../../../components/journal/RichTextEditor";
 import { useDeleteEntryMutation, useMyEntryQuery, useUpdateEntryMutation } from "../../../generated/graphql";
 import { toHumanTime } from "../../../utils/toHumanTime";
 
@@ -57,7 +56,7 @@ const EntryId: React.FC = ({ }) => {
     return (
         <Layout>
             <HeadWrapper
-                header={data?.myEntry.title ? data?.myEntry.title : ""}
+                header={data?.myEntry.title || "Untitled"}
                 buttonFunctions={[{
                     name: "Delete Entry",
                     func: handleEntryDeletion

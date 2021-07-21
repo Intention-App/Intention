@@ -1,15 +1,15 @@
-mutation updateTask(
-  $id: String!,
+mutation createTask(
   $title: String,
   $dueAt: DateTime,
   $description: String,
+  $tasklistId: String!
   ) {
-  updateTask(
-    id: $id,
+  createTask(
     options:{
       title: $title,
       dueAt: $dueAt,
       description: $description,
+      tasklistId: $tasklistId
     }) {
     ...RegularTask
   }

@@ -1,26 +1,24 @@
 import { Cache, cacheExchange, QueryInput } from "@urql/exchange-graphcache";
 import { createClient, dedupExchange, fetchExchange } from "urql";
 import {
+    ArchiveTaskMutation,
+    ArchiveTaskMutationVariables,
     CreateEntryMutation,
     CreateFolderMutation,
-    DeleteEntryDocument,
+    CreateTaskMutation,
     DeleteEntryMutation,
     DeleteEntryMutationVariables,
+    DeleteTasklistMutation,
+    DeleteTasklistMutationVariables,
+    DeleteTaskMutation,
+    DeleteTaskMutationVariables,
     LoginMutation,
     LogoutMutation,
     MeDocument,
     MeQuery,
-    MyEntriesDocument,
-    MyEntriesQuery,
-    MyEntryDocument,
-    MyEntryQuery,
-    MyFolderDocument,
-    MyFolderQuery,
-    MyFoldersDocument,
-    MyFoldersQuery,
+    MoveTaskMutation,
     RegisterMutation,
-    UpdateEntryMutation,
-    UpdateFolderMutation
+    UpdateTaskMutation
 } from "../generated/graphql";
 
 function betterUpdateQuery<Result, Query>(
@@ -90,19 +88,37 @@ export const urqlClient = createClient({
                         }
                     )
                 },
-                createEntry: (_result: CreateEntryMutation, args, cache, info) => {
+                createEntry: (result: CreateEntryMutation, args, cache, info) => {
                    invalidateAll(cache, "myEntries");
                 },
-                createFolder: (_result: CreateFolderMutation, args, cache, info) => {
+                createFolder: (result: CreateFolderMutation, args, cache, info) => {
                     invalidateAll(cache, "myFolders");
                 },
-                deleteEntry: (_result: DeleteEntryMutation, args, cache, info) => {
+                deleteEntry: (result: DeleteEntryMutation, args, cache, info) => {
                     cache.invalidate({
                         __typename: "Entry",
                         id: (args as DeleteEntryMutationVariables).id
                     })
                 },
-                updateTasklist: (_result: CreateFolderMutation, args, cache, info) => {
+                createTasklist: (_result: UpdateTaskMutation, args, cache, info) => {
+                    invalidateAll(cache, "myBoard");
+                },
+                deleteTasklist: (result: DeleteTasklistMutation, args, cache, info) => {
+                    cache.invalidate({
+                        __typename: "Tasklist",
+                        id: (args as DeleteTasklistMutationVariables).id
+                    })
+                },
+                createTask: (result: CreateTaskMutation, args, cache, info) => {
+                    invalidateAll(cache, "myBoard");
+                },
+                deleteTask: (result: DeleteTaskMutation, args, cache, info) => {
+                    cache.invalidate({
+                        __typename: "Task",
+                        id: (args as DeleteTaskMutationVariables).id
+                    })
+                },
+                archiveTask: (result: ArchiveTaskMutation, args, cache, info) => {
                     invalidateAll(cache, "myBoard");
                 },
             }

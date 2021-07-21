@@ -1,0 +1,3 @@
+mutation DeleteTasklist ($id: String!) {
+    deleteTasklist (id: $id)
+}

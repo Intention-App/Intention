@@ -1,0 +1,5 @@
+mutation ArchiveTask ($id: String!, $archive: Boolean) {
+  archiveTask(id: $id, archive: $archive) {
+    id
+  }
+}

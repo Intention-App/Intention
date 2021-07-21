@@ -16,15 +16,15 @@ export class Tasklist extends BaseEntity {
     @Column({ default: "Untitled" })
     title!: string;
 
-    @Field({nullable: true})
+    @Field({ nullable: true })
     @Column({ nullable: true })
     color: string;
 
-    @Field(()=>[Task])
-    @OneToMany(() => Task, task => task.tasklist)
+    @Field(() => [Task], { nullable: true })
+    @OneToMany(() => Task, task => task.tasklist, {onDelete: "CASCADE"})
     tasks: Task;
 
-    @Field(() => [String])
+    @Field(() => [String], { nullable: true })
     @Column({ type: "jsonb", nullable: true })
     taskOrder: string[];
 
@@ -32,9 +32,9 @@ export class Tasklist extends BaseEntity {
     @Column({ type: "uuid" })
     boardId: string;
 
-    @ManyToOne(() => Board, board => board.tasklists)
+    @ManyToOne(() => Board, board => board.tasklists, {onDelete: "CASCADE"})
     board: Board;
-    
+
     @Field()
     @Column({ type: "uuid" })
     userId!: string;

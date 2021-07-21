@@ -1,8 +1,9 @@
 fragment RegularTask on Task {
     id
     title
+    description
     dueAt
-    archived
+    archivedAt
     userId
     tasklistId
     createdAt

@@ -1,0 +1,10 @@
+mutation UpdateBoard ($id: String!, $title: String) {
+  updateBoard(
+    id: $id,
+    options: {
+      title: $title,
+    }
+  ) {
+      ...RegularBoard
+  }
+}

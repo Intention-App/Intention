@@ -1,7 +1,7 @@
 import { Box, withStyles, Menu, MenuItem } from "@material-ui/core";
 import React from "react";
 import { FaPlus } from "react-icons/fa";
-import theme from "../styles/theme";
+import theme from "../../styles/theme";
 
 interface action {
     name: string;
@@ -32,13 +32,20 @@ const StyledBox = withStyles({
 })(Box);
 
 
-export const AddNew: React.FC<AddNewProps> = ({ buttonFunctions }) => {
+export const AddNew: React.FC<AddNewProps> = ({ buttonFunctions, children }) => {
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
     const handleClick = (event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
+        if (buttonFunctions.length > 1) {
+            setAnchorEl(event.currentTarget);
+        }
+        else {
+            if (buttonFunctions.length) {
+                buttonFunctions[0].func();
+            }
+        }
     };
 
     const handleClose = () => {
@@ -52,29 +59,31 @@ export const AddNew: React.FC<AddNewProps> = ({ buttonFunctions }) => {
                 onKeyDown={(e) => { if (e.key == "Enter") handleClick(e) }}
             >
                 <FaPlus color={theme.palette.primary.main} style={{ marginRight: 8 }} />
-                Add New File
+                {children}
             </StyledBox>
-            <Menu
-                anchorEl={anchorEl}
-                keepMounted
-                open={open}
-                onClose={handleClose}
-                PaperProps={{
-                    style: {
-                        maxHeight: ITEM_HEIGHT * 4.5,
-                        width: '20ch',
-                    },
-                }}
-            >
-                {buttonFunctions.map((option) => (
-                    <MenuItem key={option.name} onClick={() => {
-                        handleClose();
-                        option.func();
-                    }}>
-                        {option.name}
-                    </MenuItem>
-                ))}
-            </Menu>
+            {buttonFunctions.length > 1 &&
+                <Menu
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={open}
+                    onClose={handleClose}
+                    PaperProps={{
+                        style: {
+                            maxHeight: ITEM_HEIGHT * 4.5,
+                            width: '20ch',
+                        },
+                    }}
+                >
+                    {buttonFunctions.map((option) => (
+                        <MenuItem key={option.name} onClick={() => {
+                            handleClose();
+                            option.func();
+                        }}>
+                            {option.name}
+                        </MenuItem>
+                    ))}
+                </Menu>
+            }
         </div>
     );
 };

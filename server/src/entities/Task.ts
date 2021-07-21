@@ -23,15 +23,15 @@ export class Task extends BaseEntity {
     @Column({ type: "timestamp", nullable: true })
     dueAt: Date;
 
-    @Field()
-    @Column({ default: false })
-    archived: Boolean;
+    @Field(() => Date, { nullable: true })
+    @Column({ type: "timestamp", nullable: true })
+    archivedAt: Date | null;
 
     @Field()
     @Column({ type: "uuid" })
     tasklistId: string;
 
-    @ManyToOne(() => Tasklist, tasklist => tasklist.tasks)
+    @ManyToOne(() => Tasklist, tasklist => tasklist.tasks, { onDelete: "CASCADE" })
     tasklist: Tasklist;
 
     @Field()

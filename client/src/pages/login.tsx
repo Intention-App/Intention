@@ -2,8 +2,8 @@ import { Button, Paper } from "@material-ui/core";
 import { Formik, Form } from "formik";
 import { useRouter } from "next/router";
 import React from "react";
-import { Container } from "../components/container";
-import { InputField } from "../components/InputField";
+import { Container } from "../components/util/container";
+import { InputField } from "../components/util/InputField";
 import { useLoginMutation } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
 

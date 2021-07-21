@@ -57,7 +57,7 @@ export const NavButton: React.FC<NavButtonProps> = ({ children, Icon, small = fa
             }} />}
             disableFocusRipple
             onClick={() => {
-                router.push(href)
+                router.push("/" + href)
             }}
             disableElevation={!active}
         >

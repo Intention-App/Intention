@@ -1,0 +1,10 @@
+mutation MoveTask($id: String!, $tasklistId: String, $prevTaskId: String, $nextTaskId: String) {
+  moveTask(id: $id,
+  options:{
+    tasklistId: $tasklistId,
+    prevTaskId: $prevTaskId,
+    nextTaskId: $nextTaskId,
+  }) {
+    ...RegularTask
+  }
+}

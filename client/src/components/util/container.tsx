@@ -1,5 +1,5 @@
 import React, { HTMLAttributes } from "react";
-import materialStyles from "../styles/material.module.css";
+import materialStyles from "../../styles/material.module.css";
 
 interface containerProps extends React.HTMLAttributes<HTMLDivElement> {
     align?: "center" | "left" | "right";

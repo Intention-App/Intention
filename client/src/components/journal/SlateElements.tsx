@@ -1,5 +1,5 @@
 import { RenderElementProps, RenderLeafProps } from "slate-react";
-import { BulletListElement, CheckListElement, ListItemElement, OrderedListElement, ParagraphElement } from "../slate/slateTypes"
+import { BulletListElement, CheckListElement, ListItemElement, OrderedListElement, ParagraphElement } from "../../slate/slateTypes"
 
 const Default: React.FC<RenderElementProps & { element: ParagraphElement }> = (props) => {
     return (

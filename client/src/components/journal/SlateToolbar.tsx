@@ -3,7 +3,7 @@ import React from "react";
 import { FaBold, FaItalic, FaListOl, FaListUl, FaUnderline } from "react-icons/fa";
 import { Editor } from "slate";
 import { useSlate } from "slate-react";
-import { isBold, isBulletList, isItalic, isOrderedList, isUnderlined, setBold, setBulletList, setItalic, setOrderedList, setUnderlined } from "../slate/toSlateElements";
+import { isBold, isBulletList, isItalic, isOrderedList, isUnderlined, setBold, setBulletList, setItalic, setOrderedList, setUnderlined } from "../../slate/toSlateElements";
 
 interface SlateToolbarProps {
     editor: Editor;

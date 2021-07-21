@@ -2,8 +2,8 @@ import { Box, Paper } from "@material-ui/core";
 import React, { useCallback, useMemo } from "react";
 import { createEditor, Descendant } from "slate";
 import { withReact, Slate, Editable } from "slate-react";
-import { withLists } from "../slate/constraints";
-import { toSlateElements } from "../slate/toSlateElements";
+import { withLists } from "../../slate/constraints";
+import { toSlateElements } from "../../slate/toSlateElements";
 import { renderElement as renderElementFunction, renderLeaf } from "./SlateElements";
 import { SlateToolbar } from "./SlateToolbar";
 
@@ -27,7 +27,8 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ useValue, save }
                 flex="300px"
                 flexGrow={1}
                 flexShrink={1}
-                style={{ backgroundColor: "var(--bg-secondary)", overflowY: "scroll" }}
+                bgcolor="var(--bg-secondary)"
+                style={{ overflowY: "scroll" }}
             >
                 <Editable
                     renderElement={renderElement}

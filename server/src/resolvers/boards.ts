@@ -7,8 +7,6 @@ import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver, UseMiddleware } 
 class BoardOptionsInput {
     @Field({ nullable: true })
     title: string;
-    @Field(() => [String], { nullable: true })
-    tasklistOrder: string[];
 }
 
 @Resolver()
@@ -87,10 +85,6 @@ export class BoardResolver {
 
         if (typeof options.title !== "undefined") {
             Board.update({ id }, { title: options.title })
-        }
-
-        if (typeof options.tasklistOrder !== "undefined") {
-            Board.update({ id }, { tasklistOrder: options.tasklistOrder })
         }
 
         return await Board.findOne({ id, userId: req.session.userId });

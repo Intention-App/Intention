@@ -1,11 +1,11 @@
 import { Box } from "@material-ui/core";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { AddNew } from "../../../components/AddNew";
-import { Entry } from "../../../components/entry";
-import { Folder } from "../../../components/folder";
-import { HeadWrapper } from "../../../components/HeadWrapper";
-import { Layout } from "../../../components/layout";
+import { AddNew } from "../../../components/util/AddNew";
+import { Entry } from "../../../components/journal/entry";
+import { Folder } from "../../../components/journal/folder";
+import { HeadWrapper } from "../../../components/main/HeadWrapper";
+import { Layout } from "../../../components/main/layout";
 import { useCreateEntryMutation, useMyEntriesQuery, useMyFoldersQuery, useMyFolderQuery, useUpdateFolderMutation, useCreateFolderMutation, useDeleteEntryMutation, useDeleteFolderMutation } from "../../../generated/graphql";
 import { toHumanTime } from "../../../utils/toHumanTime";
 
@@ -54,7 +54,7 @@ const FolderId: React.FC = ({ }) => {
     return (
         <Layout>
             <HeadWrapper
-                header={data?.myFolder?.title ? data.myFolder.title : "Untitled"}
+                header={data?.myFolder?.title || "Untitled"}
                 buttonFunctions={[
                     {
                         name: "New Entry",
@@ -127,7 +127,9 @@ const FolderId: React.FC = ({ }) => {
                                 name: "New Folder",
                                 func: handleFolderCreation
                             }
-                        ]} />
+                        ]}>
+                            Add New File
+                        </AddNew>
                     </Box>
                 </Box>
             </HeadWrapper>

@@ -14,8 +14,8 @@ export class Board extends BaseEntity {
     @Column({ default: "Untitled" })
     title!: string;
 
-    @Field(() => [Tasklist])
-    @OneToMany(() => Tasklist, tasklist => tasklist.board)
+    @Field(() => [Tasklist], {nullable: true})
+    @OneToMany(() => Tasklist, tasklist => tasklist.board, {onDelete: "CASCADE"})
     tasklists: Tasklist;
 
     @Field(() => [String], { nullable: true })
