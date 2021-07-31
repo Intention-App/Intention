@@ -4,11 +4,12 @@ import { createEditor, Descendant } from "slate";
 import { withReact, Slate, Editable } from "slate-react";
 import { withLists } from "../../slate/constraints";
 import { toSlateElements } from "../../slate/toSlateElements";
+import { insertModule } from "./InsertModule";
 import { renderElement as renderElementFunction, renderLeaf } from "./SlateElements";
 import { SlateToolbar } from "./SlateToolbar";
 
 interface RichTextEditorProps {
-    useValue: [Descendant[], React.Dispatch<React.SetStateAction<Descendant[]>>]
+    useValue: [Descendant[] | undefined, React.Dispatch<React.SetStateAction<Descendant[] | undefined>>];
     save?: (...params: any) => any;
 };
 
@@ -18,7 +19,12 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ useValue, save }
     const renderElement = useCallback(renderElementFunction, [])
 
     return (
-        <Slate editor={editor} value={value} onChange={value => setValue(value)}>
+        <Slate editor={editor} value={value || [
+            {
+                type: 'paragraph',
+                children: [{ text: '' }],
+            },
+        ]} onChange={value => setValue(value)}>
             <Box
                 paddingX={4}
                 padding={4}
@@ -27,6 +33,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ useValue, save }
                 flex="300px"
                 flexGrow={1}
                 flexShrink={1}
+                width="calc(100vw - 250px)"
                 bgcolor="var(--bg-secondary)"
                 style={{ overflowY: "scroll" }}
             >
@@ -38,6 +45,9 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ useValue, save }
                             if (e.key === "s" && save) {
                                 save();
                                 e.preventDefault();
+                            }
+                            if (e.key === "m") {
+                                insertModule("delayArguments", editor)
                             }
                         }
                         toSlateElements(e, editor)

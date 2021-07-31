@@ -3,9 +3,11 @@ import React, { useEffect, useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { FaCheckCircle, FaRegCircle } from "react-icons/fa";
 import { useArchiveTaskMutation } from "../../generated/graphql";
+import { toHumanTime } from "../../utils/toHumanTime";
 
 interface TaskProps {
     id: string;
+    dueAt: string;
     index: number;
     toggleDrawer: (...props: any) => any;
 };
@@ -27,7 +29,7 @@ const StyledPaper = withStyles({
     }
 })(Paper);
 
-export const Task: React.FC<TaskProps> = ({ children, id, index, toggleDrawer }) => {
+export const Task: React.FC<TaskProps> = ({ children, id, index, dueAt, toggleDrawer }) => {
 
     const [archived, setArchived] = useState(false);
     const [hidden, setHidden] = useState(false);
@@ -73,22 +75,30 @@ export const Task: React.FC<TaskProps> = ({ children, id, index, toggleDrawer })
                                 {archived
                                     ? <FaCheckCircle style={{
                                         color: "var(--icon)",
-                                        marginRight: 16,
+                                        marginRight: 8,
                                         cursor: "pointer",
-                                        width: 16
+                                        width: 18,
+                                        height: 18
                                     }}
                                         onClick={() => { setArchived(false) }}
                                     />
                                     : <FaRegCircle style={{
                                         color: "var(--icon)",
-                                        marginRight: 16,
+                                        marginRight: 8,
                                         cursor: "pointer",
-                                        width: 16
+                                        width: 18,
+                                        height: 18
                                     }}
                                         onClick={() => { setArchived(true) }}
                                     />
                                 }
-                                {children}
+                                <div>
+                                    {children}
+                                    <br />
+                                    {dueAt &&
+                                        <span style={{ color: "red", fontSize: 14 }}>Due {toHumanTime(dueAt)}</span>
+                                    }
+                                </div>
                             </Box>
                         </StyledPaper>
                     </Collapse>

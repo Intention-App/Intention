@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import { useLogoutMutation, useMeQuery } from "../../generated/graphql";
 import { NavButton } from "./NavButton";
-import { FaBook, FaCalendar, FaCheckCircle, FaCog, FaFlag, FaHome, FaSearch, FaTrash, FaUser } from "react-icons/fa";
+import { FaBook, FaCalendar, FaCheckCircle, FaCog, FaFlag, FaHome, FaProjectDiagram, FaSearch, FaTrash, FaUser } from "react-icons/fa";
 
 export const Sidebar: React.FC = ({ }) => {
 
@@ -12,7 +12,7 @@ export const Sidebar: React.FC = ({ }) => {
     const [{ data, fetching }, me] = useMeQuery();
     
     if (!data?.me && !fetching) {
-        router.push("/login")
+        router.push("/login");
     }
 
     return (
@@ -40,14 +40,15 @@ export const Sidebar: React.FC = ({ }) => {
 
             <Box marginY={1}>
                 <NavButton href="dashboard" Icon={FaHome}>Dashboard</NavButton>
-                <NavButton href="schedule" Icon={FaCalendar}>Schedule</NavButton>
+                {/* <NavButton href="schedule" Icon={FaCalendar}>Schedule</NavButton> */}
                 <NavButton href="checklist" Icon={FaCheckCircle}>Checklist</NavButton>
                 <NavButton href="journal" Icon={FaBook}>Journal</NavButton>
-                <NavButton href="goals" Icon={FaFlag}>Goal Setting</NavButton>
+                <NavButton href="modules" Icon={FaProjectDiagram}>Modules</NavButton>
+                {/* <NavButton href="goals" Icon={FaFlag}>Goal Setting</NavButton> */}
             </Box>
 
             <Box marginY={1} flex="100px 1 1" flexDirection="column">
-                <p style={{ margin: 0, fontSize: 14 }}>Quick Access</p>
+                <p style={{ fontSize: 14 }}>Quick Access</p>
             </Box>
 
             <Box marginY={1}>
@@ -55,7 +56,7 @@ export const Sidebar: React.FC = ({ }) => {
             </Box>
 
             <Box marginTop={1}>
-                <p style={{ color: "var(--secondary)", fontSize: 12, margin: 0 }}>Intention 2021</p>
+                <p style={{ color: "var(--secondary)", fontSize: 12 }}>Intention 2021</p>
             </Box>
         </Paper>
     );

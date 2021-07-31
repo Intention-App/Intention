@@ -16,16 +16,7 @@ const EntryId: React.FC = ({ }) => {
     const [{ fetching: updateFetching }, updateEntry] = useUpdateEntryMutation();
     const [, deleteEntry] = useDeleteEntryMutation();
 
-    const [value, setValue] = useState<Descendant[]>(
-        data?.myEntry.content
-            ? data?.myEntry.content as Descendant[]
-            : [
-                {
-                    type: 'paragraph',
-                    children: [{ text: '' }],
-                },
-            ]
-    )
+    const [value, setValue] = useState<Descendant[] | undefined>(undefined)
 
     useEffect(() => {
         if (data?.myEntry.content && !value) setValue(data?.myEntry.content as Descendant[]);
@@ -52,6 +43,8 @@ const EntryId: React.FC = ({ }) => {
             )
         }
     }
+
+    console.log(value)
 
     return (
         <Layout>

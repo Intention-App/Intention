@@ -37,7 +37,7 @@ export const EditTask: React.FC<EditTaskProps> = ({ open, toggleDrawer, containe
             <DisplacedDrawer anchor="left" style={{ zIndex: 1000 }} open={open} onClose={toggleDrawer(false)} container={container} >
                 <Box minWidth={500} padding={4} height="100%" display="flex" flexDirection="column">
                     <Box display="flex" justifyContent="space-between" alignItems="center" >
-                        <h3 style={{ margin: 0 }}>Edit Task</h3>
+                        <h3>Edit Task</h3>
                         <MenuButton options={[
                             {
                                 name: "Delete Task",

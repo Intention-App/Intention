@@ -1,4 +1,7 @@
-export const arrayToObject = <T extends Record<string, any>, K extends keyof T>(array: T[], key: K): Record<string, T> => {
+export const arrayToObject = <
+    T extends Record<string, any>,
+    K extends keyof T
+>(array: T[], key: K): Record<string, T> => {
     const initialValue = {};
     return array.reduce((obj, item) => {
         return {

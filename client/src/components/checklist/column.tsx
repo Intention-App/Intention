@@ -33,7 +33,7 @@ export const Column: React.FC<ColumnProps> = ({ children, tasks, color, id, inde
                             justifyContent="space-between"
                             {...draggableProvided.dragHandleProps}
                         >
-                            <h3 style={{ margin: 0, fontWeight: "normal", marginBottom: 8, display: "flex", alignItems: "center" }}                >
+                            <h3 style={{ fontWeight: "normal", marginBottom: 8, display: "flex", alignItems: "center" }}                >
                                 {children}
                                 {color &&
                                     <FaCircle color={color} style={{ width: 12, marginLeft: 8 }} />
@@ -60,6 +60,7 @@ export const Column: React.FC<ColumnProps> = ({ children, tasks, color, id, inde
                                                 key={task.id}
                                                 id={task.id}
                                                 index={index}
+                                                dueAt={task.dueAt}
                                             >
                                                 {task.title}
                                             </Task>
