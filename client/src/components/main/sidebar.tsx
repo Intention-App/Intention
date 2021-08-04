@@ -10,7 +10,7 @@ export const Sidebar: React.FC = ({ }) => {
     const router = useRouter();
     const [, logout] = useLogoutMutation();
     const [{ data, fetching }, me] = useMeQuery();
-    
+
     if (!data?.me && !fetching) {
         router.push("/login");
     }
@@ -25,11 +25,9 @@ export const Sidebar: React.FC = ({ }) => {
             flexDirection: "column",
             zIndex: 1300
         }}>
-            <Box marginBottom={1}>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                    {/* <img src="" style={{ height: 48, width: 48, borderRadius: "50%" }} /> */}
-                    <h3>{data?.me?.username}</h3>
-                </div>
+            <Box display="flex" alignItems="center" marginBottom={1}>
+                {/* <img src="" style={{ height: 48, width: 48, borderRadius: "50%" }} /> */}
+                <h3>{data?.me?.username}</h3>
             </Box>
 
             <Box marginY={1}>

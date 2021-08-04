@@ -1,4 +1,5 @@
-import React, { HTMLAttributes } from "react";
+import Box from "@material-ui/core/Box";
+import React from "react";
 import materialStyles from "../../styles/material.module.css";
 
 interface containerProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -7,7 +8,7 @@ interface containerProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const Container: React.FC<containerProps> = ({ align = "left", children, ...props }) => {
     return (
-        <div  {...props}
+        <Box  {...props}
             className={
                 props.className
                     ? props.className.concat(" ", materialStyles["container-size"])
@@ -28,6 +29,6 @@ export const Container: React.FC<containerProps> = ({ align = "left", children, 
             }}
         >
             {children}
-        </div>
+        </Box>
     );
 };

@@ -1,3 +1,6 @@
+// Takes an array of objects and turns it into a record based on the object's properties
+// Provides indexing via ids
+
 export const arrayToObject = <
     T extends Record<string, any>,
     K extends keyof T

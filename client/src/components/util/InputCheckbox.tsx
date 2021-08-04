@@ -1,4 +1,4 @@
-import { Checkbox, CheckboxProps, Collapse, FormControlLabel, TextField } from "@material-ui/core";
+import { Box, Checkbox, CheckboxProps, Collapse, FormControlLabel, TextField } from "@material-ui/core";
 import { Field, FieldProps } from "formik";
 import React from "react";
 import theme from "../../styles/theme";
@@ -21,7 +21,7 @@ export const InputCheckbox: React.FC<InputCheckboxProps> = ({
     ...props
 }) => {
     return (
-        <div style={containerStyle}>
+        <Box style={containerStyle}>
             <Field name={name} validate={validate}>
                 {({ field, form }: FieldProps) => {
                     return (
@@ -39,6 +39,6 @@ export const InputCheckbox: React.FC<InputCheckboxProps> = ({
                     )
                 }}
             </Field>
-        </div>
+        </Box>
     );
 };

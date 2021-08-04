@@ -1,4 +1,4 @@
-import { TextField } from "@material-ui/core";
+import { Box, TextField } from "@material-ui/core";
 import { Field, FieldProps } from "formik";
 import React, { InputHTMLAttributes } from "react";
 
@@ -24,7 +24,7 @@ export const InputField: React.FC<InputFieldProps> = ({
     ...props
 }) => {
     return (
-        <div style={containerStyle}>
+        <Box style={containerStyle}>
             <Field name={name} validate={validate}>
                 {({ field, form }: FieldProps) => {
                     return (
@@ -47,6 +47,6 @@ export const InputField: React.FC<InputFieldProps> = ({
                     )
                 }}
             </Field>
-        </div>
+        </Box>
     );
 };

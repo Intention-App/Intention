@@ -92,13 +92,13 @@ export const Task: React.FC<TaskProps> = ({ children, id, index, dueAt, toggleDr
                                         onClick={() => { setArchived(true) }}
                                     />
                                 }
-                                <div>
+                                <Box>
                                     {children}
                                     <br />
                                     {dueAt &&
                                         <span style={{ color: "red", fontSize: 14 }}>Due {toHumanTime(dueAt)}</span>
                                     }
-                                </div>
+                                </Box>
                             </Box>
                         </StyledPaper>
                     </Collapse>

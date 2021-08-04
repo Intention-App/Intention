@@ -8,7 +8,7 @@ import {
 } from '@material-ui/pickers'
 import { Field, FieldProps } from 'formik';
 import ScheduleIcon from '@material-ui/icons/Schedule';
-import { Collapse } from '@material-ui/core';
+import { Box, Collapse } from '@material-ui/core';
 
 interface DatePickerProps extends React.DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
     label: string;
@@ -30,7 +30,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
     ...props
 }) => {
     return (
-        <div style={containerStyle}>
+        <Box style={containerStyle}>
             <Field name={name} validate={validate}>
                 {({ field, form }: FieldProps) => {
                     return (
@@ -64,6 +64,6 @@ export const DatePicker: React.FC<DatePickerProps> = ({
                     )
                 }}
             </Field>
-        </div>
+        </Box>
     );
 }

@@ -53,7 +53,7 @@ export const AddNew: React.FC<AddNewProps> = ({ buttonFunctions, children }) => 
     };
 
     return (
-        <div>
+        <Box>
             <StyledBox display="flex" justifyContent="center" alignItems="center" paddingY={1.5}
                 tabIndex={0} onClick={handleClick}
                 onKeyDown={(e) => { if (e.key == "Enter") handleClick(e) }}
@@ -84,6 +84,6 @@ export const AddNew: React.FC<AddNewProps> = ({ buttonFunctions, children }) => 
                     ))}
                 </Menu>
             }
-        </div>
+        </Box>
     );
 };

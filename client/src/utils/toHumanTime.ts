@@ -1,3 +1,5 @@
+// Transforms dateString into human readable time
+
 export const toHumanTime = (dateString: string): string => {
     const date = new Date(dateString);
     const now = new Date();

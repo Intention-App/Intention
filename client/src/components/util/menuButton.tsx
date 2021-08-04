@@ -2,6 +2,7 @@ import React from 'react';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import Box from '@material-ui/core/Box';
 
 interface action {
     name: string;
@@ -27,7 +28,7 @@ export const MenuButton: React.FC<menuButtonProps> = ({ options, children }) => 
     };
 
     return (
-        <div>
+        <Box>
             <IconButton
                 aria-label="more"
                 aria-controls="long-menu"
@@ -57,6 +58,6 @@ export const MenuButton: React.FC<menuButtonProps> = ({ options, children }) => 
                     </MenuItem>
                 ))}
             </Menu>
-        </div>
+        </Box>
     );
 };

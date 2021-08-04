@@ -1,4 +1,4 @@
-import { Box, Paper } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 import React, { useCallback, useMemo } from "react";
 import { createEditor, Descendant } from "slate";
 import { withReact, Slate, Editable } from "slate-react";
