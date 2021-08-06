@@ -7,6 +7,9 @@ import { Layout } from "../../../components/main/layout";
 import { RichTextEditor } from "../../../components/journal/RichTextEditor";
 import { useDeleteEntryMutation, useMyEntryQuery, useUpdateEntryMutation } from "../../../generated/graphql";
 import { toHumanTime } from "../../../utils/toHumanTime";
+import { useDeepCompareEffect } from "../../../utils/useDeepCompareEffect";
+import { useDebounce } from "use-debounce";
+import _ from "lodash";
 
 const EntryId: React.FC = ({ }) => {
 
@@ -27,6 +30,11 @@ const EntryId: React.FC = ({ }) => {
             router.push("/journal/entry/error?code=404&msg=Entry Not Found&link=/journal")
         }
     }, [entryId, fetching, data])
+
+    const [debounceValue] = useDebounce(value, 5000, {equalityFn: (prev, next) => _.isEqual(prev, next)});
+    useDeepCompareEffect(()=>{
+        if (value && data?.myEntry) updateEntry({id: data.myEntry.id, content: value})
+    }, [debounceValue])
 
     const handleTitleChange = (title: string) => {
         if (data?.myEntry && title !== data?.myEntry.title) {
