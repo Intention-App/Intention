@@ -1,5 +1,6 @@
 import { Field, ObjectType } from "type-graphql";
 import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Task } from "./Task";
 import { Tasklist } from "./Tasklist";
 import { User } from "./User";
 
@@ -17,6 +18,10 @@ export class Board extends BaseEntity {
     @Field(() => [Tasklist], {nullable: true})
     @OneToMany(() => Tasklist, tasklist => tasklist.board, {onDelete: "CASCADE"})
     tasklists: Tasklist;
+
+    @Field(() => [Task], {nullable: true})
+    @OneToMany(() => Task, task => task.board)
+    tasks: Task;
 
     @Field(() => [String], { nullable: true })
     @Column({ type: "jsonb", nullable: true })

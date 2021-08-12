@@ -1,4 +1,7 @@
-import { Paper, Box, IconButton, withStyles } from "@material-ui/core";
+import Box from "@material-ui/core/Box";
+import { withStyles } from "@material-ui/core/styles";
+import Paper from "@material-ui/core/Paper";
+import IconButton from "@material-ui/core/IconButton";
 import React from "react";
 import { FaBold, FaItalic, FaListOl, FaListUl, FaUnderline } from "react-icons/fa";
 import { Editor } from "slate";

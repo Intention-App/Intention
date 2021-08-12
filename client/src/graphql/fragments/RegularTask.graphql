@@ -6,6 +6,7 @@ fragment RegularTask on Task {
     archivedAt
     userId
     tasklistId
+    boardId
     createdAt
     updatedAt
 }

@@ -1,4 +1,6 @@
-import { Box, Checkbox, CheckboxProps, Collapse, FormControlLabel, TextField } from "@material-ui/core";
+import Box from "@material-ui/core/Box";
+import Checkbox, {CheckboxProps} from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import { Field, FieldProps } from "formik";
 import React from "react";
 import theme from "../../styles/theme";

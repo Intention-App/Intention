@@ -8,6 +8,8 @@ import {
     CreateTaskMutation,
     DeleteEntryMutation,
     DeleteEntryMutationVariables,
+    DeleteFolderMutation,
+    DeleteFolderMutationVariables,
     DeleteTasklistMutation,
     DeleteTasklistMutationVariables,
     DeleteTaskMutation,
@@ -98,6 +100,12 @@ export const urqlClient = createClient({
                     cache.invalidate({
                         __typename: "Entry",
                         id: (args as DeleteEntryMutationVariables).id
+                    })
+                },
+                deleteFolder: (result: DeleteFolderMutation, args, cache, info) => {
+                    cache.invalidate({
+                        __typename: "Folder",
+                        id: (args as DeleteFolderMutationVariables).id
                     })
                 },
                 createTasklist: (_result: UpdateTaskMutation, args, cache, info) => {

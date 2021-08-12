@@ -3,32 +3,44 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Box from '@material-ui/core/Box';
+import { Divider } from './divider';
 
-interface action {
-    name: string;
-    func: (...params: any) => any;
-}
+// Icon button with menu
 
 interface menuButtonProps {
-    options: action[];
+    // Possible actions on clicking the button
+    options: [action, ...(action | "divider")[]];
 };
 
+// Name and function of a button function
+interface action {
+    name: string;
+    fn: (...params: any) => any;
+}
+
+// Height of each menu item
 const ITEM_HEIGHT = 48;
 
 export const MenuButton: React.FC<menuButtonProps> = ({ options, children }) => {
+
+    // Anchor element decides whether menu is open
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
+    // Anchors to icon button element
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
     };
 
+    // Clears Anchor
     const handleClose = () => {
         setAnchorEl(null);
     };
 
     return (
         <Box>
+
+            {/* Icon button with click interactions */}
             <IconButton
                 aria-label="more"
                 aria-controls="long-menu"
@@ -37,6 +49,8 @@ export const MenuButton: React.FC<menuButtonProps> = ({ options, children }) => 
             >
                 {children}
             </IconButton>
+
+            {/* Menu item that opens and closes */}
             <Menu
                 anchorEl={anchorEl}
                 keepMounted
@@ -49,13 +63,16 @@ export const MenuButton: React.FC<menuButtonProps> = ({ options, children }) => 
                     },
                 }}
             >
-                {options.map((option) => (
-                    <MenuItem key={option.name} onClick={() => {
-                        handleClose();
-                        option.func();
-                    }}>
-                        {option.name}
-                    </MenuItem>
+
+                {/* Options or division */}
+                {options.map((option) => (option === "divider"
+                        ? <Divider />
+                        : <MenuItem key={option.name} onClick={() => {
+                            handleClose();
+                            option.fn();
+                        }}>
+                            {option.name}
+                        </MenuItem>
                 ))}
             </Menu>
         </Box>

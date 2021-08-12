@@ -75,6 +75,7 @@ export class TaskResolver {
 
         const task = await Task.create({
             userId: req.session.userId,
+            boardId: tasklist.boardId,
             ...options
         }).save();
 

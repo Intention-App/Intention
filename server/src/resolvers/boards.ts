@@ -37,7 +37,7 @@ export class BoardResolver {
         @Ctx() { req }: MyContext,
         @Arg("id") id: string
     ): Promise<Board | undefined> {
-        return Board.findOne({ where: { id, userId: req.session.userId }, relations: ["tasklists", "tasklists.tasks"] })
+        return Board.findOne({ where: { id, userId: req.session.userId }, relations: ["tasklists", "tasklists.tasks", "tasks"] })
     }
 
     @Mutation(() => Board)

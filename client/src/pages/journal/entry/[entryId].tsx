@@ -13,56 +13,70 @@ import _ from "lodash";
 
 const EntryId: React.FC = ({ }) => {
 
+    // FolderId from router query
     const router = useRouter();
     const { entryId } = router.query;
+
+    // Fetch data based on id
     const [{ data, fetching }] = useMyEntryQuery({ variables: { entryId: (entryId as string) } });
+
+    // CRUD operations
     const [{ fetching: updateFetching }, updateEntry] = useUpdateEntryMutation();
     const [, deleteEntry] = useDeleteEntryMutation();
 
+    // Value of entry content
     const [value, setValue] = useState<Descendant[] | undefined>(undefined)
 
+    // Only set entry content on first fetch
     useEffect(() => {
         if (data?.myEntry.content && !value) setValue(data?.myEntry.content as Descendant[]);
     }, [data]);
 
+    // Redirect to error page if no data is found
     useEffect(() => {
         if (entryId && !fetching && !data) {
             router.push("/journal/entry/error?code=404&msg=Entry Not Found&link=/journal")
         }
     }, [entryId, fetching, data])
 
-    const [debounceValue] = useDebounce(value, 5000, {equalityFn: (prev, next) => _.isEqual(prev, next)});
-    useDeepCompareEffect(()=>{
-        if (value && data?.myEntry) updateEntry({id: data.myEntry.id, content: value})
+    // calls API if no change is detected after 5s for autosave
+    const [debounceValue] = useDebounce(value, 5000, { equalityFn: (prev, next) => _.isEqual(prev, next) });
+    useDeepCompareEffect(() => {
+        if (value && data?.myEntry) updateEntry({ id: data.myEntry.id, content: value })
     }, [debounceValue])
 
+    // Function for handling title changes
     const handleTitleChange = (title: string) => {
         if (data?.myEntry && title !== data?.myEntry.title) {
             updateEntry({ id: data.myEntry.id, title })
         }
     }
 
+    // Function for deleting the entry and rerouting to original folder
     const handleEntryDeletion = async () => {
         if (data?.myEntry?.id) {
-            deleteEntry({ id: data.myEntry.id });
-            router.push(data.myEntry.rootFolderId
-                ? `/journal/folder/${data.myEntry.rootFolderId}`
+            router.push(data?.myEntry?.rootFolderId
+                ? `/journal/folder/${data?.myEntry?.rootFolderId}`
                 : "/journal"
             )
+            console.log(data?.myEntry?.rootFolderId
+                ? `/journal/folder/${data?.myEntry?.rootFolderId}`
+                : "/journal")
+            deleteEntry({ id: data.myEntry.id });
         }
     }
 
-    console.log(value)
-
     return (
+
+        // Sidebar & Header Wrappers
         <Layout>
             <HeadWrapper
                 header={data?.myEntry.title || "Untitled"}
                 buttonFunctions={[{
                     name: "Delete Entry",
-                    func: handleEntryDeletion
+                    fn: handleEntryDeletion
                 }]}
-                ButtonIcon={FaTrash}
+                buttonIcon={FaTrash}
                 backlink={data?.myEntry?.rootFolderId
                     ? `/journal/folder/${data?.myEntry?.rootFolderId}`
                     : "/journal"
@@ -70,6 +84,7 @@ const EntryId: React.FC = ({ }) => {
                 helper={updateFetching ? "Saving..." : `Last edited ${toHumanTime(data?.myEntry.updatedAt)}`}
                 titleChanger={handleTitleChange}
             >
+                {/* Rich text editor component for journal */}
                 <RichTextEditor
                     useValue={[value, setValue]}
                     save={async () => {

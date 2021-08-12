@@ -23,6 +23,7 @@ export type Board = {
   id: Scalars['String'];
   title: Scalars['String'];
   tasklists?: Maybe<Array<Tasklist>>;
+  tasks?: Maybe<Array<Task>>;
   tasklistOrder?: Maybe<Array<Scalars['String']>>;
   userId: Scalars['String'];
   createdAt: Scalars['DateTime'];
@@ -321,6 +322,7 @@ export type Task = {
   dueAt?: Maybe<Scalars['DateTime']>;
   archivedAt?: Maybe<Scalars['DateTime']>;
   tasklistId: Scalars['String'];
+  boardId: Scalars['String'];
   userId: Scalars['String'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
@@ -404,7 +406,7 @@ export type RegularFolderFragment = (
 
 export type RegularTaskFragment = (
   { __typename?: 'Task' }
-  & Pick<Task, 'id' | 'title' | 'description' | 'dueAt' | 'archivedAt' | 'userId' | 'tasklistId' | 'createdAt' | 'updatedAt'>
+  & Pick<Task, 'id' | 'title' | 'description' | 'dueAt' | 'archivedAt' | 'userId' | 'tasklistId' | 'boardId' | 'createdAt' | 'updatedAt'>
 );
 
 export type RegularTasklistFragment = (
@@ -730,13 +732,12 @@ export type MyBoardQuery = (
   & { myBoard: (
     { __typename?: 'Board' }
     & Pick<Board, 'tasklistOrder'>
-    & { tasklists?: Maybe<Array<(
+    & { tasks?: Maybe<Array<(
+      { __typename?: 'Task' }
+      & RegularTaskFragment
+    )>>, tasklists?: Maybe<Array<(
       { __typename?: 'Tasklist' }
       & Pick<Tasklist, 'taskOrder'>
-      & { tasks?: Maybe<Array<(
-        { __typename?: 'Task' }
-        & RegularTaskFragment
-      )>> }
       & RegularTasklistFragment
     )>> }
     & RegularBoardFragment
@@ -850,6 +851,7 @@ export const RegularTaskFragmentDoc = gql`
   archivedAt
   userId
   tasklistId
+  boardId
   createdAt
   updatedAt
 }
@@ -1128,19 +1130,19 @@ export const MyBoardDocument = gql`
     query myBoard($id: String!) {
   myBoard(id: $id) {
     ...RegularBoard
+    tasks {
+      ...RegularTask
+    }
     tasklistOrder
     tasklists {
       ...RegularTasklist
       taskOrder
-      tasks {
-        ...RegularTask
-      }
     }
   }
 }
     ${RegularBoardFragmentDoc}
-${RegularTasklistFragmentDoc}
-${RegularTaskFragmentDoc}`;
+${RegularTaskFragmentDoc}
+${RegularTasklistFragmentDoc}`;
 
 export function useMyBoardQuery(options: Omit<Urql.UseQueryArgs<MyBoardQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MyBoardQuery>({ query: MyBoardDocument, ...options });

@@ -8,7 +8,8 @@ import {
 } from '@material-ui/pickers'
 import { Field, FieldProps } from 'formik';
 import ScheduleIcon from '@material-ui/icons/Schedule';
-import { Box, Collapse } from '@material-ui/core';
+import Box from '@material-ui/core/Box';
+import Collapse from '@material-ui/core/Collapse';
 
 interface DatePickerProps extends React.DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
     label: string;

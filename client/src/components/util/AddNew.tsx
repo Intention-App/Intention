@@ -1,32 +1,44 @@
-import { Box, withStyles, Menu, MenuItem } from "@material-ui/core";
+import Box from "@material-ui/core/Box";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import { withStyles } from "@material-ui/core/styles";
+
 import React from "react";
 import { FaPlus } from "react-icons/fa";
 import theme from "../../styles/theme";
 
-interface action {
-    name: string;
-    func: (...params: any) => any;
-}
+// Button to add new files or tasks
 
 interface AddNewProps {
+
+    // Possible actions on clicking the button
     buttonFunctions: action[];
 };
+
+// Name and function of a button function
+interface action {
+    name: string;
+    fn: (...params: any) => any;
+}
+
+// Height of each menu item
 const ITEM_HEIGHT = 48;
 
+// Styles for add new button
 const StyledBox = withStyles({
     root: {
         marginTop: 8,
-        border: "2px dashed var(--border)",
-        borderRadius: 8,
         cursor: "pointer",
         transition: "background 250ms",
         backgroundColor: "var(--bg-primary)",
         "&:focus": {
             backgroundColor: "var(--bg-hover)",
+            color: theme.palette.primary.main,
             outline: "none"
         },
         "&:hover": {
-            backgroundColor: "var(--bg-hover)"
+            backgroundColor: "var(--bg-hover)",
+            color: theme.palette.primary.main
         },
     }
 })(Box);
@@ -34,26 +46,31 @@ const StyledBox = withStyles({
 
 export const AddNew: React.FC<AddNewProps> = ({ buttonFunctions, children }) => {
 
+    // Anchor element decides whether menu is open
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
+    // Anchors to icon button element to show menu, or runs function if there is only one
     const handleClick = (event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>) => {
         if (buttonFunctions.length > 1) {
             setAnchorEl(event.currentTarget);
         }
         else {
             if (buttonFunctions.length) {
-                buttonFunctions[0].func();
+                buttonFunctions[0].fn();
             }
         }
     };
 
+    // Clears Anchor
     const handleClose = () => {
         setAnchorEl(null);
     };
 
     return (
         <Box>
+
+            {/* Button with click interactions */}
             <StyledBox display="flex" justifyContent="center" alignItems="center" paddingY={1.5}
                 tabIndex={0} onClick={handleClick}
                 onKeyDown={(e) => { if (e.key == "Enter") handleClick(e) }}
@@ -61,6 +78,8 @@ export const AddNew: React.FC<AddNewProps> = ({ buttonFunctions, children }) => 
                 <FaPlus color={theme.palette.primary.main} style={{ marginRight: 8 }} />
                 {children}
             </StyledBox>
+
+            {/* Menu item that opens and closes, if there is more than 1 function */}
             {buttonFunctions.length > 1 &&
                 <Menu
                     anchorEl={anchorEl}
@@ -74,10 +93,12 @@ export const AddNew: React.FC<AddNewProps> = ({ buttonFunctions, children }) => 
                         },
                     }}
                 >
+
+                    {/* Options */}
                     {buttonFunctions.map((option) => (
                         <MenuItem key={option.name} onClick={() => {
                             handleClose();
-                            option.func();
+                            option.fn();
                         }}>
                             {option.name}
                         </MenuItem>

@@ -1,60 +1,71 @@
-import { Box, Paper } from "@material-ui/core";
-import { useRouter } from "next/router";
+import Box from "@material-ui/core/Box";
+import Paper from "@material-ui/core/Paper";
 import React from "react";
-import { useLogoutMutation, useMeQuery } from "../../generated/graphql";
+import { useLogoutMutation, User } from "../../generated/graphql";
 import { NavButton } from "./NavButton";
-import { FaBook, FaCalendar, FaCheckCircle, FaCog, FaFlag, FaHome, FaProjectDiagram, FaSearch, FaTrash, FaUser } from "react-icons/fa";
+import { FaBook, FaCheckCircle, FaHome, FaProjectDiagram, FaTrash } from "react-icons/fa";
+import { IoSettingsOutline, IoSearchOutline, IoPersonOutline } from "react-icons/io5";
+import { Divider } from "../util/divider";
 
-export const Sidebar: React.FC = ({ }) => {
+interface SidebarProps {
+    user: Pick<User, "username">;
+}
 
-    const router = useRouter();
+export const Sidebar: React.FC<SidebarProps> = ({ user }) => {
+
+    // Log out function
     const [, logout] = useLogoutMutation();
-    const [{ data, fetching }, me] = useMeQuery();
-
-    if (!data?.me && !fetching) {
-        router.push("/login");
-    }
 
     return (
+        // Sidebar with styles
         <Paper elevation={4} square style={{
             width: "100%",
             height: "100vh",
-            padding: 16,
-            paddingRight: 0,
+            padding: "16px 0",
             display: "flex",
             flexDirection: "column",
             zIndex: 1300
         }}>
-            <Box display="flex" alignItems="center" marginBottom={1}>
-                {/* <img src="" style={{ height: 48, width: 48, borderRadius: "50%" }} /> */}
-                <h3>{data?.me?.username}</h3>
+            {/* User logged in */}
+            <Box display="flex" alignItems="center" marginBottom={2} paddingLeft={2}>
+                <img src="https://w7.pngwing.com/pngs/178/595/png-transparent-user-profile-computer-icons-login-user-avatars.png" style={{ height: 36, width: 36, marginRight: 8, borderRadius: "50%" }} />
+                <h3>{user.username}</h3>
             </Box>
 
-            <Box marginY={1}>
-                <NavButton href="/search" small Icon={FaSearch}>Quick Search</NavButton>
-                <NavButton href="/profile" small Icon={FaUser}>Profile</NavButton>
-                <NavButton href="/settings" small Icon={FaCog}>Settings</NavButton>
+            <Divider />
+
+            {/* Utility and settings */}
+            <Box  marginY={2} paddingLeft={2}>
+                <NavButton href="/search" small icon={IoSearchOutline}>Quick Search</NavButton>
+                <NavButton href="/profile" small icon={IoPersonOutline}>Profile</NavButton>
+                <NavButton href="/settings" small icon={IoSettingsOutline}>Settings</NavButton>
             </Box>
 
-            <Box marginY={1}>
-                <NavButton href="dashboard" Icon={FaHome}>Dashboard</NavButton>
-                {/* <NavButton href="schedule" Icon={FaCalendar}>Schedule</NavButton> */}
-                <NavButton href="checklist" Icon={FaCheckCircle}>Checklist</NavButton>
-                <NavButton href="journal" Icon={FaBook}>Journal</NavButton>
-                <NavButton href="modules" Icon={FaProjectDiagram}>Modules</NavButton>
-                {/* <NavButton href="goals" Icon={FaFlag}>Goal Setting</NavButton> */}
+            <Divider />
+
+            {/* Main application functions */}
+            <Box marginY={2} paddingLeft={2}>
+                <NavButton href="/dashboard" icon={FaHome}>Dashboard</NavButton>
+                {/* <NavButton href="/schedule" icon={FaCalendar}>Schedule</NavButton> */}
+                <NavButton href="/checklist" icon={FaCheckCircle}>Checklist</NavButton>
+                <NavButton href="/journal" icon={FaBook}>Journal</NavButton>
+                <NavButton href="/modules" icon={FaProjectDiagram}>Modules</NavButton>
+                {/* <NavButton href="/goals" Icon={FaFlag}>Goal Setting</NavButton> */}
             </Box>
 
-            <Box marginY={1} flex="100px 1 1" flexDirection="column">
-                <p style={{ fontSize: 14 }}>Quick Access</p>
+            <Divider />
+
+            {/* Trash bin */}
+            <Box  marginY={2} paddingLeft={2}>
+                <NavButton href="bin" icon={FaTrash}>Bin</NavButton>
             </Box>
 
-            <Box marginY={1}>
-                <NavButton href="bin" Icon={FaTrash}>Bin</NavButton>
-            </Box>
+            {/* Blank space */}
+            <Box marginY={2} paddingLeft={2} flex="100px 1 1" flexDirection="column" />
 
-            <Box marginTop={1}>
-                <p style={{ color: "var(--secondary)", fontSize: 12 }}>Intention 2021</p>
+            {/* Trademark */}
+            <Box marginTop={2} paddingLeft={2}>
+                <p style={{ color: "var(--secondary)", fontSize: 12 }}>Intention &copy; 2021</p>
             </Box>
         </Paper>
     );

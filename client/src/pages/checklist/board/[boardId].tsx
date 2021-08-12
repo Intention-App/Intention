@@ -1,20 +1,29 @@
-import { Box, RootRef } from "@material-ui/core";
+import RootRef from "@material-ui/core/RootRef";
+import Box from "@material-ui/core/Box";
 import _ from "lodash";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useState } from "react";
-import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
+import React, { useState, useEffect, useCallback } from "react";
+import { DragDropContextProps, DroppableProps, DropResult } from "react-beautiful-dnd";
 import { useDebounce } from "use-debounce";
-import { Column } from "../../../components/checklist/column";
-import { EditTask } from "../../../components/checklist/editTask";
-import { EditTasklist } from "../../../components/checklist/editTasklist";
+import { ColumnProps } from "../../../components/checklist/column";
+import { EditTaskProps } from "../../../components/checklist/editTask";
+import { EditTasklistProps } from "../../../components/checklist/editTasklist";
 import { HeadWrapper } from "../../../components/main/HeadWrapper";
 import { Layout } from "../../../components/main/layout";
-import { Board, Task, Tasklist, useCreateTasklistMutation, useDeleteBoardMutation, useMoveTasklistMutation, useMoveTaskMutation, useMyBoardQuery, useUpdateBoardMutation } from "../../../generated/graphql";
+import { Task, Tasklist, Board, useMyBoardQuery, useUpdateBoardMutation, useDeleteBoardMutation, useCreateTasklistMutation } from "../../../generated/graphql";
 import { arrayToObject } from "../../../utils/arrayToObject";
 import { toHumanTime } from "../../../utils/toHumanTime";
+import { toServerBoard } from "../../../utils/toServerBoard";
 import { useDeepCompareEffect } from "../../../utils/useDeepCompareEffect";
 
-interface ClientBoard {
+const Column = dynamic<ColumnProps>(() => import("../../../components/checklist/column").then(component => component.Column), { ssr: false });
+const EditTask = dynamic<EditTaskProps>(() => import("../../../components/checklist/editTask").then(component => component.EditTask), { ssr: false });
+const EditTasklist = dynamic<EditTasklistProps>(() => import("../../../components/checklist/editTasklist").then(component => component.EditTasklist), { ssr: false });
+const DragDropContext = dynamic<DragDropContextProps>(() => import("react-beautiful-dnd").then(component => component.DragDropContext), { loading: () => <Box>Loading...</Box>, ssr: false });
+const Droppable = dynamic<DroppableProps>(() => import("react-beautiful-dnd").then(component => component.Droppable), { ssr: false });
+
+export interface ClientBoard {
     tasks: Record<string, Task>;
     tasklists: Record<string, Tasklist>;
     tasklistOrder: string[];
@@ -31,7 +40,7 @@ const Checklist: React.FC = ({ }) => {
     const [{ data, fetching }] = useMyBoardQuery({ variables: { id: (boardId as string) } });
 
     // CRUD Operations
-    const [, updateBoard] = useUpdateBoardMutation();
+    const [{ fetching: updateFetching }, updateBoard] = useUpdateBoardMutation();
     const [, deleteBoard] = useDeleteBoardMutation();
     const [, createTasklist] = useCreateTasklistMutation();
 
@@ -43,12 +52,8 @@ const Checklist: React.FC = ({ }) => {
             const tasklists = data?.myBoard.tasklists
                 ? arrayToObject(data?.myBoard.tasklists, "id")
                 : undefined
-            const tasks = data?.myBoard.tasklists
-                ? arrayToObject(
-                    data.myBoard.tasklists.reduce(
-                        (accumulator: Task[], tasklist) => [...accumulator, ...(tasklist.tasks ? tasklist.tasks : [])], []
-                    ), "id"
-                )
+            const tasks = data?.myBoard.tasks
+                ? arrayToObject(data.myBoard.tasks, "id")
                 : undefined;
 
             // better object representation of board
@@ -66,16 +71,13 @@ const Checklist: React.FC = ({ }) => {
         }
     }, [data])
 
-    // calls API if no change is detected after 5s
-    const [debounceBoard] = useDebounce(board, 5000, {equalityFn: (prev, next) => _.isEqual(prev, next)});
-    useDeepCompareEffect(()=>{
-        console.log(debounceBoard);
-        /*
-        
-        TODO: Fill with API processes
-        
-        */
-        return ()=>{
+    // calls API if no change is detected after 10s
+    const [debounceBoard] = useDebounce(board, 10000, { equalityFn: (prev, next) => _.isEqual(prev, next) });
+    useDeepCompareEffect(() => {
+
+        if (debounceBoard) toServerBoard(debounceBoard);
+
+        return () => {
             console.log(board)
             /*
             
@@ -88,7 +90,7 @@ const Checklist: React.FC = ({ }) => {
     // Redirect to error page if no such data exists
     useEffect(() => {
         if (boardId && !fetching && !data) {
-            router.push("/checklist/board/error?code=404&msg=Board Not Found&link=/journal")
+            router.push("/checklist/board/error?code=404&msg=Board Not Found&link=/checklist")
         }
     }, [boardId, fetching, data])
 
@@ -285,48 +287,93 @@ const Checklist: React.FC = ({ }) => {
         }
     }
 
+    // Tasklist creation
+    const handleTasklistCreation = async () => {
+        // Creates new tasklist and toggles tasklist drawer
+        const tasklist = await createTasklist({ boardId: (boardId as string), title: "Untitled" });
+
+        // Insert new data from backend into frontend
+        if (tasklist.data?.createTasklist) {
+            const tasklistId = tasklist.data.createTasklist.id;
+
+            setBoard(board => {
+
+                if (!board) {
+                    return board;
+                }
+
+                // Add new tasklist to board
+                const newTasklistOrder = [...(board.tasklistOrder || []), tasklistId]
+
+                        // Update board state
+                return {
+                    ...board,
+                    tasklists: {
+                        ...board.tasklists,
+                        [tasklistId]: tasklist.data!.createTasklist!
+                    },
+                    tasklistOrder: newTasklistOrder
+                }
+            })
+        }
+
+        // Opens editor
+        if (tasklist?.data?.createTasklist.id) {
+            toggleTasklistDrawer(true, tasklist.data.createTasklist.id)(undefined)
+        }
+    };
+
     return (
+
+        // Sidebar & Header Wrappers
         <Layout>
             <HeadWrapper
                 header={board?.info.title || "Untitled"}
-                helper={fetching ? "Saving..." : `Last edited ${toHumanTime(board?.info.updatedAt)}`}
+                helper={updateFetching ? "Saving..." : `Last edited ${toHumanTime(board?.info.updatedAt)}`}
                 buttonFunctions={[
                     {
                         name: "New Tasklist",
-                        func: async () => {
-                            const tasklist = await createTasklist({ boardId: (boardId as string), title: "Untitled" });
-
-                            if (tasklist?.data?.createTasklist.id) {
-                                toggleTasklistDrawer(true, tasklist.data.createTasklist.id)(undefined)
-                            }
-                        }
+                        fn: handleTasklistCreation
                     },
+                    "divider",
                     {
                         name: "Delete Board",
-                        func: handleBoardDeletion
+                        fn: handleBoardDeletion
                     }
                 ]}
                 titleChanger={handleTitleChange}
                 backlink="/checklist"
             >
                 {(ref) => (<>
+
+                    {/* Task editor modal */}
                     <EditTask
                         open={taskEditorOpen}
                         toggleDrawer={toggleTaskDrawer}
+                        setBoard={setBoard}
                         container={ref}
                         task={activeTask ? board?.tasks?.[activeTask] : undefined}
                     />
+
+                    {/* Tasklist editor modal */}
                     <EditTasklist
                         open={tasklistEditorOpen}
                         toggleDrawer={toggleTasklistDrawer}
+                        setBoard={setBoard}
                         container={ref}
                         tasklist={activeTasklist ? board?.tasklists?.[activeTasklist] : undefined}
                     />
+
+                    {/* Context for React Beautiful DND */}
                     <DragDropContext
                         onDragEnd={onDragEnd}
                     >
+
+                        {/* Drop Area for React Beautiful DND */}
                         <Droppable droppableId="all-tasklists" type="tasklist" direction="horizontal">
                             {(provided) => (
+
+                                // Container and its ref for tasklist
                                 <RootRef rootRef={provided.innerRef}>
                                     <Box
                                         display="flex"
@@ -337,14 +384,19 @@ const Checklist: React.FC = ({ }) => {
                                         width="calc(100vw - 250px)"
                                         style={{ overflowX: "scroll" }}
                                     >
+
+                                        {/* Mapping tasklists */}
                                         {(board?.tasklistOrder && board?.tasks && board?.tasklists) &&
                                             board?.tasklistOrder.map((tasklistId, index) => {
                                                 return (
+
+                                                    // Tasklist and tasks passed as props
                                                     <Column
-                                                        key={board?.tasklists[tasklistId].id}
-                                                        id={board?.tasklists[tasklistId].id}
+                                                        key={board.tasklists[tasklistId].id}
+                                                        id={board.tasklists[tasklistId].id}
                                                         index={index}
                                                         color={board?.tasklists[tasklistId].color}
+                                                        setBoard={setBoard}
                                                         toggleTasklistDrawer={toggleTasklistDrawer}
                                                         toggleTaskDrawer={toggleTaskDrawer}
                                                         tasks={

@@ -1,4 +1,5 @@
-import { Button, Paper } from "@material-ui/core";
+import Button from "@material-ui/core/Button";
+import Paper from "@material-ui/core/Paper";
 import { Formik, Form } from "formik";
 import React from "react";
 import { Container } from "../components/util/container";
