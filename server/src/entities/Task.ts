@@ -39,7 +39,7 @@ export class Task extends BaseEntity {
     @Column({ type: "uuid" })
     boardId!: string;
 
-    @ManyToOne(() => Board, board => board.tasks)
+    @ManyToOne(() => Board, board => board.tasks, {onDelete: "CASCADE"})
     board: Tasklist;
 
     @Field()

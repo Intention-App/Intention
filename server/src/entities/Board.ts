@@ -17,11 +17,11 @@ export class Board extends BaseEntity {
 
     @Field(() => [Tasklist], {nullable: true})
     @OneToMany(() => Tasklist, tasklist => tasklist.board, {onDelete: "CASCADE"})
-    tasklists: Tasklist;
+    tasklists: Tasklist[];
 
     @Field(() => [Task], {nullable: true})
-    @OneToMany(() => Task, task => task.board)
-    tasks: Task;
+    @OneToMany(() => Task, task => task.board, {onDelete: "CASCADE"})
+    tasks: Task[];
 
     @Field(() => [String], { nullable: true })
     @Column({ type: "jsonb", nullable: true })

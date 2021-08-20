@@ -148,7 +148,7 @@ export const HeadWrapper: React.FC<HeadWrapperProps> = ({
                                 {/* Custom Icon, defaults to ellipsis */}
                                 {ButtonIcon
                                     ? <ButtonIcon
-                                        style={{ width: 16, height: 16, color: buttonColor || "var(--icon)", cursor: "pointer" }}
+                                        style={{ width: 24, height: 24, color: buttonColor || "var(--icon)", cursor: "pointer" }}
                                     />
                                     : <FaEllipsisV
                                         style={{ width: 16, height: 16, color: buttonColor || "var(--icon)", cursor: "pointer" }}

@@ -10,6 +10,7 @@ import { toHumanTime } from "../../../utils/toHumanTime";
 import { useDeepCompareEffect } from "../../../utils/useDeepCompareEffect";
 import { useDebounce } from "use-debounce";
 import _ from "lodash";
+import { useSavePrompt } from "../../../utils/useSavePrompt";
 
 const EntryId: React.FC = ({ }) => {
 
@@ -44,6 +45,9 @@ const EntryId: React.FC = ({ }) => {
     useDeepCompareEffect(() => {
         if (value && data?.myEntry) updateEntry({ id: data.myEntry.id, content: value })
     }, [debounceValue])
+
+    // Prompts when page is closed but app is still saving
+    useSavePrompt(value, debounceValue)
 
     // Function for handling title changes
     const handleTitleChange = (title: string) => {

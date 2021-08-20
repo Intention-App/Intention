@@ -11,11 +11,12 @@ import { EditTaskProps } from "../../../components/checklist/editTask";
 import { EditTasklistProps } from "../../../components/checklist/editTasklist";
 import { HeadWrapper } from "../../../components/main/HeadWrapper";
 import { Layout } from "../../../components/main/layout";
-import { Task, Tasklist, Board, useMyBoardQuery, useUpdateBoardMutation, useDeleteBoardMutation, useCreateTasklistMutation } from "../../../generated/graphql";
+import { Task, Tasklist, Board, useMyBoardQuery, useUpdateBoardMutation, useDeleteBoardMutation, useCreateTasklistMutation, useUpdatePositionsMutation } from "../../../generated/graphql";
 import { arrayToObject } from "../../../utils/arrayToObject";
 import { toHumanTime } from "../../../utils/toHumanTime";
 import { toServerBoard } from "../../../utils/toServerBoard";
 import { useDeepCompareEffect } from "../../../utils/useDeepCompareEffect";
+import { useSavePrompt } from "../../../utils/useSavePrompt";
 
 const Column = dynamic<ColumnProps>(() => import("../../../components/checklist/column").then(component => component.Column), { ssr: false });
 const EditTask = dynamic<EditTaskProps>(() => import("../../../components/checklist/editTask").then(component => component.EditTask), { ssr: false });
@@ -43,49 +44,66 @@ const Checklist: React.FC = ({ }) => {
     const [{ fetching: updateFetching }, updateBoard] = useUpdateBoardMutation();
     const [, deleteBoard] = useDeleteBoardMutation();
     const [, createTasklist] = useCreateTasklistMutation();
+    const [{ fetching: updatePosFetching }, updatePositions] = useUpdatePositionsMutation();
 
     // Only use data from initial fetch
     const [board, setBoard] = useState<ClientBoard | undefined>(undefined);
     useEffect(() => {
-        if (data?.myBoard && !board) {
-            // Record representation of tasks and lists for O(n) indexing 
-            const tasklists = data?.myBoard.tasklists
-                ? arrayToObject(data?.myBoard.tasklists, "id")
-                : undefined
-            const tasks = data?.myBoard.tasks
-                ? arrayToObject(data.myBoard.tasks, "id")
-                : undefined;
+        if (data?.myBoard) {
 
-            // better object representation of board
-            setBoard({
-                tasks: tasks || {},
-                tasklists: tasklists || {},
-                tasklistOrder: data.myBoard.tasklistOrder || [],
-                info: {
-                    id: data.myBoard.id,
-                    title: data.myBoard.title,
-                    createdAt: data.myBoard.createdAt,
-                    updatedAt: data.myBoard.updatedAt,
-                }
-            })
+            if (!board) {
+                // Record representation of tasks and lists for O(n) indexing 
+                const tasklists = data?.myBoard.tasklists
+                    ? arrayToObject(data?.myBoard.tasklists, "id")
+                    : undefined
+                const tasks = data?.myBoard.tasks
+                    ? arrayToObject(data.myBoard.tasks, "id")
+                    : undefined;
+
+                // better object representation of board
+                setBoard({
+                    tasks: tasks || {},
+                    tasklists: tasklists || {},
+                    tasklistOrder: data.myBoard.tasklistOrder || [],
+                    info: {
+                        id: data.myBoard.id,
+                        title: data.myBoard.title,
+                        createdAt: data.myBoard.createdAt,
+                        updatedAt: data.myBoard.updatedAt,
+                    }
+                })
+            }
+            else {
+                setBoard({
+                    ...board,
+                    info: {
+                        ...board.info,
+                        updatedAt: data.myBoard.updatedAt,
+                    }
+                })
+            }
         }
     }, [data])
 
-    // calls API if no change is detected after 10s
-    const [debounceBoard] = useDebounce(board, 10000, { equalityFn: (prev, next) => _.isEqual(prev, next) });
+    // calls API if no change is detected after 5s
+    const [debounceBoard] = useDebounce(board, 5000, { equalityFn: (prev, next) => _.isEqual(prev, next) });
     useDeepCompareEffect(() => {
 
-        if (debounceBoard) toServerBoard(debounceBoard);
-
-        return () => {
-            console.log(board)
-            /*
-            
-            TODO: Fill with API processes
-            
-            */
+        if (debounceBoard) {
+            updatePositions(toServerBoard(debounceBoard));
         }
-    }, [debounceBoard])
+
+    }, [debounceBoard
+        ? {
+            tasks: debounceBoard?.tasks,
+            tasklists: debounceBoard?.tasklists,
+            tasklistOrder: debounceBoard?.tasklistOrder
+        }
+        : undefined
+    ])
+
+    // Prompts when page is closed but app is still saving
+    useSavePrompt(board, debounceBoard)
 
     // Redirect to error page if no such data exists
     useEffect(() => {
@@ -305,7 +323,7 @@ const Checklist: React.FC = ({ }) => {
                 // Add new tasklist to board
                 const newTasklistOrder = [...(board.tasklistOrder || []), tasklistId]
 
-                        // Update board state
+                // Update board state
                 return {
                     ...board,
                     tasklists: {
@@ -329,7 +347,7 @@ const Checklist: React.FC = ({ }) => {
         <Layout>
             <HeadWrapper
                 header={board?.info.title || "Untitled"}
-                helper={updateFetching ? "Saving..." : `Last edited ${toHumanTime(board?.info.updatedAt)}`}
+                helper={updateFetching || updatePosFetching ? "Saving..." : `Last edited ${toHumanTime(board?.info.updatedAt)}`}
                 buttonFunctions={[
                     {
                         name: "New Tasklist",

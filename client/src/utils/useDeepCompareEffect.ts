@@ -11,7 +11,11 @@ const deepCompareEquals = (a: any, b: any) => {
 const useDeepCompareMemoize = (value: any) => {
     const ref = useRef()
 
-    if (!deepCompareEquals(value, ref.current)) {
+    if (!_.isEqual(value, ref.current)) {
+
+
+        console.log(value, ref.current)
+
         ref.current = value
     }
 

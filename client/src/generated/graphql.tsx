@@ -103,6 +103,7 @@ export type Mutation = {
   createBoard: Board;
   deleteBoard: Scalars['Boolean'];
   updateBoard: Board;
+  updatePositions: Board;
   createTasklist: Tasklist;
   deleteTasklist: Scalars['Boolean'];
   updateTasklist: Tasklist;
@@ -169,6 +170,13 @@ export type MutationDeleteBoardArgs = {
 
 export type MutationUpdateBoardArgs = {
   options: BoardOptionsInput;
+  id: Scalars['String'];
+};
+
+
+export type MutationUpdatePositionsArgs = {
+  tasklistOrder: Array<Scalars['String']>;
+  tasklists: Array<TasklistInput>;
   id: Scalars['String'];
 };
 
@@ -345,6 +353,11 @@ export type Tasklist = {
   userId: Scalars['String'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+};
+
+export type TasklistInput = {
+  id: Scalars['String'];
+  taskOrder: Array<Scalars['String']>;
 };
 
 export type TasklistOptionsInput = {
@@ -677,6 +690,21 @@ export type UpdateFolderMutation = (
   & { updateFolder: (
     { __typename?: 'Folder' }
     & RegularFolderFragment
+  ) }
+);
+
+export type UpdatePositionsMutationVariables = Exact<{
+  id: Scalars['String'];
+  tasklists: Array<TasklistInput> | TasklistInput;
+  tasklistOrder: Array<Scalars['String']> | Scalars['String'];
+}>;
+
+
+export type UpdatePositionsMutation = (
+  { __typename?: 'Mutation' }
+  & { updatePositions: (
+    { __typename?: 'Board' }
+    & RegularBoardFragment
   ) }
 );
 
@@ -1089,6 +1117,17 @@ export const UpdateFolderDocument = gql`
 
 export function useUpdateFolderMutation() {
   return Urql.useMutation<UpdateFolderMutation, UpdateFolderMutationVariables>(UpdateFolderDocument);
+};
+export const UpdatePositionsDocument = gql`
+    mutation updatePositions($id: String!, $tasklists: [TasklistInput!]!, $tasklistOrder: [String!]!) {
+  updatePositions(id: $id, tasklists: $tasklists, tasklistOrder: $tasklistOrder) {
+    ...RegularBoard
+  }
+}
+    ${RegularBoardFragmentDoc}`;
+
+export function useUpdatePositionsMutation() {
+  return Urql.useMutation<UpdatePositionsMutation, UpdatePositionsMutationVariables>(UpdatePositionsDocument);
 };
 export const UpdateTaskDocument = gql`
     mutation updateTask($id: String!, $title: String, $dueAt: DateTime, $description: String) {
