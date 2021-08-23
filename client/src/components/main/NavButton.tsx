@@ -53,9 +53,9 @@ export const NavButton: React.FC<NavButtonProps> = ({ children, icon, small = fa
         <StyledButton
             style={{
                 // Small vs normal styles
-                borderRadius: small ? "0 14px 14px 0" : "0 21px 21px 0",
-                height: small ? 28 : 42,
-                fontSize: small ? 14 : 16,
+                borderRadius: "0 21px 21px 0",
+                height: 42,
+                fontSize: 16,
                 width: "100%",
 
                 // active styles

@@ -89,8 +89,8 @@ const Checklist: React.FC = ({ }) => {
     const [debounceBoard] = useDebounce(board, 5000, { equalityFn: (prev, next) => _.isEqual(prev, next) });
     useDeepCompareEffect(() => {
 
-        if (debounceBoard) {
-            updatePositions(toServerBoard(debounceBoard));
+        if (debounceBoard && data?.myBoard) {
+            updatePositions(toServerBoard(debounceBoard, data.myBoard));
         }
 
     }, [debounceBoard
