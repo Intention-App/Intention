@@ -1,31 +1,21 @@
-import "reflect-metadata";
-import { ApolloServer } from "apollo-server-express";
-import express from "express";
-import { buildSchema } from "type-graphql";
-import { UserResolver } from "./resolvers/users";
-import redis from "redis";
-import session from "express-session";
-import connectRedis from "connect-redis";
 import * as dotenv from "dotenv";
-import cors from "cors";
-import { COOKIE_NAME, __prod__ } from "./constants";
-import { MyContext } from "./types";
-import { EntryResolver } from "./resolvers/entries";
-import { FolderResolver } from "./resolvers/folders";
 import { createConnection } from "typeorm";
-import { Entry } from "./entities/Entry";
-import { Folder } from "./entities/Folder";
-import { User } from "./entities/User";
-import { Board } from "./entities/Board";
-import { Tasklist } from "./entities/Tasklist";
-import { Task } from "./entities/Task";
-import { BoardResolver } from "./resolvers/boards";
-import { TasklistResolver } from "./resolvers/tasklists";
-import { TaskResolver } from "./resolvers/tasks";
+import { buildSchema } from "type-graphql";
+import express from "express";
+import cors from "cors";
+import express_session from "express-session";
+import { ApolloServer } from "apollo-server-express";
+import { COOKIE_NAME, __prod__ } from "./constants";
+import { ExpressContext } from "./types";
+import getResolvers from "./resolvers";
+import getEntities from "./entities";
 
 const main = async () => {
+
     dotenv.config();
 
+    // Initialize Postgres database
+    const entities = await getEntities();
     await createConnection({
         type: "postgres",
         database: "intention",
@@ -33,27 +23,23 @@ const main = async () => {
         password: process.env.PASSWORD,
         logging: true,
         synchronize: true,
-        entities: [User, Entry, Folder, Board, Tasklist, Task]
+        entities: entities
     });
 
     const app = express();
 
-    const RedisStore = connectRedis(session);
-    const redisClient = redis.createClient();
-
     app.use(
         cors({
-            origin: "http://localhost:3000",
-            credentials: true,
+            // origin: "https://localhost:3000", // Will be renable for production
+            credentials: true
         })
-    )
+    );
 
+    // Init express-session middleware
+    // TODO: Replace express-session with custom authentication
     app.use(
-        session({
+        express_session({
             name: COOKIE_NAME,
-            store: new RedisStore({
-                client: redisClient,
-            }),
             cookie: {
                 maxAge: 1000 * 60 * 60 * 24 * 7,
                 httpOnly: true,
@@ -64,26 +50,23 @@ const main = async () => {
             secret: process.env.SECRET!,
             resave: false
         })
-    )
+    );
 
+    // Init apollo server
+    const resolvers = await getResolvers();
     const apolloServer = new ApolloServer({
-        schema: await buildSchema({
-            resolvers: [UserResolver, EntryResolver, FolderResolver, BoardResolver, TasklistResolver, TaskResolver],
-            validate: false
-        }),
-        context: ({ req, res }): MyContext => ({ req, res })
+        schema: await buildSchema({ resolvers: resolvers, validate: false }),
+        context: ({ req, res }): ExpressContext => ({ req, res }),
     });
 
-    apolloServer.applyMiddleware({
-        app,
-        cors: false
-    });
+    // Integrate apollo server to express
+    apolloServer.applyMiddleware({ app, cors: false });
 
-    app.listen(4000, () => {
-        console.log("server started on localhost:4000");
-    })
+    // Start express server on default port 4000
+    const PORT = process.env.PORT || 4000;
+    app.listen(PORT, () => console.log(`Server is up and running on localhost:${PORT}`));
+
 }
 
-main().catch(err => {
-    console.error(err);
-});
+// Print out any initial errors
+main().catch(err => console.log(err));

@@ -1,7 +1,8 @@
-import { User } from "../entities/User";
-import { MyContext } from "../types";
+import User from "../entities/User";
 import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Query, Resolver, UseMiddleware } from "type-graphql";
+import { ExpressContext } from "../types";
 import argon2 from "argon2";
+import crypto from "crypto";
 import { COOKIE_NAME } from "../constants";
 import { isAuth } from "../middleware/isAuth";
 
@@ -14,7 +15,7 @@ class FieldError {
 }
 
 @InputType()
-class UsernamePasswordInput {
+class RegisterInput {
     @Field()
     username: string;
     @Field()
@@ -24,7 +25,7 @@ class UsernamePasswordInput {
 }
 
 @InputType()
-class UsernameOrEmailInput {
+class LoginInput {
     @Field()
     username: string;
     @Field()
@@ -33,128 +34,163 @@ class UsernameOrEmailInput {
 
 @ObjectType()
 class UserResponse {
-    @Field(() => [FieldError], { nullable: true })
+    @Field(() => [FieldError], { nullable: true, defaultValue: [] })
     errors?: FieldError[];
 
     @Field(() => User, { nullable: true })
     user?: User;
 }
 
+/*
+    Resolver
+*/
+
+const relations = ["tasklists", "tasklists.tasks", "tasks", "boards", "boards.tasklists", "boards.tasklists.tasks", "folders", "folders.entries", "entries"];
+
 @Resolver()
-export class UserResolver {
-    @Query(() => [User])
+export default class UserResolver {
+
+    // Get all users
+    @Query(() => [User], {description: "DEV TOOL | Get all users"})
     users(): Promise<User[]> {
-        return User.find({});
+        return User.find({ where: {}, relations });
     }
 
-    @Query(() => User, { nullable: true })
-    user(
+    // Get specific user by ID
+    @Query(() => User, { nullable: true, description: "DEV TOOL | Get user by id" })
+    async user(
         @Arg("id") id: string
     ): Promise<User | undefined> {
-        return User.findOne({ id });
-    }
-
-    @Query(() => User, { nullable: true })
-    @UseMiddleware(isAuth)
-    async me(
-        @Ctx() { req }: MyContext
-    ): Promise<User | undefined> {
-
-        const user = await User.findOne({ id: req.session.userId })
-
+        const user = await User.findOne({ where: { id }, relations });
         return user;
     }
 
-    @Mutation(() => UserResponse)
+    // Get self user
+    @Query(() => User, { nullable: true, description: "Get self authenticated user" })
+    @UseMiddleware(isAuth)
+    async me(
+        @Ctx() { req }: ExpressContext
+    ): Promise<User | undefined> {
+        const user = await User.findOne({ where: { id: req.session.userId } })
+        return user;
+    }
+
+    // Register new user
+    @Mutation(() => UserResponse, { description: "Register a new user" })
     async register(
-        @Ctx() { req }: MyContext,
-        @Arg("options") options: UsernamePasswordInput,
+        @Ctx() { req }: ExpressContext,
+        @Arg("options") options: RegisterInput, // { username, password, email }
     ): Promise<UserResponse> {
-        if (options.username.length <= 3) {
+
+        // Verify the min & max username size
+        if (options.username.length <= 3 && options.username.length > 25) {
             return {
                 errors: [{
                     field: "username",
-                    message: "username has to be longer than 3 characters"
+                    message: "Username has to be between 3 to 25 characters"
                 }]
             };
         };
 
-
-        if (options.password.length <= 6) {
+        // Verify the min & max password size
+        if (options.password.length <= 6 && options.password.length <= 50) {
             return {
                 errors: [{
                     field: "username",
-                    message: "password has to be longer than 6 characters"
+                    message: "Password has to be between 6 to 50 characters"
                 }]
             };
         }
+        
+        // Hash password
+        const salt = await crypto.randomBytes(32);
+        const hashedPassword = await argon2.hash(options.password, {salt});
 
-        const hashedPassword = await argon2.hash(options.password)
+        // Create new user
         const user = await User.create( {
             username: options.username,
             email: options.email,
             password: hashedPassword
         });
+
+        // Attempt to save created user
         try {
             await user.save()
         }
         catch (err) {
+            
+            // Error for username that already exists
             if (err.code === "23505") {
                 return {
                     errors: [{
                         field: "username",
-                        message: "username already exists"
+                        message: "Username already exists"
                     }]
                 };
             };
+
         }
 
+        
         req.session!.userId = user.id;
         
-        return { user };
+        return { errors: [], user };
     }
 
-    @Mutation(() => UserResponse)
+    // User Login
+    @Mutation(() => UserResponse, { description: "Authenticate a user" }) 
     async login(
-        @Ctx() { req }: MyContext,
-        @Arg("options") options: UsernameOrEmailInput,
+        @Ctx() { req }: ExpressContext,
+        @Arg("options") options: LoginInput,
     ): Promise<UserResponse> {
-        const user = await User.findOne({ username: options.username });
+
+        // Find user in database by username
+        const user = await User.findOne({ where: { username: options.username } });
+
+        // If not username is found, return error
         if (!user) {
             return {
                 errors: [{
-                    field: "username",
-                    message: "username cannot be found"
+                    field: "login",
+                    message: "Incorrect username or password"
                 }]
             };
         };
 
+        // Verify password
         const valid = await argon2.verify(user.password, options.password);
         if (!valid) {
             return {
                 errors: [{
-                    field: "password",
-                    message: "incorrect password"
+                    field: "login",
+                    message: "Incorrect username or password"
                 }]
             };
         };
 
         req.session!.userId = user.id;
 
-        return { user };
+        return { errors: [], user };
     }
 
-    @Mutation(() => Boolean)
+    // Logout user
+    @Mutation(() => Boolean, { description: "Disconnect user" })
     logout(
-        @Ctx() { req, res }: MyContext,
+        @Ctx() { req, res }: ExpressContext,
     ): Promise<Boolean> {
+
         return new Promise(resolve => req.session.destroy(err => {
-            res.clearCookie(COOKIE_NAME);
+
+            res.clearCookie(COOKIE_NAME); // Clear cookie
+
+            // Handle error
             if (err) {
                 resolve(false);
-                return;
+            } else {
+                resolve(true); 
             }
-            resolve(true);
+            
         })) 
+
     }
 }
