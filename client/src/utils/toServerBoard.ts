@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { Task, Tasklist, Board } from "../generated/graphql";
+import { Task, Tasklist, Board, TasklistInput } from "../generated/graphql";
 import { objectToArray } from "./objectToArray";
 
 interface ClientBoard {
@@ -13,9 +13,9 @@ interface ServerBoard {
     id: string;
     tasklists: {
         id: string;
-        taskOrder: string[] | undefined;
+        taskOrder: string[];
     }[]
-    tasklistOrder: string[];
+    tasklistOrder: string[] | undefined;
 }
 
 export const toServerBoard = (clientBoard: ClientBoard, board: Pick<Board, "tasklistOrder">): ServerBoard => {

@@ -1,9 +1,0 @@
-mutation MoveTasklist($id: String!, $prevTasklistId: String, $nextTasklistId: String) {
-  moveTasklist(id: $id,
-  options:{
-    prevTasklistId: $prevTasklistId,
-    nextTasklistId: $nextTasklistId,
-  }) {
-    ...RegularTasklist
-  }
-}

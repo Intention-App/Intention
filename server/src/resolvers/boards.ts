@@ -49,7 +49,7 @@ export default class BoardResolver {
     async myBoards(
         @Ctx() { req }: ExpressContext
     ): Promise<Board[] | undefined> {
-        return await Board.find({ where: { userId: req.session.userId }, relations: ["tasklists"] })
+        return await Board.find({ where: { userId: req.session.userId }, relations })
     }
 
     // Get specific user board by ID
@@ -59,7 +59,7 @@ export default class BoardResolver {
         @Ctx() { req }: ExpressContext,
         @Arg("id") id: string
     ): Promise<Board | undefined> {
-        return await Board.findOne({ where: { id, userId: req.session.userId }, relations: ["tasklists"] })
+        return await Board.findOne({ where: { id, userId: req.session.userId }, relations })
     }
 
     // Create new board for user
@@ -105,13 +105,13 @@ export default class BoardResolver {
         // Get board
         const board = await Board.findOne({ id, userId: req.session.userId })
 
-        // If no board found, return undifined
+        // If no board found, return undefined
         if (!board) return undefined;
 
         // Update title of board if valid
         if (typeof options.title !== "undefined") await Board.update({ id }, { title: options.title })
 
-        return await Board.findOne({ where: { id, userId: req.session.userId }, relations: ["tasklists"] });
+        return await Board.findOne({ where: { id, userId: req.session.userId }, relations });
     }
 
     // To optimize and clean
@@ -162,7 +162,7 @@ export default class BoardResolver {
 
                 if (!task) continue;
 
-                // Remmove from pending tasks list
+                // Remove from pending tasks list
                 const pendingTask = pendingTasks.find(pendingTask => pendingTask.id === taskId);
                 if (pendingTask) pendingTasks.splice(pendingTasks.indexOf(pendingTask), 1)
 

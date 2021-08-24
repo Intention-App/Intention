@@ -22,12 +22,11 @@ export type Board = {
   __typename?: 'Board';
   id: Scalars['String'];
   title: Scalars['String'];
-  tasklists?: Maybe<Array<Tasklist>>;
-  tasks?: Maybe<Array<Task>>;
   tasklistOrder?: Maybe<Array<Scalars['String']>>;
-  userId: Scalars['String'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+  tasklists?: Maybe<Array<Tasklist>>;
+  tasks?: Maybe<Array<Task>>;
 };
 
 export type BoardOptionsInput = {
@@ -53,10 +52,9 @@ export type Entry = {
   id: Scalars['String'];
   title: Scalars['String'];
   content: Scalars['JSON'];
-  userId: Scalars['String'];
-  rootFolderId?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+  rootFolderId?: Maybe<Scalars['String']>;
 };
 
 export type EntryOptionsInput = {
@@ -75,12 +73,11 @@ export type Folder = {
   __typename?: 'Folder';
   id: Scalars['String'];
   title: Scalars['String'];
-  rootFolderId?: Maybe<Scalars['String']>;
-  content?: Maybe<Array<Entry>>;
-  children?: Maybe<Array<Folder>>;
-  userId: Scalars['String'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+  rootFolderId?: Maybe<Scalars['String']>;
+  entries?: Maybe<Array<Entry>>;
+  folders?: Maybe<Array<Folder>>;
 };
 
 export type FolderOptionsInput = {
@@ -89,40 +86,70 @@ export type FolderOptionsInput = {
 };
 
 
+export type LoginInput = {
+  username: Scalars['String'];
+  password: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
-  register: UserResponse;
-  login: UserResponse;
-  logout: Scalars['Boolean'];
-  createEntry: Entry;
-  deleteEntry?: Maybe<Scalars['String']>;
-  updateEntry: Entry;
-  createFolder: Folder;
-  deleteFolder?: Maybe<Scalars['String']>;
-  updateFolder: Folder;
+  /** Create a new board */
   createBoard: Board;
+  /** Delete a board by id */
   deleteBoard: Scalars['Boolean'];
+  /** Update a board by id */
   updateBoard: Board;
-  updatePositions: Board;
+  updateOrder: Board;
+  /** Create a new entry */
+  createEntry: Entry;
+  /** Delete a specific entry by id */
+  deleteEntry?: Maybe<Scalars['String']>;
+  /** Update a specific existing entry */
+  updateEntry: Entry;
+  /** Create a new folder */
+  createFolder: Folder;
+  /** Delete a folder by id */
+  deleteFolder?: Maybe<Scalars['String']>;
+  /** Update a folder by id */
+  updateFolder: Folder;
+  /** Create a new tasklist */
   createTasklist: Tasklist;
+  /** Delete a specific tasklist */
   deleteTasklist: Scalars['Boolean'];
   updateTasklist: Tasklist;
-  moveTasklist: Tasklist;
   createTask: Task;
   deleteTask?: Maybe<Scalars['Boolean']>;
   updateTask: Task;
-  moveTask: Task;
   archiveTask?: Maybe<Task>;
+  /** Register a new user */
+  register: UserResponse;
+  /** Authenticate a user */
+  login: UserResponse;
+  /** Disconnect user */
+  logout: Scalars['Boolean'];
 };
 
 
-export type MutationRegisterArgs = {
-  options: UsernamePasswordInput;
+export type MutationCreateBoardArgs = {
+  options: BoardOptionsInput;
 };
 
 
-export type MutationLoginArgs = {
-  options: UsernameOrEmailInput;
+export type MutationDeleteBoardArgs = {
+  id: Scalars['String'];
+};
+
+
+export type MutationUpdateBoardArgs = {
+  options: BoardOptionsInput;
+  id: Scalars['String'];
+};
+
+
+export type MutationUpdateOrderArgs = {
+  tasklistOrder?: Maybe<Array<Scalars['String']>>;
+  tasklists: Array<TasklistInput>;
+  id: Scalars['String'];
 };
 
 
@@ -148,35 +175,13 @@ export type MutationCreateFolderArgs = {
 
 
 export type MutationDeleteFolderArgs = {
+  explode?: Maybe<Scalars['Boolean']>;
   id: Scalars['String'];
 };
 
 
 export type MutationUpdateFolderArgs = {
   options: FolderOptionsInput;
-  id: Scalars['String'];
-};
-
-
-export type MutationCreateBoardArgs = {
-  options: BoardOptionsInput;
-};
-
-
-export type MutationDeleteBoardArgs = {
-  id: Scalars['String'];
-};
-
-
-export type MutationUpdateBoardArgs = {
-  options: BoardOptionsInput;
-  id: Scalars['String'];
-};
-
-
-export type MutationUpdatePositionsArgs = {
-  tasklistOrder: Array<Scalars['String']>;
-  tasklists: Array<TasklistInput>;
   id: Scalars['String'];
 };
 
@@ -197,12 +202,6 @@ export type MutationUpdateTasklistArgs = {
 };
 
 
-export type MutationMoveTasklistArgs = {
-  options: MoveTasklistInput;
-  id: Scalars['String'];
-};
-
-
 export type MutationCreateTaskArgs = {
   options: CreateTaskOptionsInput;
 };
@@ -219,46 +218,75 @@ export type MutationUpdateTaskArgs = {
 };
 
 
-export type MutationMoveTaskArgs = {
-  options: MoveTaskInput;
-  id: Scalars['String'];
-};
-
-
 export type MutationArchiveTaskArgs = {
   archive?: Maybe<Scalars['Boolean']>;
   id: Scalars['String'];
 };
 
+
+export type MutationRegisterArgs = {
+  options: RegisterInput;
+};
+
+
+export type MutationLoginArgs = {
+  options: LoginInput;
+};
+
 export type Query = {
   __typename?: 'Query';
-  users: Array<User>;
-  user?: Maybe<User>;
-  me?: Maybe<User>;
-  entries: Array<Entry>;
-  entry: Entry;
-  myEntries: Array<Entry>;
-  myEntry: Entry;
-  folders: Array<Folder>;
-  folder: Folder;
-  myFolders: Array<Folder>;
-  myFolder: Folder;
+  /** DEV TOOL | Get all boards */
   boards: Array<Board>;
+  /** DEV TOOL | Get specific board by ID */
   board: Board;
+  /** Get all the user's boards */
   myBoards: Array<Board>;
+  /** Get a specific user's board */
   myBoard: Board;
+  /** DEV TOOL | Get all entries */
+  entries: Array<Entry>;
+  /** DEV TOOL | Get a specific entry by ID */
+  entry: Entry;
+  /** Get all entries of an authenticated user */
+  myEntries: Array<Entry>;
+  /** Get a specific entry by id of an authenticated used */
+  myEntry: Entry;
+  /** DEV TOOL | Get all folders */
+  folders: Array<Folder>;
+  /** DEV TOOL | Get a specific folder by ID */
+  folder: Folder;
+  /** Get all folders of an authenticated user */
+  myFolders: Array<Folder>;
+  /** Get a specific folder by ID of an authenticated user */
+  myFolder: Folder;
+  /** DEV TOOL | Get all tasklists */
   tasklists: Array<Tasklist>;
+  /** DEV TOOL | Get specific tasklist by ID */
   tasklist: Tasklist;
+  /** Get user's tasklists */
   myTasklists: Array<Tasklist>;
+  /** Get user's specific tasklist by id */
   myTasklist: Tasklist;
+  /** DEV TOOL | Get all tasks */
   tasks: Array<Task>;
   task: Task;
   myTasks: Array<Task>;
   myTask: Task;
+  /** DEV TOOL | Get all users */
+  users: Array<User>;
+  /** DEV TOOL | Get user by id */
+  user?: Maybe<User>;
+  /** Get self authenticated user */
+  me?: Maybe<User>;
 };
 
 
-export type QueryUserArgs = {
+export type QueryBoardArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryMyBoardArgs = {
   id: Scalars['String'];
 };
 
@@ -293,16 +321,6 @@ export type QueryMyFolderArgs = {
 };
 
 
-export type QueryBoardArgs = {
-  id: Scalars['String'];
-};
-
-
-export type QueryMyBoardArgs = {
-  id: Scalars['String'];
-};
-
-
 export type QueryTasklistArgs = {
   id: Scalars['String'];
 };
@@ -322,6 +340,17 @@ export type QueryMyTaskArgs = {
   id: Scalars['String'];
 };
 
+
+export type QueryUserArgs = {
+  id: Scalars['String'];
+};
+
+export type RegisterInput = {
+  username: Scalars['String'];
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
 export type Task = {
   __typename?: 'Task';
   id: Scalars['String'];
@@ -329,11 +358,10 @@ export type Task = {
   description?: Maybe<Scalars['String']>;
   dueAt?: Maybe<Scalars['DateTime']>;
   archivedAt?: Maybe<Scalars['DateTime']>;
-  tasklistId: Scalars['String'];
-  boardId: Scalars['String'];
-  userId: Scalars['String'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+  tasklistId: Scalars['String'];
+  boardId: Scalars['String'];
 };
 
 export type TaskOptionsInput = {
@@ -347,12 +375,11 @@ export type Tasklist = {
   id: Scalars['String'];
   title: Scalars['String'];
   color?: Maybe<Scalars['String']>;
-  tasks?: Maybe<Array<Task>>;
   taskOrder?: Maybe<Array<Scalars['String']>>;
-  boardId: Scalars['String'];
-  userId: Scalars['String'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+  tasks?: Maybe<Array<Task>>;
+  boardId: Scalars['String'];
 };
 
 export type TasklistInput = {
@@ -372,6 +399,11 @@ export type User = {
   email: Scalars['String'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
+  boards?: Maybe<Array<Board>>;
+  tasklists?: Maybe<Array<Tasklist>>;
+  tasks?: Maybe<Array<Task>>;
+  entries?: Maybe<Array<Entry>>;
+  folders?: Maybe<Array<Folder>>;
 };
 
 export type UserResponse = {
@@ -380,31 +412,9 @@ export type UserResponse = {
   user?: Maybe<User>;
 };
 
-export type UsernameOrEmailInput = {
-  username: Scalars['String'];
-  password: Scalars['String'];
-};
-
-export type UsernamePasswordInput = {
-  username: Scalars['String'];
-  email: Scalars['String'];
-  password: Scalars['String'];
-};
-
-export type MoveTaskInput = {
-  tasklistId?: Maybe<Scalars['String']>;
-  prevTaskId?: Maybe<Scalars['String']>;
-  nextTaskId?: Maybe<Scalars['String']>;
-};
-
-export type MoveTasklistInput = {
-  prevTasklistId?: Maybe<Scalars['String']>;
-  nextTasklistId?: Maybe<Scalars['String']>;
-};
-
 export type RegularBoardFragment = (
   { __typename?: 'Board' }
-  & Pick<Board, 'id' | 'title' | 'userId' | 'createdAt' | 'updatedAt'>
+  & Pick<Board, 'id' | 'title' | 'createdAt' | 'updatedAt'>
 );
 
 export type RegularEntryFragment = (
@@ -419,12 +429,12 @@ export type RegularFolderFragment = (
 
 export type RegularTaskFragment = (
   { __typename?: 'Task' }
-  & Pick<Task, 'id' | 'title' | 'description' | 'dueAt' | 'archivedAt' | 'userId' | 'tasklistId' | 'boardId' | 'createdAt' | 'updatedAt'>
+  & Pick<Task, 'id' | 'title' | 'description' | 'dueAt' | 'archivedAt' | 'tasklistId' | 'boardId' | 'createdAt' | 'updatedAt'>
 );
 
 export type RegularTasklistFragment = (
   { __typename?: 'Tasklist' }
-  & Pick<Tasklist, 'id' | 'title' | 'color' | 'userId' | 'boardId' | 'createdAt' | 'updatedAt'>
+  & Pick<Tasklist, 'id' | 'title' | 'color' | 'boardId' | 'createdAt' | 'updatedAt'>
 );
 
 export type RegularUserFragment = (
@@ -597,37 +607,6 @@ export type LogoutMutation = (
   & Pick<Mutation, 'logout'>
 );
 
-export type MoveTaskMutationVariables = Exact<{
-  id: Scalars['String'];
-  tasklistId?: Maybe<Scalars['String']>;
-  prevTaskId?: Maybe<Scalars['String']>;
-  nextTaskId?: Maybe<Scalars['String']>;
-}>;
-
-
-export type MoveTaskMutation = (
-  { __typename?: 'Mutation' }
-  & { moveTask: (
-    { __typename?: 'Task' }
-    & RegularTaskFragment
-  ) }
-);
-
-export type MoveTasklistMutationVariables = Exact<{
-  id: Scalars['String'];
-  prevTasklistId?: Maybe<Scalars['String']>;
-  nextTasklistId?: Maybe<Scalars['String']>;
-}>;
-
-
-export type MoveTasklistMutation = (
-  { __typename?: 'Mutation' }
-  & { moveTasklist: (
-    { __typename?: 'Tasklist' }
-    & RegularTasklistFragment
-  ) }
-);
-
 export type RegisterMutationVariables = Exact<{
   username: Scalars['String'];
   email: Scalars['String'];
@@ -693,16 +672,16 @@ export type UpdateFolderMutation = (
   ) }
 );
 
-export type UpdatePositionsMutationVariables = Exact<{
+export type UpdateOrderMutationVariables = Exact<{
   id: Scalars['String'];
   tasklists: Array<TasklistInput> | TasklistInput;
-  tasklistOrder: Array<Scalars['String']> | Scalars['String'];
+  tasklistOrder?: Maybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 
-export type UpdatePositionsMutation = (
+export type UpdateOrderMutation = (
   { __typename?: 'Mutation' }
-  & { updatePositions: (
+  & { updateOrder: (
     { __typename?: 'Board' }
     & RegularBoardFragment
   ) }
@@ -818,10 +797,10 @@ export type MyFolderQuery = (
   { __typename?: 'Query' }
   & { myFolder: (
     { __typename?: 'Folder' }
-    & { children?: Maybe<Array<(
+    & { folders?: Maybe<Array<(
       { __typename?: 'Folder' }
       & RegularFolderFragment
-    )>>, content?: Maybe<Array<(
+    )>>, entries?: Maybe<Array<(
       { __typename?: 'Entry' }
       & RegularEntryFragment
     )>> }
@@ -846,7 +825,6 @@ export const RegularBoardFragmentDoc = gql`
     fragment RegularBoard on Board {
   id
   title
-  userId
   createdAt
   updatedAt
 }
@@ -877,7 +855,6 @@ export const RegularTaskFragmentDoc = gql`
   description
   dueAt
   archivedAt
-  userId
   tasklistId
   boardId
   createdAt
@@ -889,7 +866,6 @@ export const RegularTasklistFragmentDoc = gql`
   id
   title
   color
-  userId
   boardId
   createdAt
   updatedAt
@@ -1040,34 +1016,6 @@ export const LogoutDocument = gql`
 export function useLogoutMutation() {
   return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
 };
-export const MoveTaskDocument = gql`
-    mutation MoveTask($id: String!, $tasklistId: String, $prevTaskId: String, $nextTaskId: String) {
-  moveTask(
-    id: $id
-    options: {tasklistId: $tasklistId, prevTaskId: $prevTaskId, nextTaskId: $nextTaskId}
-  ) {
-    ...RegularTask
-  }
-}
-    ${RegularTaskFragmentDoc}`;
-
-export function useMoveTaskMutation() {
-  return Urql.useMutation<MoveTaskMutation, MoveTaskMutationVariables>(MoveTaskDocument);
-};
-export const MoveTasklistDocument = gql`
-    mutation MoveTasklist($id: String!, $prevTasklistId: String, $nextTasklistId: String) {
-  moveTasklist(
-    id: $id
-    options: {prevTasklistId: $prevTasklistId, nextTasklistId: $nextTasklistId}
-  ) {
-    ...RegularTasklist
-  }
-}
-    ${RegularTasklistFragmentDoc}`;
-
-export function useMoveTasklistMutation() {
-  return Urql.useMutation<MoveTasklistMutation, MoveTasklistMutationVariables>(MoveTasklistDocument);
-};
 export const RegisterDocument = gql`
     mutation Register($username: String!, $email: String!, $password: String!) {
   register(options: {username: $username, email: $email, password: $password}) {
@@ -1118,16 +1066,16 @@ export const UpdateFolderDocument = gql`
 export function useUpdateFolderMutation() {
   return Urql.useMutation<UpdateFolderMutation, UpdateFolderMutationVariables>(UpdateFolderDocument);
 };
-export const UpdatePositionsDocument = gql`
-    mutation updatePositions($id: String!, $tasklists: [TasklistInput!]!, $tasklistOrder: [String!]!) {
-  updatePositions(id: $id, tasklists: $tasklists, tasklistOrder: $tasklistOrder) {
+export const UpdateOrderDocument = gql`
+    mutation updateOrder($id: String!, $tasklists: [TasklistInput!]!, $tasklistOrder: [String!]) {
+  updateOrder(id: $id, tasklists: $tasklists, tasklistOrder: $tasklistOrder) {
     ...RegularBoard
   }
 }
     ${RegularBoardFragmentDoc}`;
 
-export function useUpdatePositionsMutation() {
-  return Urql.useMutation<UpdatePositionsMutation, UpdatePositionsMutationVariables>(UpdatePositionsDocument);
+export function useUpdateOrderMutation() {
+  return Urql.useMutation<UpdateOrderMutation, UpdateOrderMutationVariables>(UpdateOrderDocument);
 };
 export const UpdateTaskDocument = gql`
     mutation updateTask($id: String!, $title: String, $dueAt: DateTime, $description: String) {
@@ -1223,10 +1171,10 @@ export const MyFolderDocument = gql`
     query myFolder($id: String!) {
   myFolder(id: $id) {
     ...RegularFolder
-    children {
+    folders {
       ...RegularFolder
     }
-    content {
+    entries {
       ...RegularEntry
     }
   }

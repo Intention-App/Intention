@@ -1,10 +1,10 @@
 query myFolder ($id: String!) {
   myFolder (id: $id) {
     ...RegularFolder
-    children {
+    folders {
       ...RegularFolder
     }
-    content {
+    entries {
       ...RegularEntry
     }
   }

@@ -11,7 +11,7 @@ import { EditTaskProps } from "../../../components/checklist/editTask";
 import { EditTasklistProps } from "../../../components/checklist/editTasklist";
 import { HeadWrapper } from "../../../components/main/HeadWrapper";
 import { Layout } from "../../../components/main/layout";
-import { Task, Tasklist, Board, useMyBoardQuery, useUpdateBoardMutation, useDeleteBoardMutation, useCreateTasklistMutation, useUpdatePositionsMutation } from "../../../generated/graphql";
+import { Task, Tasklist, Board, useMyBoardQuery, useUpdateBoardMutation, useDeleteBoardMutation, useCreateTasklistMutation, useUpdateOrderMutation } from "../../../generated/graphql";
 import { arrayToObject } from "../../../utils/arrayToObject";
 import { toHumanTime } from "../../../utils/toHumanTime";
 import { toServerBoard } from "../../../utils/toServerBoard";
@@ -44,7 +44,7 @@ const Checklist: React.FC = ({ }) => {
     const [{ fetching: updateFetching }, updateBoard] = useUpdateBoardMutation();
     const [, deleteBoard] = useDeleteBoardMutation();
     const [, createTasklist] = useCreateTasklistMutation();
-    const [{ fetching: updatePosFetching }, updatePositions] = useUpdatePositionsMutation();
+    const [{ fetching: updateOrderFetching }, updateOrder] = useUpdateOrderMutation();
 
     // Only use data from initial fetch
     const [board, setBoard] = useState<ClientBoard | undefined>(undefined);
@@ -90,7 +90,7 @@ const Checklist: React.FC = ({ }) => {
     useDeepCompareEffect(() => {
 
         if (debounceBoard && data?.myBoard) {
-            updatePositions(toServerBoard(debounceBoard, data.myBoard));
+            updateOrder(toServerBoard(debounceBoard, data.myBoard));
         }
 
     }, [debounceBoard
@@ -347,7 +347,7 @@ const Checklist: React.FC = ({ }) => {
         <Layout>
             <HeadWrapper
                 header={board?.info.title || "Untitled"}
-                helper={updateFetching || updatePosFetching ? "Saving..." : `Last edited ${toHumanTime(board?.info.updatedAt)}`}
+                helper={updateFetching || updateOrderFetching ? "Saving..." : `Last edited ${toHumanTime(board?.info.updatedAt)}`}
                 buttonFunctions={[
                     {
                         name: "New Tasklist",

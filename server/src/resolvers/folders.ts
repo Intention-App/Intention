@@ -20,7 +20,7 @@ class FolderOptionsInput {
 const relations = ["folders", "entries"];
 
 @Resolver()
-export class FolderResolver {
+export default class FolderResolver {
 
     // Get all folders
     @Query(() => [Folder], { description: "DEV TOOL | Get all folders" })

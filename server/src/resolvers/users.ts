@@ -82,6 +82,8 @@ export default class UserResolver {
         @Arg("options") options: RegisterInput, // { username, password, email }
     ): Promise<UserResponse> {
 
+        console.log("yes, it happened")
+
         // Verify the min & max username size
         if (options.username.length <= 3 && options.username.length > 25) {
             return {
@@ -91,6 +93,8 @@ export default class UserResolver {
                 }]
             };
         };
+        
+        console.log("yes, it happened")
 
         // Verify the min & max password size
         if (options.password.length <= 6 && options.password.length <= 50) {
@@ -102,9 +106,12 @@ export default class UserResolver {
             };
         }
         
+        console.log("yes, it happened")
+        
         // Hash password
         const salt = await crypto.randomBytes(32);
         const hashedPassword = await argon2.hash(options.password, {salt});
+
 
         // Create new user
         const user = await User.create( {
@@ -116,6 +123,7 @@ export default class UserResolver {
         // Attempt to save created user
         try {
             await user.save()
+            console.log("yes, it happened")
         }
         catch (err) {
             
@@ -133,6 +141,7 @@ export default class UserResolver {
 
         
         req.session!.userId = user.id;
+        console.log("yes, it happened")
         
         return { errors: [], user };
     }
@@ -151,7 +160,7 @@ export default class UserResolver {
         if (!user) {
             return {
                 errors: [{
-                    field: "login",
+                    field: "username",
                     message: "Incorrect username or password"
                 }]
             };
@@ -162,7 +171,7 @@ export default class UserResolver {
         if (!valid) {
             return {
                 errors: [{
-                    field: "login",
+                    field: "username",
                     message: "Incorrect username or password"
                 }]
             };

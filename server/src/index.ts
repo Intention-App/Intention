@@ -30,7 +30,7 @@ const main = async () => {
 
     app.use(
         cors({
-            // origin: "https://localhost:3000", // Will be renable for production
+            origin: "http://localhost:3000", // Will be renable for production
             credentials: true
         })
     );

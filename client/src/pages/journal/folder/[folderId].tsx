@@ -130,7 +130,7 @@ const FolderId: React.FC = ({ }) => {
                         >
 
                             {/* List of folders */}
-                            {data?.myFolder.children && data.myFolder.children.map(folder =>
+                            {data?.myFolder.folders && data.myFolder.folders.map(folder =>
                                 <ListViewItem
                                     key={`folder-${folder.id}`}
                                     createdAt={toHumanTime(folder.createdAt)}
@@ -143,7 +143,7 @@ const FolderId: React.FC = ({ }) => {
                             )}
 
                             {/* List of entries */}
-                            {data?.myFolder.content && data.myFolder.content.map(entry =>
+                            {data?.myFolder.entries && data.myFolder.entries.map(entry =>
                                 <ListViewItem
                                     key={`entry-${entry.id}`}
                                     createdAt={toHumanTime(entry.createdAt)}

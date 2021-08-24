@@ -2,7 +2,6 @@ import { Cache, cacheExchange, QueryInput } from "@urql/exchange-graphcache";
 import { createClient, dedupExchange, fetchExchange } from "urql";
 import {
     ArchiveTaskMutation,
-    ArchiveTaskMutationVariables,
     CreateEntryMutation,
     CreateFolderMutation,
     CreateTaskMutation,
@@ -18,7 +17,6 @@ import {
     LogoutMutation,
     MeDocument,
     MeQuery,
-    MoveTaskMutation,
     RegisterMutation,
     UpdateTaskMutation
 } from "../generated/graphql";

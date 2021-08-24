@@ -4,7 +4,6 @@ fragment RegularTask on Task {
     description
     dueAt
     archivedAt
-    userId
     tasklistId
     boardId
     createdAt

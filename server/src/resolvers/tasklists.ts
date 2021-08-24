@@ -18,14 +18,6 @@ class CreateTasklistOptionsInput extends TasklistOptionsInput {
     boardId: string;
 }
 
-@InputType()
-class MoveTasklistInput {
-    @Field({ nullable: true })
-    prevTasklistId?: string;
-    @Field({ nullable: true })
-    nextTasklistId?: string;
-}
-
 /*
     Resolver
 */
@@ -142,68 +134,5 @@ export default class TasklistResolver {
 
         // Return updated tasklist
         return await Tasklist.findOne({ id, userId: req.session.userId });
-    }
-
-    // Change order of tasklists
-    @Mutation(() => Tasklist)
-    @UseMiddleware(isAuth)
-    async moveTasklist(
-        @Ctx() { req }: ExpressContext,
-        @Arg("id") id: string,
-        @Arg("options") options: MoveTasklistInput
-    ): Promise<Tasklist | undefined> {
-
-        if (id === options.prevTasklistId || id === options.nextTasklistId) return undefined;
-
-        // Find specific tasklist
-        const tasklist = await Tasklist.findOne({ where: { id, userId: req.session.userId }, relations })
-
-        if (!tasklist) return undefined;
-
-        // Remove tasklist from the tasklistOrder array
-        const oldTasklistIndex = tasklist.board.tasklistOrder.indexOf(id);
-        tasklist.board.tasklistOrder.splice(oldTasklistIndex, 1);
-
-        // Add 
-        if (options.prevTasklistId && options.nextTasklistId) {
-            const prevTasklistIndex = tasklist.board.tasklistOrder.indexOf(options.prevTasklistId);
-            const nextTasklistIndex = tasklist.board.tasklistOrder.indexOf(options.nextTasklistId);
-
-            if (prevTasklistIndex !== -1 && nextTasklistIndex !== -1 && nextTasklistIndex - prevTasklistIndex === 1) {
-                tasklist.board.tasklistOrder.splice(nextTasklistIndex, 0, id)
-            }
-            else {
-                return undefined;
-            }
-        }
-        else if (!options.prevTasklistId && options.nextTasklistId) {
-            const nextTasklistIndex = tasklist.board.tasklistOrder.indexOf(options.nextTasklistId);
-
-            if (nextTasklistIndex === 0) {
-                tasklist.board.tasklistOrder.unshift(id);
-            }
-            else {
-                return undefined;
-            }
-        }
-        else if (options.prevTasklistId && !options.nextTasklistId) {
-            const prevTasklistIndex = tasklist.board.tasklistOrder.indexOf(options.prevTasklistId);
-
-            if (prevTasklistIndex === tasklist.board.tasklistOrder.length - 1) {
-                tasklist.board.tasklistOrder.push(id);
-            }
-            else {
-                return undefined;
-            }
-        }
-        else {
-            return undefined;
-        }
-
-        // Update tasklistorder for the board
-        await Board.update({ id: tasklist.boardId }, { tasklistOrder: tasklist.board.tasklistOrder })
-
-        // Return updated tasklist
-        return await Tasklist.findOne({ where: { id, userId: req.session.userId }, relations });
     }
 }
