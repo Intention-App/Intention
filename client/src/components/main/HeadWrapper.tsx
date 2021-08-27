@@ -109,7 +109,8 @@ export const HeadWrapper: React.FC<HeadWrapperProps> = ({
 
                             {/* Backlink arrow */}
                             {backlink &&
-                                <Link href={backlink}><a style={{ marginRight: 14 }}><FaArrowLeft /></a></Link>}
+                                <Link href={backlink}><a style={{ marginRight: 14 }}><FaArrowLeft /></a></Link>
+                            }
 
                             {/* Title is input if title change function provided, otherwise h2 */}
                             {titleChanger

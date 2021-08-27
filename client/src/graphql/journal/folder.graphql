@@ -1,0 +1,53 @@
+### Journal Folder ###
+
+## Fragments
+fragment RegularFolder on Folder {
+    id
+    title
+    rootFolderId
+    createdAt
+    updatedAt
+}
+
+## Queries
+
+# All Folders (no relations)
+query myFolders($rootFolderId: String) {
+    myFolders(rootFolderId: $rootFolderId) {
+        ...RegularFolder
+    }
+}
+
+# Single Folder (with relations)
+query myFolder($id: String!) {
+    myFolder(id: $id) {
+        ...RegularFolder
+        folders {
+            ...RegularFolder
+        }
+        entries {
+            ...RegularEntry
+        }
+    }
+}
+
+## Mutations
+
+# Create Folder
+mutation CreateFolder($title: String, $folderId: String) {
+    createFolder(options: { title: $title, folderId: $folderId }) {
+        ...RegularFolder
+    }
+}
+
+# Update Folder
+mutation UpdateFolder($id: String!, $title: String, $folderId: String) {
+    updateFolder(id: $id, options: { title: $title, folderId: $folderId }) {
+        ...RegularFolder
+    }
+}
+
+# Delete Folder
+mutation DeleteFolder($id: String!) {
+    deleteFolder(id: $id)
+}

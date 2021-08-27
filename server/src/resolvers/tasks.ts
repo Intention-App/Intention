@@ -95,7 +95,7 @@ export default class TaskResolver {
     ): Promise<Boolean> {
         try {
             // Find specific task
-            const task = await Task.findOne({where: { id, userId: req.session.userId } });
+            const task = await Task.findOne({where: { id, userId: req.session.userId }, relations: ["tasklist"] });
 
             if (!task) return false;
 
@@ -154,7 +154,7 @@ export default class TaskResolver {
     ): Promise<Task | undefined> {
 
         // Find specific task
-        const task = await Task.findOne({ where: { id, userId: req.session.userId } });
+        const task = await Task.findOne({ where: { id, userId: req.session.userId }, relations: ["tasklist"] });
 
         if (!task) return undefined;
 

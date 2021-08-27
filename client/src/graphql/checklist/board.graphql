@@ -1,0 +1,77 @@
+### Checklist Kanban Board ###
+
+## Fragments
+fragment RegularBoard on Board {
+    id
+    title
+    createdAt
+    updatedAt
+}
+
+## Queries
+
+# All Boards (no relations)
+query MyBoards {
+    myBoards {
+        ...RegularBoard
+    }
+}
+
+# Single Board (with relations)
+query myBoard($id: String!) {
+    myBoard(id: $id) {
+        ...RegularBoard
+        tasks {
+            ...RegularTask
+        }
+
+        tasklistOrder
+        tasklists {
+            ...RegularTasklist
+
+            taskOrder
+        }
+    }
+}
+
+
+## Mutations
+
+# Create Board
+mutation CreateBoard ($title: String) {
+  createBoard(
+    options: {
+      title: $title,
+    }
+  ) {
+      ...RegularBoard
+  }
+}
+
+# Update Board
+mutation UpdateBoard ($id: String!, $title: String) {
+  updateBoard(
+    id: $id,
+    options: {
+      title: $title,
+    }
+  ) {
+      ...RegularBoard
+  }
+}
+
+# Update Task and Tasklist Orders
+mutation UpdateOrder ($id: String!, $tasklists: [TasklistInput!]!, $tasklistOrder: [String!]) {
+  updateOrder(
+    id: $id,
+    tasklists: $tasklists,
+    tasklistOrder: $tasklistOrder
+  ) {
+      ...RegularBoard
+  }
+}
+
+# Delete Board
+mutation DeleteBoard ($id: String!) {
+    deleteBoard (id: $id)
+}

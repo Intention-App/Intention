@@ -1,9 +1,0 @@
-mutation updateOrder ($id: String!, $tasklists: [TasklistInput!]!, $tasklistOrder: [String!]) {
-  updateOrder(
-    id: $id,
-    tasklists: $tasklists,
-    tasklistOrder: $tasklistOrder
-  ) {
-      ...RegularBoard
-  }
-}

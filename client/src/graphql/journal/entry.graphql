@@ -1,0 +1,50 @@
+### Journal Entry ###
+
+## Fragments
+fragment RegularEntry on Entry {
+    id
+    title
+    content
+    rootFolderId
+    createdAt
+    updatedAt
+}
+
+## Queries
+
+# All Entries
+query myEntries($rootFolderId: String) {
+    myEntries(rootFolderId: $rootFolderId) {
+        ...RegularEntry
+    }
+}
+
+# Single Entry
+query myEntry($entryId: String!) {
+    myEntry(id: $entryId) {
+        ...RegularEntry
+    }
+}
+
+## Mutations
+
+# Create Entry
+mutation CreateEntry($title: String, $content: JSON, $folderId: String) {
+    createEntry(
+        options: { title: $title, content: $content, folderId: $folderId }
+    ) {
+        ...RegularEntry
+    }
+}
+
+# Update Entry
+mutation UpdateEntry($id: String!, $title: String, $content: JSON) {
+    updateEntry(id: $id, options: { title: $title, content: $content }) {
+        ...RegularEntry
+    }
+}
+
+# Delete Entry
+mutation DeleteEntry($id: String!) {
+    deleteEntry(id: $id)
+}

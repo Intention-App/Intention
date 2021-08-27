@@ -1,5 +1,0 @@
-mutation CreateEntry ($title: String, $content: JSON, $folderId: String) {
-  createEntry (options: {title: $title, content: $content, folderId: $folderId}) {
-    ...RegularEntry
-  }
-}

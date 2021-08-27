@@ -1,5 +1,0 @@
-query myEntry($entryId: String!) {
-  myEntry(id: $entryId) {
-    ...RegularEntry
-  }
-}

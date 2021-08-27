@@ -43,11 +43,13 @@ const EntryId: React.FC = ({ }) => {
     // calls API if no change is detected after 5s for autosave
     const [debounceValue] = useDebounce(value, 5000, { equalityFn: (prev, next) => _.isEqual(prev, next) });
     useDeepCompareEffect(() => {
-        if (value && data?.myEntry) updateEntry({ id: data.myEntry.id, content: value })
+        if (debounceValue && data?.myEntry) updateEntry({ id: data.myEntry.id, content: debounceValue })
     }, [debounceValue])
 
     // Prompts when page is closed but app is still saving
-    useSavePrompt(value, debounceValue)
+    useSavePrompt([value, debounceValue], ()=>{
+        if (value && data?.myEntry) updateEntry({ id: data.myEntry.id, content: value })
+    })
 
     // Function for handling title changes
     const handleTitleChange = (title: string) => {

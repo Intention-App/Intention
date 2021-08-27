@@ -1,0 +1,53 @@
+### Checklist Kanban Board ###
+
+## Fragments
+fragment RegularUser on User {
+    id
+    username
+}
+
+
+## Queries
+
+# User Info with Cookie and Session
+query Me {
+  me {
+    ...RegularUser
+  }
+}
+
+
+## Mutations
+
+# Create New Account with Cookie and Session
+mutation Register($username: String!, $email: String!, $password: String!){
+  register(options:{username: $username, email: $email, password: $password}) {
+    errors{
+      field
+      message
+    }
+    user{
+      ...RegularUser
+    }
+  }
+}
+
+
+# Log in with Account with Cookie and Session
+mutation Login($username: String!, $password: String!){
+  login(options:{username: $username, password: $password}) {
+    errors{
+      field
+      message
+    }
+    user{
+      ...RegularUser
+    }
+  }
+}
+
+
+# Logs out User and Destroys Cookie and Session
+mutation Logout {
+    logout
+}

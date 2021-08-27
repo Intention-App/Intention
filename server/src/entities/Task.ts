@@ -51,7 +51,7 @@ export default class Task extends BaseEntity {
     @Column({ type: "uuid" })
     tasklistId!: string;
 
-    @ManyToOne(() => Tasklist, tasklist => tasklist.tasks)
+    @ManyToOne(() => Tasklist, tasklist => tasklist.tasks, {onDelete: "CASCADE"})
     tasklist: Tasklist;
 
     @Field()

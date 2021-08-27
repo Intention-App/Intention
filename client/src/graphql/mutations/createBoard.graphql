@@ -1,9 +1,0 @@
-mutation CreateBoard ($title: String) {
-  createBoard(
-    options: {
-      title: $title,
-    }
-  ) {
-      ...RegularBoard
-  }
-}

@@ -1,24 +1,17 @@
 import { Cache, cacheExchange, QueryInput } from "@urql/exchange-graphcache";
 import { createClient, dedupExchange, fetchExchange } from "urql";
 import {
-    ArchiveTaskMutation,
-    CreateEntryMutation,
-    CreateFolderMutation,
-    CreateTaskMutation,
-    DeleteEntryMutation,
+    CreateEntryMutationVariables,
+    CreateFolderMutationVariables,
     DeleteEntryMutationVariables,
-    DeleteFolderMutation,
     DeleteFolderMutationVariables,
-    DeleteTasklistMutation,
     DeleteTasklistMutationVariables,
-    DeleteTaskMutation,
     DeleteTaskMutationVariables,
     LoginMutation,
     LogoutMutation,
     MeDocument,
     MeQuery,
-    RegisterMutation,
-    UpdateTaskMutation
+    RegisterMutation
 } from "../generated/graphql";
 
 function betterUpdateQuery<Result, Query>(
@@ -40,6 +33,7 @@ function invalidateAll(cache: Cache, fieldName: string) {
     });
 }
 
+
 export const urqlClient = createClient({
     url: 'http://localhost:4000/graphql',
     fetchOptions: {
@@ -48,30 +42,11 @@ export const urqlClient = createClient({
     exchanges: [dedupExchange, cacheExchange({
         updates: {
             Mutation: {
-                logout: (_result, args, cache, info) => {
-                    betterUpdateQuery<LogoutMutation, MeQuery>(
-                        cache,
-                        { query: MeDocument },
-                        _result,
-                        () => ({ me: null })
-                    )
-                },
-                login: (_result: LoginMutation, args, cache, info) => {
-                    betterUpdateQuery<LoginMutation, MeQuery>(
-                        cache,
-                        { query: MeDocument },
-                        _result,
-                        (result, query) => {
-                            if (result.login.errors) {
-                                return query;
-                            } else {
-                                return {
-                                    me: result.login.user
-                                }
-                            }
-                        }
-                    )
-                },
+                /*
+                    User Endpoints
+                */
+
+                // Updates cache with new user
                 register: (_result: RegisterMutation, args, cache, info) => {
                     betterUpdateQuery<RegisterMutation, MeQuery>(
                         cache,
@@ -88,44 +63,129 @@ export const urqlClient = createClient({
                         }
                     )
                 },
-                createEntry: (result: CreateEntryMutation, args, cache, info) => {
-                   invalidateAll(cache, "myEntries");
+
+                // Updates cache with new user
+                login: (_result: LoginMutation, args, cache, info) => {
+                    betterUpdateQuery<LoginMutation, MeQuery>(
+                        cache,
+                        { query: MeDocument },
+                        _result,
+                        (result, query) => {
+                            if (result.login.errors) {
+                                return query;
+                            } else {
+                                return {
+                                    me: result.login.user
+                                }
+                            }
+                        }
+                    )
                 },
-                createFolder: (result: CreateFolderMutation, args, cache, info) => {
-                    invalidateAll(cache, "myFolders");
+
+                // Invalidates cached user
+                logout: (_result, args, cache, info) => {
+                    betterUpdateQuery<LogoutMutation, MeQuery>(
+                        cache,
+                        { query: MeDocument },
+                        _result,
+                        () => ({ me: null })
+                    )
                 },
-                deleteEntry: (result: DeleteEntryMutation, args, cache, info) => {
+
+
+                /*
+                    Journal Endpoints
+                */
+
+                // Invalidates all cached entries when new entry is created
+                // Refetches new entries 
+                createEntry: (result, {options}: {options: CreateEntryMutationVariables}, cache, info) => {
+                    if (options.folderId) {
+                        cache.invalidate({
+                            __typename: "Folder",
+                            id: options.folderId
+                        })
+                    }
+                    else {
+                        invalidateAll(cache, "myEntries");
+                    }
+                },
+
+                // Invalidates deleted entry
+                deleteEntry: (result, args, cache, info) => {
                     cache.invalidate({
                         __typename: "Entry",
                         id: (args as DeleteEntryMutationVariables).id
                     })
                 },
-                deleteFolder: (result: DeleteFolderMutation, args, cache, info) => {
+
+                // Invalidates all cached folders when new folder is created
+                // Refetches new folders
+                createFolder: (result, {options}: {options: CreateFolderMutationVariables}, cache, info) => {
+                    if (options.folderId) {
+                        cache.invalidate({
+                            __typename: "Folder",
+                            id: options.folderId
+                        })
+                    }
+                    else {
+                        invalidateAll(cache, "myFolders");
+                    }
+                },
+
+                // Invalidates deleted folder
+                deleteFolder: (result, args, cache, info) => {
                     cache.invalidate({
                         __typename: "Folder",
                         id: (args as DeleteFolderMutationVariables).id
                     })
                 },
-                createTasklist: (_result: UpdateTaskMutation, args, cache, info) => {
+
+
+                /*
+                    Checklist
+                */
+
+                // Invalidates board when it updates
+                // Refetches board
+                updateOrder: (result, args, cache, info) => {
                     invalidateAll(cache, "myBoard");
                 },
-                deleteTasklist: (result: DeleteTasklistMutation, args, cache, info) => {
+
+                // Invalidates board when new tasklist is created
+                // Refetches the board
+                createTasklist: (result, args, cache, info) => {
+                    invalidateAll(cache, "myBoard");
+                },
+
+                // Invalidates deleted tasklist
+                deleteTasklist: (result, args, cache, info) => {
                     cache.invalidate({
                         __typename: "Tasklist",
                         id: (args as DeleteTasklistMutationVariables).id
                     })
                 },
-                createTask: (result: CreateTaskMutation, args, cache, info) => {
+
+                // Invalidates board when new task is created
+                // Refetches the board
+                createTask: (result, args, cache, info) => {
                     invalidateAll(cache, "myBoard");
                 },
-                deleteTask: (result: DeleteTaskMutation, args, cache, info) => {
+
+                // Invalidates deleted task
+                deleteTask: (result, args, cache, info) => {
                     cache.invalidate({
                         __typename: "Task",
                         id: (args as DeleteTaskMutationVariables).id
                     })
                 },
-                archiveTask: (result: ArchiveTaskMutation, args, cache, info) => {
-                    invalidateAll(cache, "myBoard");
+
+                // Invalidates archived task
+                archiveTask: (result, args, cache, info) => {
+                    cache.invalidate({
+                        __typename: "Task",
+                        id: (args as DeleteTaskMutationVariables).id
+                    })
                 },
             }
         }

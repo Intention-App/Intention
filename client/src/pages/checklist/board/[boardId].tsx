@@ -103,7 +103,11 @@ const Checklist: React.FC = ({ }) => {
     ])
 
     // Prompts when page is closed but app is still saving
-    useSavePrompt(board, debounceBoard)
+    useSavePrompt([board, debounceBoard], () => {
+        if (board && data?.myBoard) {
+            updateOrder(toServerBoard(board, data.myBoard));
+        }
+    })
 
     // Redirect to error page if no such data exists
     useEffect(() => {

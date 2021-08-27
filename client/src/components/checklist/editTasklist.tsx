@@ -60,6 +60,8 @@ export const EditTasklist: React.FC<EditTasklistProps> = ({ open, toggleDrawer, 
                 const tasklistIndex = newTasklistOrder.indexOf(tasklist.id)
                 newTasklistOrder.splice(tasklistIndex, 1)
 
+                console.log("yes")
+
                 // Update board state
                 return {
                     ...board,
@@ -68,7 +70,8 @@ export const EditTasklist: React.FC<EditTasklistProps> = ({ open, toggleDrawer, 
             })
 
             // Deletes tasklist in backend too
-            await deleteTasklist({ id: tasklist.id })
+            console.log("no")
+            console.log(await deleteTasklist({ id: tasklist.id }))
         }
 
         // Closes editor

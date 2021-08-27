@@ -45,7 +45,7 @@ class UserResponse {
     Resolver
 */
 
-const relations = ["tasklists", "tasklists.tasks", "tasks", "boards", "boards.tasklists", "boards.tasklists.tasks", "folders", "folders.entries", "entries"];
+const relations: string[] = [/*"tasklists", "tasklists.tasks", "tasks", "boards", "boards.tasklists", "boards.tasklists.tasks", "folders", "folders.entries", "entries"*/];
 
 @Resolver()
 export default class UserResolver {

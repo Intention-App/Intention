@@ -1,32 +1,41 @@
 import _ from "lodash";
 import { useDeepCompareEffect } from "./useDeepCompareEffect";
 
-export const useSavePrompt = (foo: any, bar: any) => {
+export const useSavePrompt = (comparison: [any, any], saveFn?: (...args: any) => any) => {
 
     const unloadFn = (e: BeforeUnloadEvent) => {
 
+        if (saveFn) {
 
-        e = e || window.event;
+            saveFn();
 
-        // For IE and Firefox prior to version 4
-        if (e) {
-            e.returnValue = 'Progress may not be saved, close anyway?';
         }
+        else {
 
-        // For Safari
-        return 'Progress may not be saved, close anyway?';
+            e = e || window.event;
+
+
+            // For IE and Firefox prior to version 4
+            if (e) {
+                e.returnValue = 'Progress may not be saved, close anyway?';
+            }
+
+            // For Safari
+            return 'Progress may not be saved, close anyway?';
+
+        }
 
     }
 
     useDeepCompareEffect(() => {
 
-        if (!_.isEqual(foo, bar)) {
+        if (!_.isEqual(comparison[0], comparison[1])) {
             window.addEventListener('beforeunload', unloadFn);
         }
 
         return () => {
             window.removeEventListener('beforeunload', unloadFn);
         }
-        
-    }, [foo, bar])
+
+    }, [comparison[0], comparison[1]])
 }

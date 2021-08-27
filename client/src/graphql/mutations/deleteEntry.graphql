@@ -1,3 +1,0 @@
-mutation DeleteEntry ($id: String!) {
-    deleteEntry (id: $id)
-}

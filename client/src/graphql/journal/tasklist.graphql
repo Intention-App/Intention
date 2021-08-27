@@ -1,0 +1,46 @@
+### Checklist Kanban Board ###
+
+## Fragments
+fragment RegularTasklist on Tasklist {
+    id
+    title
+    color
+    boardId
+    createdAt
+    updatedAt
+}
+
+
+## Queries Done via Board Relations
+
+
+## Mutations
+
+# Create Tasklist
+mutation createTasklist ($title: String, $color: String, $boardId: String!) {
+  createTasklist(options:{
+    title: $title
+    color: $color
+    boardId: $boardId
+  }) {
+    ...RegularTasklist
+  }
+}
+
+# Update Tasklist
+mutation updateTasklist($id: String!, $title: String, $color: String) {
+  updateTasklist (
+    id: $id,
+    options:{
+        title: $title,
+        color: $color,
+    }
+  ) {
+    ...RegularTasklist
+  }
+}
+
+# Delete Tasklist
+mutation DeleteTasklist ($id: String!) {
+    deleteTasklist (id: $id)
+}

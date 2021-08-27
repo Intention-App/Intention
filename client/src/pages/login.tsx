@@ -36,11 +36,12 @@ const login: React.FC = () => {
                     initialValues={{ username: "", password: "" }}
                     onSubmit={async (values, { setErrors }) => {
                         const response = await login(values);
-                        if (response.data?.login?.errors) {
-                            setErrors(toErrorMap(response.data.login.errors))
-                        }
-                        else if (response.data?.login?.user) {
+                        console.log(response)
+                        if (response.data?.login?.user) {
                             router.push("/dashboard")
+                        }
+                        else if (response.data?.login?.errors) {
+                            setErrors(toErrorMap(response.data.login.errors))
                         }
                     }}
                 >

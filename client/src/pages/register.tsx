@@ -61,11 +61,11 @@ const register: React.FC = () => {
                             password: values.password,
                             email: values.email
                         });
-                        if (response.data?.register?.errors) {
-                            setErrors(toErrorMap(response.data.register.errors))
-                        }
-                        else if (response.data?.register?.user) {
+                        if (response.data?.register?.user) {
                             router.push("/dashboard")
+                        }
+                        else if (response.data?.register?.errors) {
+                            setErrors(toErrorMap(response.data.register.errors))
                         }
                     }}
                 >

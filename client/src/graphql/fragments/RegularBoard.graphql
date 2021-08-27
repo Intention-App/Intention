@@ -1,6 +1,0 @@
-fragment RegularBoard on Board {
-    id
-    title
-    createdAt
-    updatedAt
-}

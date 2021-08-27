@@ -1,8 +1,0 @@
-fragment RegularTasklist on Tasklist {
-    id
-    title
-    color
-    boardId
-    createdAt
-    updatedAt
-}

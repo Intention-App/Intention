@@ -1,5 +1,0 @@
-query myEntries ($rootFolderId: String) {
-  myEntries (rootFolderId: $rootFolderId) {
-    ...RegularEntry
-  }
-}

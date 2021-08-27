@@ -1,5 +1,0 @@
-query myFolders ($rootFolderId: String) {
-  myFolders (rootFolderId: $rootFolderId) {
-    ...RegularFolder
-  }
-}

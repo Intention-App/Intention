@@ -92,7 +92,9 @@ export default class TasklistResolver {
     ): Promise<Boolean> {
         try {
             // Find specific tasklist
-            const tasklist = await Tasklist.findOne({ where: { id, userId: req.session.userId } });
+            const tasklist = await Tasklist.findOne({ where: { id, userId: req.session.userId }, relations: ["board"] });
+
+            console.log(tasklist);
 
             if (!tasklist) return false; // No tasklist was found
 
@@ -104,7 +106,7 @@ export default class TasklistResolver {
             await Board.update({ id: tasklist.boardId }, { tasklistOrder: tasklist.board.tasklistOrder });
             await Tasklist.delete({ id })
         }
-        catch { return false; }
+        catch (err) { console.log(err); return false; }
         return true;
     }
 

@@ -1,0 +1,68 @@
+### Checklist Kanban Board ###
+
+## Fragments
+fragment RegularTask on Task {
+    id
+    title
+    description
+    dueAt
+    archivedAt
+    tasklistId
+    boardId
+    createdAt
+    updatedAt
+}
+
+
+## Queries Done via Board Relations
+
+
+## Mutations
+
+# Create Task
+mutation createTask(
+  $title: String,
+  $dueAt: DateTime,
+  $description: String,
+  $tasklistId: String!
+  ) {
+  createTask(
+    options:{
+      title: $title,
+      dueAt: $dueAt,
+      description: $description,
+      tasklistId: $tasklistId
+    }) {
+    ...RegularTask
+  }
+}
+
+# Update Task
+mutation updateTask(
+  $id: String!,
+  $title: String,
+  $dueAt: DateTime,
+  $description: String,
+  ) {
+  updateTask(
+    id: $id,
+    options:{
+      title: $title,
+      dueAt: $dueAt,
+      description: $description,
+    }) {
+    ...RegularTask
+  }
+}
+
+# Archive Task
+mutation ArchiveTask ($id: String!, $archive: Boolean) {
+  archiveTask(id: $id, archive: $archive) {
+    id
+  }
+}
+
+# Delete Task
+mutation DeleteTask ($id: String!) {
+    deleteTask (id: $id)
+}
