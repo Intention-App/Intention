@@ -1,20 +1,27 @@
-import { Button, Paper } from "@material-ui/core";
+import Box from "@material-ui/core/Box";
 import { Formik, Form } from "formik";
 import { useRouter } from "next/router";
 import React from "react";
-import { Container } from "../components/util/container";
-import { InputField } from "../components/util/InputField";
 import { useLoginMutation } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
+import { RegisterInput } from "../components/user/RegisterInput";
+import { RegisterButton } from "../components/user/RegisterButton";
+import theme from "../styles/theme";
+import { Divider } from "../components/util/divider";
+import Link from "next/link";
 
-const validateName = (value: string): string | undefined => {
+// Validation functions, checks if first email value is valid
+const validateEmail = (value: string): string | undefined => {
     let error;
     if (!value) {
-        error = "*required"
+        error = "Email required"
+    } else if (!/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/.test(value)) {
+        error = "Invalid email"
     }
     return error;
 }
 
+// Validation functions, checks if first password value is valid
 const validatePass = (value: string): string | undefined => {
     let error;
     if (!value) {
@@ -25,58 +32,80 @@ const validatePass = (value: string): string | undefined => {
 
 const login: React.FC = () => {
 
+    // Router for later
     const router = useRouter();
+
+    // Login operation for later
     const [{ fetching }, login] = useLoginMutation();
 
     return (
-        <Container align="center" style={{ minHeight: "100vh" }}>
-            <p style={{ color: "var(--secondary)" }}>Sign in to your account</p>
-            <Paper elevation={4} style={{ padding: 16, minHeight: 300, minWidth: 400 }}>
-                <Formik
-                    initialValues={{ username: "", password: "" }}
-                    onSubmit={async (values, { setErrors }) => {
-                        const response = await login(values);
-                        console.log(response)
-                        if (response.data?.login?.user) {
-                            router.push("/dashboard")
-                        }
-                        else if (response.data?.login?.errors) {
-                            setErrors(toErrorMap(response.data.login.errors))
-                        }
-                    }}
-                >
-                    <Form>
-                        <InputField
-                            label="Username"
-                            name="username"
-                            validate={validateName}
-                            helper="*required"
-                            autoComplete="off"
-                            required
-                        />
-                        <InputField
-                            type="password"
-                            label="Password"
-                            name="password"
-                            validate={validatePass}
-                            helper="*required"
-                            autoComplete="off"
-                            required
-                        />
+        // Box to center align content
+        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100vh">
 
-                        <Button
-                            type="submit"
-                            color="primary"
-                            variant="contained"
-                            style={{ marginTop: 16 }}
-                            disabled={fetching}
-                        >
-                            Log In
-                        </Button>
+            {/* Sign up header */}
+            <h1 style={{ color: "var(--title)", marginBottom: 24 }}>Log in</h1>
+
+            {/* Formik form */}
+            <Formik
+
+                // Form fields
+                initialValues={{ email: "", password: "" }}
+
+                onSubmit={async (values, { setErrors }) => {
+
+                    // Login in backend
+                    const response = await login(values);
+
+                    // Reroutes to dashboard if valid, set input errors if not
+                    if (response.data?.login?.user) {
+                        router.push("/dashboard")
+                    }
+                    else if (response.data?.login?.errors) {
+                        setErrors(toErrorMap(response.data.login.errors))
+                    }
+                }}
+            >
+                {(values) => (
+                    <Form>
+
+                        {/* Box center aligns values */}
+                        <Box display="flex" alignItems="center" flexDirection="column">
+
+                            {/*
+                                Input Fields
+                            */}
+
+                            <RegisterInput
+                                type="email"
+                                label="Email"
+                                name="email"
+                                validate={validateEmail}
+                                required
+                            />
+                            <RegisterInput
+                                type="password"
+                                label="Password"
+                                name="password"
+                                validate={validatePass}
+                                required
+                            />
+
+                            {/* Submits form, disabled when submitting */}
+                            <RegisterButton
+                                disabled={fetching}
+                            >
+                                Log In
+                            </RegisterButton>
+                        </Box>
                     </Form>
-                </Formik>
-            </Paper>
-        </Container>
+                )}
+            </Formik>
+
+            {/* Divider and registration link */}
+            <Divider length={250} marginTop={4} marginBottom={2} />
+
+            <Link href="/register"><a style={{ color: theme.palette.primary.main }}>Create a new account</a></Link>
+        </Box>
     );
 };
 

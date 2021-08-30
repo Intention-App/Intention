@@ -16,15 +16,28 @@ const main = async () => {
 
     // Initialize Postgres database
     const entities = await getEntities();
-    await createConnection({
-        type: "postgres",
-        database: "intention",
-        username: process.env.USER,
-        password: process.env.PASSWORD,
-        logging: true,
-        synchronize: true,
-        entities: entities
-    });
+
+    if (process.env.DATABASE_URL) {
+        // Initialize with hosted database url
+        await createConnection({
+            type: "postgres",
+            url: process.env.DATABASE_URL,
+            logging: true,
+            synchronize: true,
+            entities: entities,
+        });
+    } else {
+        // Initialize with local database
+        await createConnection({
+            type: "postgres",
+            database: "intention",
+            username: process.env.USER,
+            password: process.env.PASSWORD,
+            logging: true,
+            synchronize: true,
+            entities: entities,
+        });
+    }
 
     const app = express();
 

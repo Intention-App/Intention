@@ -17,10 +17,15 @@ export default class User extends BaseEntity {
     @PrimaryGeneratedColumn("uuid")
     id!: string;
 
-    // Display username of the user
+    // First name of the user
     @Field()
-    @Column({ unique: true })
-    username!: string;
+    @Column()
+    firstName!: string;
+
+    // Last name of the user
+    @Field()
+    @Column()
+    lastName!: string;
 
     // Registered email of ther user
     @Field()

@@ -3,7 +3,7 @@ body {
   padding: 0;
   margin: 0;
   font-family: "Roboto", Arial, Helvetica, sans-serif;
-  color: #130f26;
+  color: #6D6D6D;
 }
 
 a {
@@ -16,6 +16,7 @@ a {
   margin: 0;
   --primary: #5c5967;
   --secondary: #85838e;
+  --title: #000000;
   --bg-primary: #ffffff;
   --bg-secondary: #f9f9f9;
   --bg-hover: #d5d5d5;

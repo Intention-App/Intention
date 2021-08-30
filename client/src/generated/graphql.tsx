@@ -87,7 +87,7 @@ export type FolderOptionsInput = {
 
 
 export type LoginInput = {
-  username: Scalars['String'];
+  email: Scalars['String'];
   password: Scalars['String'];
 };
 
@@ -346,7 +346,8 @@ export type QueryUserArgs = {
 };
 
 export type RegisterInput = {
-  username: Scalars['String'];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
   email: Scalars['String'];
   password: Scalars['String'];
 };
@@ -395,7 +396,8 @@ export type TasklistOptionsInput = {
 export type User = {
   __typename?: 'User';
   id: Scalars['String'];
-  username: Scalars['String'];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
   email: Scalars['String'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
@@ -417,315 +419,14 @@ export type RegularBoardFragment = (
   & Pick<Board, 'id' | 'title' | 'createdAt' | 'updatedAt'>
 );
 
-export type RegularEntryFragment = (
-  { __typename?: 'Entry' }
-  & Pick<Entry, 'id' | 'title' | 'content' | 'rootFolderId' | 'createdAt' | 'updatedAt'>
-);
+export type MyBoardsQueryVariables = Exact<{ [key: string]: never; }>;
 
-export type RegularFolderFragment = (
-  { __typename?: 'Folder' }
-  & Pick<Folder, 'id' | 'title' | 'rootFolderId' | 'createdAt' | 'updatedAt'>
-);
 
-export type RegularTaskFragment = (
-  { __typename?: 'Task' }
-  & Pick<Task, 'id' | 'title' | 'description' | 'dueAt' | 'archivedAt' | 'tasklistId' | 'boardId' | 'createdAt' | 'updatedAt'>
-);
-
-export type RegularTasklistFragment = (
-  { __typename?: 'Tasklist' }
-  & Pick<Tasklist, 'id' | 'title' | 'color' | 'boardId' | 'createdAt' | 'updatedAt'>
-);
-
-export type RegularUserFragment = (
-  { __typename?: 'User' }
-  & Pick<User, 'id' | 'username'>
-);
-
-export type ArchiveTaskMutationVariables = Exact<{
-  id: Scalars['String'];
-  archive?: Maybe<Scalars['Boolean']>;
-}>;
-
-
-export type ArchiveTaskMutation = (
-  { __typename?: 'Mutation' }
-  & { archiveTask?: Maybe<(
-    { __typename?: 'Task' }
-    & Pick<Task, 'id'>
-  )> }
-);
-
-export type CreateBoardMutationVariables = Exact<{
-  title?: Maybe<Scalars['String']>;
-}>;
-
-
-export type CreateBoardMutation = (
-  { __typename?: 'Mutation' }
-  & { createBoard: (
-    { __typename?: 'Board' }
-    & RegularBoardFragment
-  ) }
-);
-
-export type CreateEntryMutationVariables = Exact<{
-  title?: Maybe<Scalars['String']>;
-  content?: Maybe<Scalars['JSON']>;
-  folderId?: Maybe<Scalars['String']>;
-}>;
-
-
-export type CreateEntryMutation = (
-  { __typename?: 'Mutation' }
-  & { createEntry: (
-    { __typename?: 'Entry' }
-    & RegularEntryFragment
-  ) }
-);
-
-export type CreateFolderMutationVariables = Exact<{
-  title?: Maybe<Scalars['String']>;
-  folderId?: Maybe<Scalars['String']>;
-}>;
-
-
-export type CreateFolderMutation = (
-  { __typename?: 'Mutation' }
-  & { createFolder: (
-    { __typename?: 'Folder' }
-    & RegularFolderFragment
-  ) }
-);
-
-export type CreateTaskMutationVariables = Exact<{
-  title?: Maybe<Scalars['String']>;
-  dueAt?: Maybe<Scalars['DateTime']>;
-  description?: Maybe<Scalars['String']>;
-  tasklistId: Scalars['String'];
-}>;
-
-
-export type CreateTaskMutation = (
-  { __typename?: 'Mutation' }
-  & { createTask: (
-    { __typename?: 'Task' }
-    & RegularTaskFragment
-  ) }
-);
-
-export type CreateTasklistMutationVariables = Exact<{
-  title?: Maybe<Scalars['String']>;
-  color?: Maybe<Scalars['String']>;
-  boardId: Scalars['String'];
-}>;
-
-
-export type CreateTasklistMutation = (
-  { __typename?: 'Mutation' }
-  & { createTasklist: (
-    { __typename?: 'Tasklist' }
-    & RegularTasklistFragment
-  ) }
-);
-
-export type DeleteBoardMutationVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-
-export type DeleteBoardMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<Mutation, 'deleteBoard'>
-);
-
-export type DeleteEntryMutationVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-
-export type DeleteEntryMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<Mutation, 'deleteEntry'>
-);
-
-export type DeleteFolderMutationVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-
-export type DeleteFolderMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<Mutation, 'deleteFolder'>
-);
-
-export type DeleteTaskMutationVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-
-export type DeleteTaskMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<Mutation, 'deleteTask'>
-);
-
-export type DeleteTasklistMutationVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-
-export type DeleteTasklistMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<Mutation, 'deleteTasklist'>
-);
-
-export type LoginMutationVariables = Exact<{
-  username: Scalars['String'];
-  password: Scalars['String'];
-}>;
-
-
-export type LoginMutation = (
-  { __typename?: 'Mutation' }
-  & { login: (
-    { __typename?: 'UserResponse' }
-    & { errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & Pick<FieldError, 'field' | 'message'>
-    )>>, user?: Maybe<(
-      { __typename?: 'User' }
-      & RegularUserFragment
-    )> }
-  ) }
-);
-
-export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type LogoutMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<Mutation, 'logout'>
-);
-
-export type RegisterMutationVariables = Exact<{
-  username: Scalars['String'];
-  email: Scalars['String'];
-  password: Scalars['String'];
-}>;
-
-
-export type RegisterMutation = (
-  { __typename?: 'Mutation' }
-  & { register: (
-    { __typename?: 'UserResponse' }
-    & { errors?: Maybe<Array<(
-      { __typename?: 'FieldError' }
-      & Pick<FieldError, 'field' | 'message'>
-    )>>, user?: Maybe<(
-      { __typename?: 'User' }
-      & RegularUserFragment
-    )> }
-  ) }
-);
-
-export type UpdateBoardMutationVariables = Exact<{
-  id: Scalars['String'];
-  title?: Maybe<Scalars['String']>;
-}>;
-
-
-export type UpdateBoardMutation = (
-  { __typename?: 'Mutation' }
-  & { updateBoard: (
-    { __typename?: 'Board' }
-    & RegularBoardFragment
-  ) }
-);
-
-export type UpdateEntryMutationVariables = Exact<{
-  id: Scalars['String'];
-  title?: Maybe<Scalars['String']>;
-  content?: Maybe<Scalars['JSON']>;
-}>;
-
-
-export type UpdateEntryMutation = (
-  { __typename?: 'Mutation' }
-  & { updateEntry: (
-    { __typename?: 'Entry' }
-    & RegularEntryFragment
-  ) }
-);
-
-export type UpdateFolderMutationVariables = Exact<{
-  id: Scalars['String'];
-  title?: Maybe<Scalars['String']>;
-  folderId?: Maybe<Scalars['String']>;
-}>;
-
-
-export type UpdateFolderMutation = (
-  { __typename?: 'Mutation' }
-  & { updateFolder: (
-    { __typename?: 'Folder' }
-    & RegularFolderFragment
-  ) }
-);
-
-export type UpdateOrderMutationVariables = Exact<{
-  id: Scalars['String'];
-  tasklists: Array<TasklistInput> | TasklistInput;
-  tasklistOrder?: Maybe<Array<Scalars['String']> | Scalars['String']>;
-}>;
-
-
-export type UpdateOrderMutation = (
-  { __typename?: 'Mutation' }
-  & { updateOrder: (
-    { __typename?: 'Board' }
-    & RegularBoardFragment
-  ) }
-);
-
-export type UpdateTaskMutationVariables = Exact<{
-  id: Scalars['String'];
-  title?: Maybe<Scalars['String']>;
-  dueAt?: Maybe<Scalars['DateTime']>;
-  description?: Maybe<Scalars['String']>;
-}>;
-
-
-export type UpdateTaskMutation = (
-  { __typename?: 'Mutation' }
-  & { updateTask: (
-    { __typename?: 'Task' }
-    & RegularTaskFragment
-  ) }
-);
-
-export type UpdateTasklistMutationVariables = Exact<{
-  id: Scalars['String'];
-  title?: Maybe<Scalars['String']>;
-  color?: Maybe<Scalars['String']>;
-}>;
-
-
-export type UpdateTasklistMutation = (
-  { __typename?: 'Mutation' }
-  & { updateTasklist: (
-    { __typename?: 'Tasklist' }
-    & RegularTasklistFragment
-  ) }
-);
-
-export type MeQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MeQuery = (
+export type MyBoardsQuery = (
   { __typename?: 'Query' }
-  & { me?: Maybe<(
-    { __typename?: 'User' }
-    & RegularUserFragment
+  & { myBoards: Array<(
+    { __typename?: 'Board' }
+    & RegularBoardFragment
   )> }
 );
 
@@ -751,15 +452,122 @@ export type MyBoardQuery = (
   ) }
 );
 
-export type MyBoardsQueryVariables = Exact<{ [key: string]: never; }>;
+export type CreateBoardMutationVariables = Exact<{
+  title?: Maybe<Scalars['String']>;
+}>;
 
 
-export type MyBoardsQuery = (
-  { __typename?: 'Query' }
-  & { myBoards: Array<(
+export type CreateBoardMutation = (
+  { __typename?: 'Mutation' }
+  & { createBoard: (
     { __typename?: 'Board' }
     & RegularBoardFragment
+  ) }
+);
+
+export type UpdateBoardMutationVariables = Exact<{
+  id: Scalars['String'];
+  title?: Maybe<Scalars['String']>;
+}>;
+
+
+export type UpdateBoardMutation = (
+  { __typename?: 'Mutation' }
+  & { updateBoard: (
+    { __typename?: 'Board' }
+    & RegularBoardFragment
+  ) }
+);
+
+export type UpdateOrderMutationVariables = Exact<{
+  id: Scalars['String'];
+  tasklists: Array<TasklistInput> | TasklistInput;
+  tasklistOrder?: Maybe<Array<Scalars['String']> | Scalars['String']>;
+}>;
+
+
+export type UpdateOrderMutation = (
+  { __typename?: 'Mutation' }
+  & { updateOrder: (
+    { __typename?: 'Board' }
+    & RegularBoardFragment
+  ) }
+);
+
+export type DeleteBoardMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteBoardMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteBoard'>
+);
+
+export type RegularTaskFragment = (
+  { __typename?: 'Task' }
+  & Pick<Task, 'id' | 'title' | 'description' | 'dueAt' | 'archivedAt' | 'tasklistId' | 'boardId' | 'createdAt' | 'updatedAt'>
+);
+
+export type CreateTaskMutationVariables = Exact<{
+  title?: Maybe<Scalars['String']>;
+  dueAt?: Maybe<Scalars['DateTime']>;
+  description?: Maybe<Scalars['String']>;
+  tasklistId: Scalars['String'];
+}>;
+
+
+export type CreateTaskMutation = (
+  { __typename?: 'Mutation' }
+  & { createTask: (
+    { __typename?: 'Task' }
+    & RegularTaskFragment
+  ) }
+);
+
+export type UpdateTaskMutationVariables = Exact<{
+  id: Scalars['String'];
+  title?: Maybe<Scalars['String']>;
+  dueAt?: Maybe<Scalars['DateTime']>;
+  description?: Maybe<Scalars['String']>;
+}>;
+
+
+export type UpdateTaskMutation = (
+  { __typename?: 'Mutation' }
+  & { updateTask: (
+    { __typename?: 'Task' }
+    & RegularTaskFragment
+  ) }
+);
+
+export type ArchiveTaskMutationVariables = Exact<{
+  id: Scalars['String'];
+  archive?: Maybe<Scalars['Boolean']>;
+}>;
+
+
+export type ArchiveTaskMutation = (
+  { __typename?: 'Mutation' }
+  & { archiveTask?: Maybe<(
+    { __typename?: 'Task' }
+    & Pick<Task, 'id'>
   )> }
+);
+
+export type DeleteTaskMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteTaskMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteTask'>
+);
+
+export type RegularEntryFragment = (
+  { __typename?: 'Entry' }
+  & Pick<Entry, 'id' | 'title' | 'content' | 'rootFolderId' | 'createdAt' | 'updatedAt'>
 );
 
 export type MyEntriesQueryVariables = Exact<{
@@ -788,6 +596,64 @@ export type MyEntryQuery = (
   ) }
 );
 
+export type CreateEntryMutationVariables = Exact<{
+  title?: Maybe<Scalars['String']>;
+  content?: Maybe<Scalars['JSON']>;
+  folderId?: Maybe<Scalars['String']>;
+}>;
+
+
+export type CreateEntryMutation = (
+  { __typename?: 'Mutation' }
+  & { createEntry: (
+    { __typename?: 'Entry' }
+    & RegularEntryFragment
+  ) }
+);
+
+export type UpdateEntryMutationVariables = Exact<{
+  id: Scalars['String'];
+  title?: Maybe<Scalars['String']>;
+  content?: Maybe<Scalars['JSON']>;
+}>;
+
+
+export type UpdateEntryMutation = (
+  { __typename?: 'Mutation' }
+  & { updateEntry: (
+    { __typename?: 'Entry' }
+    & RegularEntryFragment
+  ) }
+);
+
+export type DeleteEntryMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteEntryMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteEntry'>
+);
+
+export type RegularFolderFragment = (
+  { __typename?: 'Folder' }
+  & Pick<Folder, 'id' | 'title' | 'rootFolderId' | 'createdAt' | 'updatedAt'>
+);
+
+export type MyFoldersQueryVariables = Exact<{
+  rootFolderId?: Maybe<Scalars['String']>;
+}>;
+
+
+export type MyFoldersQuery = (
+  { __typename?: 'Query' }
+  & { myFolders: Array<(
+    { __typename?: 'Folder' }
+    & RegularFolderFragment
+  )> }
+);
+
 export type MyFolderQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -808,23 +674,173 @@ export type MyFolderQuery = (
   ) }
 );
 
-export type MyFoldersQueryVariables = Exact<{
-  rootFolderId?: Maybe<Scalars['String']>;
+export type CreateFolderMutationVariables = Exact<{
+  title?: Maybe<Scalars['String']>;
+  folderId?: Maybe<Scalars['String']>;
 }>;
 
 
-export type MyFoldersQuery = (
-  { __typename?: 'Query' }
-  & { myFolders: Array<(
+export type CreateFolderMutation = (
+  { __typename?: 'Mutation' }
+  & { createFolder: (
     { __typename?: 'Folder' }
     & RegularFolderFragment
+  ) }
+);
+
+export type UpdateFolderMutationVariables = Exact<{
+  id: Scalars['String'];
+  title?: Maybe<Scalars['String']>;
+  folderId?: Maybe<Scalars['String']>;
+}>;
+
+
+export type UpdateFolderMutation = (
+  { __typename?: 'Mutation' }
+  & { updateFolder: (
+    { __typename?: 'Folder' }
+    & RegularFolderFragment
+  ) }
+);
+
+export type DeleteFolderMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteFolderMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteFolder'>
+);
+
+export type RegularTasklistFragment = (
+  { __typename?: 'Tasklist' }
+  & Pick<Tasklist, 'id' | 'title' | 'color' | 'boardId' | 'createdAt' | 'updatedAt'>
+);
+
+export type CreateTasklistMutationVariables = Exact<{
+  title?: Maybe<Scalars['String']>;
+  color?: Maybe<Scalars['String']>;
+  boardId: Scalars['String'];
+}>;
+
+
+export type CreateTasklistMutation = (
+  { __typename?: 'Mutation' }
+  & { createTasklist: (
+    { __typename?: 'Tasklist' }
+    & RegularTasklistFragment
+  ) }
+);
+
+export type UpdateTasklistMutationVariables = Exact<{
+  id: Scalars['String'];
+  title?: Maybe<Scalars['String']>;
+  color?: Maybe<Scalars['String']>;
+}>;
+
+
+export type UpdateTasklistMutation = (
+  { __typename?: 'Mutation' }
+  & { updateTasklist: (
+    { __typename?: 'Tasklist' }
+    & RegularTasklistFragment
+  ) }
+);
+
+export type DeleteTasklistMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteTasklistMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteTasklist'>
+);
+
+export type RegularUserFragment = (
+  { __typename?: 'User' }
+  & Pick<User, 'id' | 'firstName' | 'lastName'>
+);
+
+export type MeQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeQuery = (
+  { __typename?: 'Query' }
+  & { me?: Maybe<(
+    { __typename?: 'User' }
+    & RegularUserFragment
   )> }
+);
+
+export type RegisterMutationVariables = Exact<{
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  email: Scalars['String'];
+  password: Scalars['String'];
+}>;
+
+
+export type RegisterMutation = (
+  { __typename?: 'Mutation' }
+  & { register: (
+    { __typename?: 'UserResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>>, user?: Maybe<(
+      { __typename?: 'User' }
+      & RegularUserFragment
+    )> }
+  ) }
+);
+
+export type LoginMutationVariables = Exact<{
+  email: Scalars['String'];
+  password: Scalars['String'];
+}>;
+
+
+export type LoginMutation = (
+  { __typename?: 'Mutation' }
+  & { login: (
+    { __typename?: 'UserResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>>, user?: Maybe<(
+      { __typename?: 'User' }
+      & RegularUserFragment
+    )> }
+  ) }
+);
+
+export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LogoutMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'logout'>
 );
 
 export const RegularBoardFragmentDoc = gql`
     fragment RegularBoard on Board {
   id
   title
+  createdAt
+  updatedAt
+}
+    `;
+export const RegularTaskFragmentDoc = gql`
+    fragment RegularTask on Task {
+  id
+  title
+  description
+  dueAt
+  archivedAt
+  tasklistId
+  boardId
   createdAt
   updatedAt
 }
@@ -848,19 +864,6 @@ export const RegularFolderFragmentDoc = gql`
   updatedAt
 }
     `;
-export const RegularTaskFragmentDoc = gql`
-    fragment RegularTask on Task {
-  id
-  title
-  description
-  dueAt
-  archivedAt
-  tasklistId
-  boardId
-  createdAt
-  updatedAt
-}
-    `;
 export const RegularTasklistFragmentDoc = gql`
     fragment RegularTasklist on Tasklist {
   id
@@ -874,244 +877,20 @@ export const RegularTasklistFragmentDoc = gql`
 export const RegularUserFragmentDoc = gql`
     fragment RegularUser on User {
   id
-  username
+  firstName
+  lastName
 }
     `;
-export const ArchiveTaskDocument = gql`
-    mutation ArchiveTask($id: String!, $archive: Boolean) {
-  archiveTask(id: $id, archive: $archive) {
-    id
-  }
-}
-    `;
-
-export function useArchiveTaskMutation() {
-  return Urql.useMutation<ArchiveTaskMutation, ArchiveTaskMutationVariables>(ArchiveTaskDocument);
-};
-export const CreateBoardDocument = gql`
-    mutation CreateBoard($title: String) {
-  createBoard(options: {title: $title}) {
+export const MyBoardsDocument = gql`
+    query MyBoards {
+  myBoards {
     ...RegularBoard
   }
 }
     ${RegularBoardFragmentDoc}`;
 
-export function useCreateBoardMutation() {
-  return Urql.useMutation<CreateBoardMutation, CreateBoardMutationVariables>(CreateBoardDocument);
-};
-export const CreateEntryDocument = gql`
-    mutation CreateEntry($title: String, $content: JSON, $folderId: String) {
-  createEntry(options: {title: $title, content: $content, folderId: $folderId}) {
-    ...RegularEntry
-  }
-}
-    ${RegularEntryFragmentDoc}`;
-
-export function useCreateEntryMutation() {
-  return Urql.useMutation<CreateEntryMutation, CreateEntryMutationVariables>(CreateEntryDocument);
-};
-export const CreateFolderDocument = gql`
-    mutation CreateFolder($title: String, $folderId: String) {
-  createFolder(options: {title: $title, folderId: $folderId}) {
-    ...RegularFolder
-  }
-}
-    ${RegularFolderFragmentDoc}`;
-
-export function useCreateFolderMutation() {
-  return Urql.useMutation<CreateFolderMutation, CreateFolderMutationVariables>(CreateFolderDocument);
-};
-export const CreateTaskDocument = gql`
-    mutation createTask($title: String, $dueAt: DateTime, $description: String, $tasklistId: String!) {
-  createTask(
-    options: {title: $title, dueAt: $dueAt, description: $description, tasklistId: $tasklistId}
-  ) {
-    ...RegularTask
-  }
-}
-    ${RegularTaskFragmentDoc}`;
-
-export function useCreateTaskMutation() {
-  return Urql.useMutation<CreateTaskMutation, CreateTaskMutationVariables>(CreateTaskDocument);
-};
-export const CreateTasklistDocument = gql`
-    mutation createTasklist($title: String, $color: String, $boardId: String!) {
-  createTasklist(options: {title: $title, color: $color, boardId: $boardId}) {
-    ...RegularTasklist
-  }
-}
-    ${RegularTasklistFragmentDoc}`;
-
-export function useCreateTasklistMutation() {
-  return Urql.useMutation<CreateTasklistMutation, CreateTasklistMutationVariables>(CreateTasklistDocument);
-};
-export const DeleteBoardDocument = gql`
-    mutation DeleteBoard($id: String!) {
-  deleteBoard(id: $id)
-}
-    `;
-
-export function useDeleteBoardMutation() {
-  return Urql.useMutation<DeleteBoardMutation, DeleteBoardMutationVariables>(DeleteBoardDocument);
-};
-export const DeleteEntryDocument = gql`
-    mutation DeleteEntry($id: String!) {
-  deleteEntry(id: $id)
-}
-    `;
-
-export function useDeleteEntryMutation() {
-  return Urql.useMutation<DeleteEntryMutation, DeleteEntryMutationVariables>(DeleteEntryDocument);
-};
-export const DeleteFolderDocument = gql`
-    mutation DeleteFolder($id: String!) {
-  deleteFolder(id: $id)
-}
-    `;
-
-export function useDeleteFolderMutation() {
-  return Urql.useMutation<DeleteFolderMutation, DeleteFolderMutationVariables>(DeleteFolderDocument);
-};
-export const DeleteTaskDocument = gql`
-    mutation DeleteTask($id: String!) {
-  deleteTask(id: $id)
-}
-    `;
-
-export function useDeleteTaskMutation() {
-  return Urql.useMutation<DeleteTaskMutation, DeleteTaskMutationVariables>(DeleteTaskDocument);
-};
-export const DeleteTasklistDocument = gql`
-    mutation DeleteTasklist($id: String!) {
-  deleteTasklist(id: $id)
-}
-    `;
-
-export function useDeleteTasklistMutation() {
-  return Urql.useMutation<DeleteTasklistMutation, DeleteTasklistMutationVariables>(DeleteTasklistDocument);
-};
-export const LoginDocument = gql`
-    mutation Login($username: String!, $password: String!) {
-  login(options: {username: $username, password: $password}) {
-    errors {
-      field
-      message
-    }
-    user {
-      ...RegularUser
-    }
-  }
-}
-    ${RegularUserFragmentDoc}`;
-
-export function useLoginMutation() {
-  return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
-};
-export const LogoutDocument = gql`
-    mutation Logout {
-  logout
-}
-    `;
-
-export function useLogoutMutation() {
-  return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
-};
-export const RegisterDocument = gql`
-    mutation Register($username: String!, $email: String!, $password: String!) {
-  register(options: {username: $username, email: $email, password: $password}) {
-    errors {
-      field
-      message
-    }
-    user {
-      ...RegularUser
-    }
-  }
-}
-    ${RegularUserFragmentDoc}`;
-
-export function useRegisterMutation() {
-  return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
-};
-export const UpdateBoardDocument = gql`
-    mutation UpdateBoard($id: String!, $title: String) {
-  updateBoard(id: $id, options: {title: $title}) {
-    ...RegularBoard
-  }
-}
-    ${RegularBoardFragmentDoc}`;
-
-export function useUpdateBoardMutation() {
-  return Urql.useMutation<UpdateBoardMutation, UpdateBoardMutationVariables>(UpdateBoardDocument);
-};
-export const UpdateEntryDocument = gql`
-    mutation UpdateEntry($id: String!, $title: String, $content: JSON) {
-  updateEntry(id: $id, options: {title: $title, content: $content}) {
-    ...RegularEntry
-  }
-}
-    ${RegularEntryFragmentDoc}`;
-
-export function useUpdateEntryMutation() {
-  return Urql.useMutation<UpdateEntryMutation, UpdateEntryMutationVariables>(UpdateEntryDocument);
-};
-export const UpdateFolderDocument = gql`
-    mutation UpdateFolder($id: String!, $title: String, $folderId: String) {
-  updateFolder(id: $id, options: {title: $title, folderId: $folderId}) {
-    ...RegularFolder
-  }
-}
-    ${RegularFolderFragmentDoc}`;
-
-export function useUpdateFolderMutation() {
-  return Urql.useMutation<UpdateFolderMutation, UpdateFolderMutationVariables>(UpdateFolderDocument);
-};
-export const UpdateOrderDocument = gql`
-    mutation updateOrder($id: String!, $tasklists: [TasklistInput!]!, $tasklistOrder: [String!]) {
-  updateOrder(id: $id, tasklists: $tasklists, tasklistOrder: $tasklistOrder) {
-    ...RegularBoard
-  }
-}
-    ${RegularBoardFragmentDoc}`;
-
-export function useUpdateOrderMutation() {
-  return Urql.useMutation<UpdateOrderMutation, UpdateOrderMutationVariables>(UpdateOrderDocument);
-};
-export const UpdateTaskDocument = gql`
-    mutation updateTask($id: String!, $title: String, $dueAt: DateTime, $description: String) {
-  updateTask(
-    id: $id
-    options: {title: $title, dueAt: $dueAt, description: $description}
-  ) {
-    ...RegularTask
-  }
-}
-    ${RegularTaskFragmentDoc}`;
-
-export function useUpdateTaskMutation() {
-  return Urql.useMutation<UpdateTaskMutation, UpdateTaskMutationVariables>(UpdateTaskDocument);
-};
-export const UpdateTasklistDocument = gql`
-    mutation updateTasklist($id: String!, $title: String, $color: String) {
-  updateTasklist(id: $id, options: {title: $title, color: $color}) {
-    ...RegularTasklist
-  }
-}
-    ${RegularTasklistFragmentDoc}`;
-
-export function useUpdateTasklistMutation() {
-  return Urql.useMutation<UpdateTasklistMutation, UpdateTasklistMutationVariables>(UpdateTasklistDocument);
-};
-export const MeDocument = gql`
-    query Me {
-  me {
-    ...RegularUser
-  }
-}
-    ${RegularUserFragmentDoc}`;
-
-export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
+export function useMyBoardsQuery(options: Omit<Urql.UseQueryArgs<MyBoardsQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<MyBoardsQuery>({ query: MyBoardsDocument, ...options });
 };
 export const MyBoardDocument = gql`
     query myBoard($id: String!) {
@@ -1134,16 +913,94 @@ ${RegularTasklistFragmentDoc}`;
 export function useMyBoardQuery(options: Omit<Urql.UseQueryArgs<MyBoardQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MyBoardQuery>({ query: MyBoardDocument, ...options });
 };
-export const MyBoardsDocument = gql`
-    query MyBoards {
-  myBoards {
+export const CreateBoardDocument = gql`
+    mutation CreateBoard($title: String) {
+  createBoard(options: {title: $title}) {
     ...RegularBoard
   }
 }
     ${RegularBoardFragmentDoc}`;
 
-export function useMyBoardsQuery(options: Omit<Urql.UseQueryArgs<MyBoardsQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<MyBoardsQuery>({ query: MyBoardsDocument, ...options });
+export function useCreateBoardMutation() {
+  return Urql.useMutation<CreateBoardMutation, CreateBoardMutationVariables>(CreateBoardDocument);
+};
+export const UpdateBoardDocument = gql`
+    mutation UpdateBoard($id: String!, $title: String) {
+  updateBoard(id: $id, options: {title: $title}) {
+    ...RegularBoard
+  }
+}
+    ${RegularBoardFragmentDoc}`;
+
+export function useUpdateBoardMutation() {
+  return Urql.useMutation<UpdateBoardMutation, UpdateBoardMutationVariables>(UpdateBoardDocument);
+};
+export const UpdateOrderDocument = gql`
+    mutation UpdateOrder($id: String!, $tasklists: [TasklistInput!]!, $tasklistOrder: [String!]) {
+  updateOrder(id: $id, tasklists: $tasklists, tasklistOrder: $tasklistOrder) {
+    ...RegularBoard
+  }
+}
+    ${RegularBoardFragmentDoc}`;
+
+export function useUpdateOrderMutation() {
+  return Urql.useMutation<UpdateOrderMutation, UpdateOrderMutationVariables>(UpdateOrderDocument);
+};
+export const DeleteBoardDocument = gql`
+    mutation DeleteBoard($id: String!) {
+  deleteBoard(id: $id)
+}
+    `;
+
+export function useDeleteBoardMutation() {
+  return Urql.useMutation<DeleteBoardMutation, DeleteBoardMutationVariables>(DeleteBoardDocument);
+};
+export const CreateTaskDocument = gql`
+    mutation createTask($title: String, $dueAt: DateTime, $description: String, $tasklistId: String!) {
+  createTask(
+    options: {title: $title, dueAt: $dueAt, description: $description, tasklistId: $tasklistId}
+  ) {
+    ...RegularTask
+  }
+}
+    ${RegularTaskFragmentDoc}`;
+
+export function useCreateTaskMutation() {
+  return Urql.useMutation<CreateTaskMutation, CreateTaskMutationVariables>(CreateTaskDocument);
+};
+export const UpdateTaskDocument = gql`
+    mutation updateTask($id: String!, $title: String, $dueAt: DateTime, $description: String) {
+  updateTask(
+    id: $id
+    options: {title: $title, dueAt: $dueAt, description: $description}
+  ) {
+    ...RegularTask
+  }
+}
+    ${RegularTaskFragmentDoc}`;
+
+export function useUpdateTaskMutation() {
+  return Urql.useMutation<UpdateTaskMutation, UpdateTaskMutationVariables>(UpdateTaskDocument);
+};
+export const ArchiveTaskDocument = gql`
+    mutation ArchiveTask($id: String!, $archive: Boolean) {
+  archiveTask(id: $id, archive: $archive) {
+    id
+  }
+}
+    `;
+
+export function useArchiveTaskMutation() {
+  return Urql.useMutation<ArchiveTaskMutation, ArchiveTaskMutationVariables>(ArchiveTaskDocument);
+};
+export const DeleteTaskDocument = gql`
+    mutation DeleteTask($id: String!) {
+  deleteTask(id: $id)
+}
+    `;
+
+export function useDeleteTaskMutation() {
+  return Urql.useMutation<DeleteTaskMutation, DeleteTaskMutationVariables>(DeleteTaskDocument);
 };
 export const MyEntriesDocument = gql`
     query myEntries($rootFolderId: String) {
@@ -1167,6 +1024,48 @@ export const MyEntryDocument = gql`
 export function useMyEntryQuery(options: Omit<Urql.UseQueryArgs<MyEntryQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MyEntryQuery>({ query: MyEntryDocument, ...options });
 };
+export const CreateEntryDocument = gql`
+    mutation CreateEntry($title: String, $content: JSON, $folderId: String) {
+  createEntry(options: {title: $title, content: $content, folderId: $folderId}) {
+    ...RegularEntry
+  }
+}
+    ${RegularEntryFragmentDoc}`;
+
+export function useCreateEntryMutation() {
+  return Urql.useMutation<CreateEntryMutation, CreateEntryMutationVariables>(CreateEntryDocument);
+};
+export const UpdateEntryDocument = gql`
+    mutation UpdateEntry($id: String!, $title: String, $content: JSON) {
+  updateEntry(id: $id, options: {title: $title, content: $content}) {
+    ...RegularEntry
+  }
+}
+    ${RegularEntryFragmentDoc}`;
+
+export function useUpdateEntryMutation() {
+  return Urql.useMutation<UpdateEntryMutation, UpdateEntryMutationVariables>(UpdateEntryDocument);
+};
+export const DeleteEntryDocument = gql`
+    mutation DeleteEntry($id: String!) {
+  deleteEntry(id: $id)
+}
+    `;
+
+export function useDeleteEntryMutation() {
+  return Urql.useMutation<DeleteEntryMutation, DeleteEntryMutationVariables>(DeleteEntryDocument);
+};
+export const MyFoldersDocument = gql`
+    query myFolders($rootFolderId: String) {
+  myFolders(rootFolderId: $rootFolderId) {
+    ...RegularFolder
+  }
+}
+    ${RegularFolderFragmentDoc}`;
+
+export function useMyFoldersQuery(options: Omit<Urql.UseQueryArgs<MyFoldersQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<MyFoldersQuery>({ query: MyFoldersDocument, ...options });
+};
 export const MyFolderDocument = gql`
     query myFolder($id: String!) {
   myFolder(id: $id) {
@@ -1185,14 +1084,121 @@ ${RegularEntryFragmentDoc}`;
 export function useMyFolderQuery(options: Omit<Urql.UseQueryArgs<MyFolderQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MyFolderQuery>({ query: MyFolderDocument, ...options });
 };
-export const MyFoldersDocument = gql`
-    query myFolders($rootFolderId: String) {
-  myFolders(rootFolderId: $rootFolderId) {
+export const CreateFolderDocument = gql`
+    mutation CreateFolder($title: String, $folderId: String) {
+  createFolder(options: {title: $title, folderId: $folderId}) {
     ...RegularFolder
   }
 }
     ${RegularFolderFragmentDoc}`;
 
-export function useMyFoldersQuery(options: Omit<Urql.UseQueryArgs<MyFoldersQueryVariables>, 'query'> = {}) {
-  return Urql.useQuery<MyFoldersQuery>({ query: MyFoldersDocument, ...options });
+export function useCreateFolderMutation() {
+  return Urql.useMutation<CreateFolderMutation, CreateFolderMutationVariables>(CreateFolderDocument);
+};
+export const UpdateFolderDocument = gql`
+    mutation UpdateFolder($id: String!, $title: String, $folderId: String) {
+  updateFolder(id: $id, options: {title: $title, folderId: $folderId}) {
+    ...RegularFolder
+  }
+}
+    ${RegularFolderFragmentDoc}`;
+
+export function useUpdateFolderMutation() {
+  return Urql.useMutation<UpdateFolderMutation, UpdateFolderMutationVariables>(UpdateFolderDocument);
+};
+export const DeleteFolderDocument = gql`
+    mutation DeleteFolder($id: String!) {
+  deleteFolder(id: $id)
+}
+    `;
+
+export function useDeleteFolderMutation() {
+  return Urql.useMutation<DeleteFolderMutation, DeleteFolderMutationVariables>(DeleteFolderDocument);
+};
+export const CreateTasklistDocument = gql`
+    mutation createTasklist($title: String, $color: String, $boardId: String!) {
+  createTasklist(options: {title: $title, color: $color, boardId: $boardId}) {
+    ...RegularTasklist
+  }
+}
+    ${RegularTasklistFragmentDoc}`;
+
+export function useCreateTasklistMutation() {
+  return Urql.useMutation<CreateTasklistMutation, CreateTasklistMutationVariables>(CreateTasklistDocument);
+};
+export const UpdateTasklistDocument = gql`
+    mutation updateTasklist($id: String!, $title: String, $color: String) {
+  updateTasklist(id: $id, options: {title: $title, color: $color}) {
+    ...RegularTasklist
+  }
+}
+    ${RegularTasklistFragmentDoc}`;
+
+export function useUpdateTasklistMutation() {
+  return Urql.useMutation<UpdateTasklistMutation, UpdateTasklistMutationVariables>(UpdateTasklistDocument);
+};
+export const DeleteTasklistDocument = gql`
+    mutation DeleteTasklist($id: String!) {
+  deleteTasklist(id: $id)
+}
+    `;
+
+export function useDeleteTasklistMutation() {
+  return Urql.useMutation<DeleteTasklistMutation, DeleteTasklistMutationVariables>(DeleteTasklistDocument);
+};
+export const MeDocument = gql`
+    query Me {
+  me {
+    ...RegularUser
+  }
+}
+    ${RegularUserFragmentDoc}`;
+
+export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
+};
+export const RegisterDocument = gql`
+    mutation Register($firstName: String!, $lastName: String!, $email: String!, $password: String!) {
+  register(
+    options: {firstName: $firstName, lastName: $lastName, email: $email, password: $password}
+  ) {
+    errors {
+      field
+      message
+    }
+    user {
+      ...RegularUser
+    }
+  }
+}
+    ${RegularUserFragmentDoc}`;
+
+export function useRegisterMutation() {
+  return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
+};
+export const LoginDocument = gql`
+    mutation Login($email: String!, $password: String!) {
+  login(options: {email: $email, password: $password}) {
+    errors {
+      field
+      message
+    }
+    user {
+      ...RegularUser
+    }
+  }
+}
+    ${RegularUserFragmentDoc}`;
+
+export function useLoginMutation() {
+  return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
+};
+export const LogoutDocument = gql`
+    mutation Logout {
+  logout
+}
+    `;
+
+export function useLogoutMutation() {
+  return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
 };

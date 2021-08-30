@@ -2,7 +2,6 @@ import Box from "@material-ui/core/Box";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { withStyles } from "@material-ui/core/styles";
-
 import React from "react";
 import { FaPlus } from "react-icons/fa";
 import theme from "../../styles/theme";

@@ -8,7 +8,7 @@ import { IoSettingsOutline, IoSearchOutline, IoPersonOutline } from "react-icons
 import { Divider } from "../util/divider";
 
 interface SidebarProps {
-    user: Pick<User, "username">;
+    user: Pick<User, "firstName" | "lastName">;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ user }) => {
@@ -29,7 +29,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ user }) => {
             {/* User logged in */}
             <Box display="flex" alignItems="center" marginBottom={2} paddingLeft={2}>
                 <img src="https://w7.pngwing.com/pngs/178/595/png-transparent-user-profile-computer-icons-login-user-avatars.png" style={{ height: 36, width: 36, marginRight: 8, borderRadius: "50%" }} />
-                <h3>{user.username}</h3>
+                <h3>{`${user.firstName} ${user.lastName}`}</h3>
             </Box>
 
             <Divider />

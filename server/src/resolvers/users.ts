@@ -17,7 +17,9 @@ class FieldError {
 @InputType()
 class RegisterInput {
     @Field()
-    username: string;
+    firstName: string;
+    @Field()
+    lastName: string;
     @Field()
     email: string;
     @Field()
@@ -27,7 +29,7 @@ class RegisterInput {
 @InputType()
 class LoginInput {
     @Field()
-    username: string;
+    email: string;
     @Field()
     password: string;
 }
@@ -79,34 +81,38 @@ export default class UserResolver {
     @Mutation(() => UserResponse, { description: "Register a new user" })
     async register(
         @Ctx() { req }: ExpressContext,
-        @Arg("options") options: RegisterInput, // { username, password, email }
+        @Arg("options") options: RegisterInput, // { first name, last name, password, email }
     ): Promise<UserResponse> {
 
-        console.log("yes, it happened")
-
-        // Verify the min & max username size
-        if (options.username.length <= 3 && options.username.length > 25) {
+        // Verify first name
+        if (!options.firstName) {
             return {
                 errors: [{
-                    field: "username",
-                    message: "Username has to be between 3 to 25 characters"
+                    field: "firstName",
+                    message: "First name has to be 1 or more character"
                 }]
             };
         };
         
-        console.log("yes, it happened")
+        // Verify last name
+        if (!options.lastName) {
+            return {
+                errors: [{
+                    field: "lastName",
+                    message: "Last name has to be 1 or more character"
+                }]
+            };
+        };
 
         // Verify the min & max password size
         if (options.password.length <= 6 && options.password.length <= 50) {
             return {
                 errors: [{
-                    field: "username",
+                    field: "password",
                     message: "Password has to be between 6 to 50 characters"
                 }]
             };
         }
-        
-        console.log("yes, it happened")
         
         // Hash password
         const salt = await crypto.randomBytes(32);
@@ -115,7 +121,8 @@ export default class UserResolver {
 
         // Create new user
         const user = await User.create( {
-            username: options.username,
+            firstName: options.firstName,
+            lastName: options.lastName,
             email: options.email,
             password: hashedPassword
         });
@@ -123,16 +130,15 @@ export default class UserResolver {
         // Attempt to save created user
         try {
             await user.save()
-            console.log("yes, it happened")
         }
         catch (err) {
             
-            // Error for username that already exists
+            // Error for email that already exists
             if (err.code === "23505") {
                 return {
                     errors: [{
-                        field: "username",
-                        message: "Username already exists"
+                        field: "email",
+                        message: "Email already exists"
                     }]
                 };
             };
@@ -141,7 +147,6 @@ export default class UserResolver {
 
         
         req.session!.userId = user.id;
-        console.log("yes, it happened")
         
         return { errors: [], user };
     }
@@ -153,15 +158,18 @@ export default class UserResolver {
         @Arg("options") options: LoginInput,
     ): Promise<UserResponse> {
 
-        // Find user in database by username
-        const user = await User.findOne({ where: { username: options.username } });
+        // Find user in database by email
+        const user = await User.findOne({ where: { email: options.email } });
 
-        // If not username is found, return error
+        // If not email is found, return error
         if (!user) {
             return {
                 errors: [{
-                    field: "username",
-                    message: "Incorrect username or password"
+                    field: "email",
+                    message: "Incorrect email or password"
+                },{
+                    field: "password",
+                    message: "Incorrect email or password"
                 }]
             };
         };
@@ -171,8 +179,11 @@ export default class UserResolver {
         if (!valid) {
             return {
                 errors: [{
-                    field: "username",
-                    message: "Incorrect username or password"
+                    field: "email",
+                    message: "Incorrect email or password"
+                },{
+                    field: "password",
+                    message: "Incorrect email or password"
                 }]
             };
         };
