@@ -14,7 +14,6 @@
     "dependencies": {
         "apollo-server-express": "^2.25.1",
         "argon2": "^0.28.2",
-        "class-validator": "^0.13.1",
         "cors": "^2.8.5",
         "crypto": "^1.0.1",
         "dotenv": "^10.0.0",
