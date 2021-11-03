@@ -9,7 +9,7 @@ import { RegisterInput } from "../components/user/RegisterInput";
 import { RegisterButton } from "../components/user/RegisterButton";
 import { Divider } from "../components/util/divider";
 import Link from "next/link";
-import theme from "../styles/theme";
+import { colors } from "../styles/theme";
 
 // Validation functions, checks if first name value is valid
 const validateFirstName = (value: string): string | undefined => {
@@ -83,7 +83,7 @@ const register: React.FC = () => {
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100vh">
 
             {/* Sign up header */}
-            <h1 style={{ color: "var(--title)", marginBottom: 24 }}>Sign Up</h1>
+            <h1 style={{ color: colors.text.title, marginBottom: 24 }}>Sign Up</h1>
 
             {/* Formik form */}
             <Formik
@@ -118,7 +118,7 @@ const register: React.FC = () => {
                             {/*
                                 Input Fields
                             */}
-                            
+
                             <RegisterInput
                                 label="First Name"
                                 name="firstName"
@@ -167,7 +167,8 @@ const register: React.FC = () => {
             {/* Divider and login link */}
             <Divider length={250} marginTop={4} marginBottom={2} />
 
-            <Link href="/login"><a style={{ color: theme.palette.primary.main }}>Already have an account?</a></Link>
+            {/* Link to redirect to login */}
+            <Link href="/login"><a style={{ color: colors.action.primary }}>Already have an account?</a></Link>
         </Box>
     )
 };

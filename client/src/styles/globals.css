@@ -1,5 +1,7 @@
-html,
-body {
+/**************************
+Base styles
+**************************/
+html, body {
   padding: 0;
   margin: 0;
   font-family: "Roboto", Arial, Helvetica, sans-serif;
@@ -14,17 +16,11 @@ a {
 * {
   box-sizing: border-box;
   margin: 0;
-  --primary: #5c5967;
-  --secondary: #85838e;
-  --title: #000000;
-  --bg-primary: #ffffff;
-  --bg-secondary: #f9f9f9;
-  --bg-hover: #d5d5d5;
-  --icon: #4e4b5c;
-  --border: #adacb2;
 }
 
-
+/**************************
+Scrollbar Styles
+**************************/
 ::-webkit-scrollbar {
   width: 12px;
 }

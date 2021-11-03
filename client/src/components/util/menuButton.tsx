@@ -66,7 +66,7 @@ export const MenuButton: React.FC<menuButtonProps> = ({ options, children }) => 
 
                 {/* Options or division */}
                 {options.map((option, index) => (option === "divider"
-                        ? <Divider key={index}/>
+                        ? <Divider key={index} marginY={1}/>
                         : <MenuItem key={option.name} onClick={() => {
                             handleClose();
                             option.fn();

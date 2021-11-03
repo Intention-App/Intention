@@ -1,5 +1,7 @@
+
 import Box, { BoxProps } from "@material-ui/core/Box";
 import React from "react";
+import { colors } from "../../styles/theme";
 
 // Gradient to background
 interface GradientProps extends BoxProps {
@@ -13,7 +15,7 @@ export const Gradient: React.FC<GradientProps> = ({ direction, length, spread, .
         // Box with gradient background
         <Box
             {...props}
-            style={{ background: `linear-gradient(to ${direction || "top"}, var(--bg-primary), transparent)`, pointerEvents: "none" }}
+            style={{ background: `linear-gradient(to ${direction || "top"}, ${colors.background.primary}, transparent)`, pointerEvents: "none" }}
             width={direction === "top" || direction === "bottom" ? spread || "100%" : length || 32}
             height={direction === "left" || direction === "right" ? spread || "100%" : length || 32}
             position="absolute"

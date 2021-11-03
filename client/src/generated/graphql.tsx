@@ -565,6 +565,51 @@ export type DeleteTaskMutation = (
   & Pick<Mutation, 'deleteTask'>
 );
 
+export type RegularTasklistFragment = (
+  { __typename?: 'Tasklist' }
+  & Pick<Tasklist, 'id' | 'title' | 'color' | 'boardId' | 'createdAt' | 'updatedAt'>
+);
+
+export type CreateTasklistMutationVariables = Exact<{
+  title?: Maybe<Scalars['String']>;
+  color?: Maybe<Scalars['String']>;
+  boardId: Scalars['String'];
+}>;
+
+
+export type CreateTasklistMutation = (
+  { __typename?: 'Mutation' }
+  & { createTasklist: (
+    { __typename?: 'Tasklist' }
+    & RegularTasklistFragment
+  ) }
+);
+
+export type UpdateTasklistMutationVariables = Exact<{
+  id: Scalars['String'];
+  title?: Maybe<Scalars['String']>;
+  color?: Maybe<Scalars['String']>;
+}>;
+
+
+export type UpdateTasklistMutation = (
+  { __typename?: 'Mutation' }
+  & { updateTasklist: (
+    { __typename?: 'Tasklist' }
+    & RegularTasklistFragment
+  ) }
+);
+
+export type DeleteTasklistMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteTasklistMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteTasklist'>
+);
+
 export type RegularEntryFragment = (
   { __typename?: 'Entry' }
   & Pick<Entry, 'id' | 'title' | 'content' | 'rootFolderId' | 'createdAt' | 'updatedAt'>
@@ -713,51 +758,6 @@ export type DeleteFolderMutation = (
   & Pick<Mutation, 'deleteFolder'>
 );
 
-export type RegularTasklistFragment = (
-  { __typename?: 'Tasklist' }
-  & Pick<Tasklist, 'id' | 'title' | 'color' | 'boardId' | 'createdAt' | 'updatedAt'>
-);
-
-export type CreateTasklistMutationVariables = Exact<{
-  title?: Maybe<Scalars['String']>;
-  color?: Maybe<Scalars['String']>;
-  boardId: Scalars['String'];
-}>;
-
-
-export type CreateTasklistMutation = (
-  { __typename?: 'Mutation' }
-  & { createTasklist: (
-    { __typename?: 'Tasklist' }
-    & RegularTasklistFragment
-  ) }
-);
-
-export type UpdateTasklistMutationVariables = Exact<{
-  id: Scalars['String'];
-  title?: Maybe<Scalars['String']>;
-  color?: Maybe<Scalars['String']>;
-}>;
-
-
-export type UpdateTasklistMutation = (
-  { __typename?: 'Mutation' }
-  & { updateTasklist: (
-    { __typename?: 'Tasklist' }
-    & RegularTasklistFragment
-  ) }
-);
-
-export type DeleteTasklistMutationVariables = Exact<{
-  id: Scalars['String'];
-}>;
-
-
-export type DeleteTasklistMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<Mutation, 'deleteTasklist'>
-);
-
 export type RegularUserFragment = (
   { __typename?: 'User' }
   & Pick<User, 'id' | 'firstName' | 'lastName'>
@@ -845,6 +845,16 @@ export const RegularTaskFragmentDoc = gql`
   updatedAt
 }
     `;
+export const RegularTasklistFragmentDoc = gql`
+    fragment RegularTasklist on Tasklist {
+  id
+  title
+  color
+  boardId
+  createdAt
+  updatedAt
+}
+    `;
 export const RegularEntryFragmentDoc = gql`
     fragment RegularEntry on Entry {
   id
@@ -860,16 +870,6 @@ export const RegularFolderFragmentDoc = gql`
   id
   title
   rootFolderId
-  createdAt
-  updatedAt
-}
-    `;
-export const RegularTasklistFragmentDoc = gql`
-    fragment RegularTasklist on Tasklist {
-  id
-  title
-  color
-  boardId
   createdAt
   updatedAt
 }
@@ -1002,6 +1002,37 @@ export const DeleteTaskDocument = gql`
 export function useDeleteTaskMutation() {
   return Urql.useMutation<DeleteTaskMutation, DeleteTaskMutationVariables>(DeleteTaskDocument);
 };
+export const CreateTasklistDocument = gql`
+    mutation createTasklist($title: String, $color: String, $boardId: String!) {
+  createTasklist(options: {title: $title, color: $color, boardId: $boardId}) {
+    ...RegularTasklist
+  }
+}
+    ${RegularTasklistFragmentDoc}`;
+
+export function useCreateTasklistMutation() {
+  return Urql.useMutation<CreateTasklistMutation, CreateTasklistMutationVariables>(CreateTasklistDocument);
+};
+export const UpdateTasklistDocument = gql`
+    mutation updateTasklist($id: String!, $title: String, $color: String) {
+  updateTasklist(id: $id, options: {title: $title, color: $color}) {
+    ...RegularTasklist
+  }
+}
+    ${RegularTasklistFragmentDoc}`;
+
+export function useUpdateTasklistMutation() {
+  return Urql.useMutation<UpdateTasklistMutation, UpdateTasklistMutationVariables>(UpdateTasklistDocument);
+};
+export const DeleteTasklistDocument = gql`
+    mutation DeleteTasklist($id: String!) {
+  deleteTasklist(id: $id)
+}
+    `;
+
+export function useDeleteTasklistMutation() {
+  return Urql.useMutation<DeleteTasklistMutation, DeleteTasklistMutationVariables>(DeleteTasklistDocument);
+};
 export const MyEntriesDocument = gql`
     query myEntries($rootFolderId: String) {
   myEntries(rootFolderId: $rootFolderId) {
@@ -1114,37 +1145,6 @@ export const DeleteFolderDocument = gql`
 
 export function useDeleteFolderMutation() {
   return Urql.useMutation<DeleteFolderMutation, DeleteFolderMutationVariables>(DeleteFolderDocument);
-};
-export const CreateTasklistDocument = gql`
-    mutation createTasklist($title: String, $color: String, $boardId: String!) {
-  createTasklist(options: {title: $title, color: $color, boardId: $boardId}) {
-    ...RegularTasklist
-  }
-}
-    ${RegularTasklistFragmentDoc}`;
-
-export function useCreateTasklistMutation() {
-  return Urql.useMutation<CreateTasklistMutation, CreateTasklistMutationVariables>(CreateTasklistDocument);
-};
-export const UpdateTasklistDocument = gql`
-    mutation updateTasklist($id: String!, $title: String, $color: String) {
-  updateTasklist(id: $id, options: {title: $title, color: $color}) {
-    ...RegularTasklist
-  }
-}
-    ${RegularTasklistFragmentDoc}`;
-
-export function useUpdateTasklistMutation() {
-  return Urql.useMutation<UpdateTasklistMutation, UpdateTasklistMutationVariables>(UpdateTasklistDocument);
-};
-export const DeleteTasklistDocument = gql`
-    mutation DeleteTasklist($id: String!) {
-  deleteTasklist(id: $id)
-}
-    `;
-
-export function useDeleteTasklistMutation() {
-  return Urql.useMutation<DeleteTasklistMutation, DeleteTasklistMutationVariables>(DeleteTasklistDocument);
 };
 export const MeDocument = gql`
     query Me {

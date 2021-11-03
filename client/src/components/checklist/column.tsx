@@ -6,7 +6,8 @@ import React from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import { FaCircle, FaEllipsisH } from "react-icons/fa";
 import { Task as TaskType, useCreateTaskMutation } from "../../generated/graphql";
-import { ClientBoard } from "../../pages/checklist/board/[boardId]";
+import { ClientBoard, EditorItem } from "../../pages/checklist/board/[boardId]";
+import { colors } from "../../styles/theme";
 import { AddNew } from "../util/AddNew";
 import { Task } from "./task";
 
@@ -28,62 +29,18 @@ export interface ColumnProps {
     setBoard: React.Dispatch<React.SetStateAction<ClientBoard | undefined>>;
 
     // Toggling editors
-    toggleTasklistDrawer: (...props: any) => any;
-    toggleTaskDrawer: (...props: any) => any;
+    toggleModal: (item: EditorItem | undefined) => (
+        event: React.KeyboardEvent | React.MouseEvent | undefined,
+    ) => any;
 };
 
-export const Column: React.FC<ColumnProps> = ({ children, tasks, color, id, index, setBoard, toggleTasklistDrawer, toggleTaskDrawer }) => {
-
-    // CRUD operations for later
-    const [, createTask] = useCreateTaskMutation();
-
-    // Task creation
-    const handleTaskCreation = async () => {
-
-        // Creates new task in backend
-        const task = await createTask({ tasklistId: id, title: "Untitled" });
-
-        if (task?.data?.createTask) {
-            const taskId = task.data.createTask.id;
-
-            setBoard(board => {
-
-                if (!board) {
-                    return board;
-                }
-                
-                // New task order with task
-                const newTaskOrder = [...(board.tasklists[id].taskOrder || []), taskId]
-                
-                // New tasklist with new task order
-                const newTaskList = {
-                    ...board.tasklists[id],
-                    taskOrder: newTaskOrder
-                }
-
-                // Update client board with new info
-                return {
-                ...board,
-                tasklists: {
-                    ...board.tasklists,
-                    [id]: newTaskList
-                },
-                tasks: {
-                    ...board.tasks,
-                    [taskId]: task.data?.createTask!
-                }
-            }}) 
-
-            // Opens drawer
-            toggleTaskDrawer(true, taskId)(undefined)
-        }
-    }
+export const Column: React.FC<ColumnProps> = ({ children, tasks, color, id, index, setBoard, toggleModal }) => {
 
     return (
 
         // Tasklists are draggable
         <Draggable draggableId={id} index={index}>
-            {(draggableProvided) => (
+            {(draggableProvided, snapshot) => (
 
                 // Ref for operations
                 <RootRef rootRef={draggableProvided.innerRef}>
@@ -91,8 +48,11 @@ export const Column: React.FC<ColumnProps> = ({ children, tasks, color, id, inde
                     {/* Container of tasklist */}
                     <Box
                         {...draggableProvided.draggableProps}
-                        marginRight={4}
-                        bgcolor="var(--bg-primary)"
+                        marginRight={-1}
+                        margin={-2}
+                        padding={2}
+                        borderRadius={8}
+                        bgcolor={snapshot.isDragging ? colors.background.hover : colors.background.primary}
                     >
 
                         {/* Box for title, colored icon, and button */}
@@ -111,10 +71,10 @@ export const Column: React.FC<ColumnProps> = ({ children, tasks, color, id, inde
 
                             {/* Button to toggle editor */}
                             <IconButton
-                                onClick={toggleTasklistDrawer(true, id)}
+                                onClick={toggleModal({ type: "tasklist", id })}
                             >
                                 <FaEllipsisH
-                                    style={{ width: 16, height: 16, color: "var(--icon)", cursor: "pointer" }}
+                                    style={{ width: 16, height: 16, color: colors.icon.primary, cursor: "pointer" }}
                                 />
                             </IconButton>
                         </Box>
@@ -135,7 +95,7 @@ export const Column: React.FC<ColumnProps> = ({ children, tasks, color, id, inde
                                         {/* Tasks in list */}
                                         {tasks.map((task, index) => (
                                             <Task
-                                                toggleDrawer={toggleTaskDrawer}
+                                                toggleDrawer={toggleModal}
                                                 setBoard={setBoard}
                                                 key={task.id}
                                                 id={task.id}
@@ -147,6 +107,7 @@ export const Column: React.FC<ColumnProps> = ({ children, tasks, color, id, inde
                                             </Task>
                                         ))}
 
+                                        {/* placeholder for empty lists */}
                                         {provided.placeholder}
                                     </Box>
                                 </RootRef>
@@ -156,7 +117,7 @@ export const Column: React.FC<ColumnProps> = ({ children, tasks, color, id, inde
                         {/* Button to add new tasks */}
                         <AddNew buttonFunctions={[{
                             name: "Create New Task",
-                            fn: handleTaskCreation
+                            fn: toggleModal({ type: "task", id: undefined, props: { tasklistId: id } })
                         }]}>
                             Add New Task
                         </AddNew>

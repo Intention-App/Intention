@@ -6,7 +6,7 @@ import { useLoginMutation } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
 import { RegisterInput } from "../components/user/RegisterInput";
 import { RegisterButton } from "../components/user/RegisterButton";
-import theme from "../styles/theme";
+import { colors } from "../styles/theme";
 import { Divider } from "../components/util/divider";
 import Link from "next/link";
 
@@ -43,7 +43,7 @@ const login: React.FC = () => {
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100vh">
 
             {/* Sign up header */}
-            <h1 style={{ color: "var(--title)", marginBottom: 24 }}>Log in</h1>
+            <h1 style={{ color: colors.text.title, marginBottom: 24 }}>Log in</h1>
 
             {/* Formik form */}
             <Formik
@@ -104,7 +104,8 @@ const login: React.FC = () => {
             {/* Divider and registration link */}
             <Divider length={250} marginTop={4} marginBottom={2} />
 
-            <Link href="/register"><a style={{ color: theme.palette.primary.main }}>Create a new account</a></Link>
+            {/* Link to redirect to signup */}
+            <Link href="/register"><a style={{ color: colors.action.primary }}>Create a new account</a></Link>
         </Box>
     );
 };

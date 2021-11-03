@@ -6,6 +6,7 @@ import { NavButton } from "./NavButton";
 import { FaBook, FaCheckCircle, FaHome, FaProjectDiagram, FaTrash } from "react-icons/fa";
 import { IoSettingsOutline, IoSearchOutline, IoPersonOutline } from "react-icons/io5";
 import { Divider } from "../util/divider";
+import { colors } from "../../styles/theme";
 
 interface SidebarProps {
     user: Pick<User, "firstName" | "lastName">;
@@ -24,7 +25,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ user }) => {
             padding: "16px 0",
             display: "flex",
             flexDirection: "column",
-            zIndex: 1300
         }}>
             {/* User logged in */}
             <Box display="flex" alignItems="center" marginBottom={2} paddingLeft={2}>
@@ -36,9 +36,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ user }) => {
 
             {/* Utility and settings */}
             <Box  marginY={2} paddingLeft={2}>
-                <NavButton href="/search" small icon={IoSearchOutline}>Quick Search</NavButton>
-                <NavButton href="/profile" small icon={IoPersonOutline}>Profile</NavButton>
-                <NavButton href="/settings" small icon={IoSettingsOutline}>Settings</NavButton>
+                <NavButton href="/search" icon={IoSearchOutline}>Quick Search</NavButton>
+                <NavButton href="/profile" icon={IoPersonOutline}>Profile</NavButton>
+                <NavButton href="/settings" icon={IoSettingsOutline}>Settings</NavButton>
             </Box>
 
             <Divider />
@@ -65,7 +65,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ user }) => {
 
             {/* Trademark */}
             <Box marginTop={2} paddingLeft={2}>
-                <p style={{ color: "var(--secondary)", fontSize: 12 }}>Intention &copy; 2021</p>
+                <p style={{ color: colors.text.secondary, fontSize: 12 }}>Intention &copy; 2021</p>
             </Box>
         </Paper>
     );

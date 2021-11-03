@@ -1,6 +1,7 @@
 import { BaseEditor } from "slate";
-import { ReactEditor, Slate } from "slate-react";
+import { ReactEditor} from "slate-react";
 
+// Custom slate elements
 
 export type ParagraphElement = {
     type: 'paragraph';
@@ -9,18 +10,18 @@ export type ParagraphElement = {
 
 export type ListItemElement = {
     type: 'listItem';
-    level?: number;
+    level?: number; // Indent level of list
     children: CustomText[];
 }
 
 export type BulletListElement = {
     type: 'bulletList';
-    children: ListItemElement[];
+    children: ListItemElement[]; // Child must be list item
 }
 
 export type OrderedListElement = {
     type: 'orderedList';
-    children: ListItemElement[];
+    children: ListItemElement[];  // Child must be list item
 }
 
 export type CheckListElement = {
@@ -29,12 +30,13 @@ export type CheckListElement = {
     children: CustomText[];
 }
 
-export type FormattedText = { text: string; bold?: boolean; italic?: boolean, underlined?: boolean }
-
-export type CustomText = FormattedText
-
 export type CustomElement = ParagraphElement | BulletListElement | OrderedListElement | CheckListElement | ListItemElement;
 
+// Styles of text
+export type FormattedText = { text: string; bold?: boolean; italic?: boolean, underlined?: boolean };
+export type CustomText = FormattedText;
+
+// Add custom declarations to slate
 declare module 'slate' {
     interface CustomTypes {
         Editor: BaseEditor & ReactEditor

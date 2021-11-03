@@ -3,6 +3,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { useRouter } from "next/router";
 import React from "react";
 import { IconType } from "react-icons";
+import { colors } from "../../styles/theme";
 
 // Button on sidebar
 
@@ -12,9 +13,6 @@ interface NavButtonProps {
 
     // Path or link on click
     href: string;
-
-    // Smaller variant
-    small?: boolean;
 };
 
 // Styles for button
@@ -30,14 +28,14 @@ const StyledButton = withStyles({
         paddingLeft: 16,
         textTransform: "none",
         fontWeight: "normal",
-        backgroundColor: "var(--bg-primary)",
+        backgroundColor: colors.background.primary,
         "&:focus": {
-            backgroundColor: "var(--bg-hover)"
+            backgroundColor: colors.background.hover
         }
     },
 })(Button);
 
-export const NavButton: React.FC<NavButtonProps> = ({ children, icon, small = false, href }) => {
+export const NavButton: React.FC<NavButtonProps> = ({ children, icon, href }) => {
 
     // Router for later functions
     const router = useRouter();
@@ -71,7 +69,7 @@ export const NavButton: React.FC<NavButtonProps> = ({ children, icon, small = fa
             startIcon={<Icon style={{
                 width: 20,
                 height: 20,
-                color: "var(--icon)",
+                color: colors.icon.primary,
             }} />}
 
             // Custom focus in place so no focus ripple

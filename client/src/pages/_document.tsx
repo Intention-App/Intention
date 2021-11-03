@@ -3,19 +3,28 @@ import Document, { DocumentContext, Html, Head, Main, NextScript } from 'next/do
 import React from 'react';
 import { resetServerContext } from 'react-beautiful-dnd';
 
+// Next document template
+
 class MyDocument extends Document {
+
+    // Initializing server-side props for document
     static async getInitialProps(ctx: DocumentContext) {
+        // MUI JSS stylesheets for server-side rendering
         const sheets = new ServerStyleSheets();
         const originalRenderPage = ctx.renderPage;
 
+        // Insert stylesheets into application
         ctx.renderPage = () =>
             originalRenderPage({
                 enhanceApp: (App) => (props) => sheets.collect(<App {...props} />),
             });
 
+        // Resets server context prevent client-server mismatch for React Beautiful DnD
+        resetServerContext();
+
+        // Passes initial props back to document
         const initialProps = await Document.getInitialProps(ctx);
 
-        resetServerContext();
         return {
             ...initialProps,
             // Styles fragment is rendered after the app and page rendering finish.
@@ -25,8 +34,10 @@ class MyDocument extends Document {
 
     render() {
         return (
+            // Renders HTML with header and body
             <Html>
                 <Head>
+                    {/* Link to Roboto font for styles */}
                     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
                 </Head>
                 <body>

@@ -1,24 +1,18 @@
 import _ from "lodash";
 import React, { useEffect, useRef } from "react";
 
-// Compares equality of objects & arrays even if reference is different
-const deepCompareEquals = (a: any, b: any) => {
-    return _.isEqual(a, b);
-}
-
-
 // Memoizes values array of dependencies
 const useDeepCompareMemoize = (value: any) => {
+    // Ref to hold previous object
     const ref = useRef()
 
+    
+    // If new object is different, object to return (equality functions return false)
     if (!_.isEqual(value, ref.current)) {
-
-
-        console.log(value, ref.current)
-
         ref.current = value
     }
 
+    // If new object is the same, return old object (equality functions return true)
     return ref.current
 }
 

@@ -1,8 +1,8 @@
-import { ExpressContext, PendingCache } from "../types";
+import { ExpressContext } from "../types";
 import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
 import { isAuth } from "../middleware/isAuth";
 import Board from "../entities/Board";
-import Task  from "../entities/Task";
+import Task from "../entities/Task";
 import Tasklist from "../entities/Tasklist";
 
 @InputType()
@@ -134,22 +134,24 @@ export default class BoardResolver {
         if (tasklistsInput) {
 
             const newTasklistOrder = tasklistOrder
-            .concat(board.tasklistOrder)
-            .filter((tasklistId, index, arr) => {
-                // Handle and filter duplicates, imposters, and missing tasks
-                return arr.indexOf(tasklistId) === index && board.tasklistOrder.includes(tasklistId)
-            });
+                .concat(board.tasklistOrder)
+                .filter((tasklistId, index, arr) => {
+                    // Handle and filter duplicates, imposters, and missing tasks
+                    return arr.indexOf(tasklistId) === index && board.tasklistOrder.includes(tasklistId)
+                });
 
             await Board.update({ id: id }, { tasklistOrder: newTasklistOrder });
         }
 
         // Update new task order
         // Create temporary pending tasks to keep original taskId with tasklistId
-        var pendingTasks: PendingCache[] = board.tasks.map(task => ({ id: task.id, value: task.tasklistId }))
+        // var pendingTasks: PendingCache[] = board.tasks
+        //     .filter(task => !task.archivedAt)
+        //     .map(task => ({ id: task.id, value: task.tasklistId }))
 
-        for (const {id, taskOrder} of tasklistsInput) {
+        for (const { id, taskOrder } of tasklistsInput) {
 
-            const tasklist = board.tasklists.find(tasklist => tasklist.id === id); 
+            const tasklist = board.tasklists.find(tasklist => tasklist.id === id);
 
             if (!tasklist) continue; // if tasklist is invalid, go to next task list
 
@@ -163,8 +165,8 @@ export default class BoardResolver {
                 if (!task) continue;
 
                 // Remove from pending tasks list
-                const pendingTask = pendingTasks.find(pendingTask => pendingTask.id === taskId);
-                if (pendingTask) pendingTasks.splice(pendingTasks.indexOf(pendingTask), 1)
+                // const pendingTask = pendingTasks.find(pendingTask => pendingTask.id === taskId);
+                // if (pendingTask) pendingTasks.splice(pendingTasks.indexOf(pendingTask), 1)
 
                 newTaskOrder.push(taskId);
                 if (task.tasklistId !== id) await Task.update({ id: taskId }, { tasklistId: id })
@@ -174,14 +176,14 @@ export default class BoardResolver {
         }
 
         // Add back any missing tasks from the order lists
-        for (const pendingTask of pendingTasks) {
-            const tasklist = board.tasklists.find(tasklist => tasklist.id === pendingTask.value);
-            if (!tasklist) continue;
-            var newTaskOrder = tasklist.taskOrder;
-            newTaskOrder.push(pendingTask.id);
+        // for (const pendingTask of pendingTasks) {
+        //     const tasklist = board.tasklists.find(tasklist => tasklist.id === pendingTask.value);
+        //     if (!tasklist) continue;
+        //     var newTaskOrder = tasklist.taskOrder;
+        //     newTaskOrder.push(pendingTask.id);
 
-            await Tasklist.update({ id: tasklist.id }, { taskOrder: newTaskOrder })
-        }
+        //     await Tasklist.update({ id: tasklist.id }, { taskOrder: newTaskOrder })
+        // }
 
         // TODO: Handle tasks that did not get assigned in the order lists
 

@@ -6,10 +6,10 @@ import { HeadWrapper } from "../../components/main/HeadWrapper";
 import { Layout } from "../../components/main/layout";
 import { useCreateEntryMutation, useCreateFolderMutation, useMyEntriesQuery, useMyFoldersQuery } from "../../generated/graphql";
 import { toHumanTime } from "../../utils/toHumanTime";
-import { FaFileAlt, FaFolder, FaPlusSquare } from "react-icons/fa";
+import { FaFileAlt, FaFolder, FaPlus } from "react-icons/fa";
 import { ListViewItem } from "../../components/util/ListViewItem";
 import { Gradient } from "../../components/util/gradient";
-import theme from "../../styles/theme";
+import { colors } from "../../styles/theme";
 
 const Journal: React.FC = ({ }) => {
 
@@ -49,18 +49,22 @@ const Journal: React.FC = ({ }) => {
                     fn: handleFolderCreation
                 }
             ]}
-                buttonIcon={FaPlusSquare}
-                buttonColor={theme.palette.primary.main}
+                buttonIcon={() => (
+                    <Box>
+                        <FaPlus />
+                    </Box>
+                )}
+                buttonColor={colors.action.primary}
             >
 
                 {/* Box for content of page */}
-                <Box display="flex" flexDirection="column" height="100%" marginX={4} paddingBottom={2} color="var(--primary)">
+                <Box display="flex" flexDirection="column" height="100%" marginX={4} paddingBottom={2} color={colors.text.primary}>
 
                     {/* Box for list head */}
                     <Box
                         display="grid"
                         gridTemplateColumns="1fr 200px 200px"
-                        borderBottom="1px solid var(--border)"
+                        borderBottom={`1px solid ${colors.border.primary}`}
                         paddingBottom={1}
                         paddingRight={3.5}
                         marginBottom={1}

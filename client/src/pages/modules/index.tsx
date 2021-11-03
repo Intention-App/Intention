@@ -3,12 +3,20 @@ import { ImageHeadWrapper } from "../../components/main/ImageHeadWrapper";
 import { Layout } from "../../components/main/layout";
 import DeskWallpaper from "../../graphics/Desk.png"
 
+// Modules Page
+// #WIP
+
 const Modules: React.FC = ({ }) => {
     return (
-    <Layout>
-        <ImageHeadWrapper title="Modules" subtitle="for self-improvement, productivity, and more!" src={DeskWallpaper}>
-        </ImageHeadWrapper>
-    </Layout>
+        // Sidebar & Image Header Wrappers
+        <Layout>
+            <ImageHeadWrapper
+                title="Modules"
+                subtitle="for self-improvement, productivity, and more!"
+                src={DeskWallpaper}
+            >
+            </ImageHeadWrapper>
+        </Layout>
     );
 };
 

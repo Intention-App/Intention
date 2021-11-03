@@ -4,7 +4,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { withStyles } from "@material-ui/core/styles";
 import React from "react";
 import { FaPlus } from "react-icons/fa";
-import theme from "../../styles/theme";
+import { colors } from "../../styles/theme";
 
 // Button to add new files or tasks
 
@@ -29,15 +29,15 @@ const StyledBox = withStyles({
         marginTop: 8,
         cursor: "pointer",
         transition: "background 250ms",
-        backgroundColor: "var(--bg-primary)",
+        backgroundColor: colors.background.primary,
         "&:focus": {
-            backgroundColor: "var(--bg-hover)",
-            color: theme.palette.primary.main,
+            backgroundColor: colors.background.hover,
+            color: colors.action.primary,
             outline: "none"
         },
         "&:hover": {
-            backgroundColor: "var(--bg-hover)",
-            color: theme.palette.primary.main
+            backgroundColor: colors.background.hover,
+            color: colors.action.primary
         },
     }
 })(Box);
@@ -74,7 +74,7 @@ export const AddNew: React.FC<AddNewProps> = ({ buttonFunctions, children }) => 
                 tabIndex={0} onClick={handleClick}
                 onKeyDown={(e) => { if (e.key == "Enter") handleClick(e) }}
             >
-                <FaPlus color={theme.palette.primary.main} style={{ marginRight: 8 }} />
+                <FaPlus color={colors.action.primary} style={{ marginRight: 8 }} />
                 {children}
             </StyledBox>
 

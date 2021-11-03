@@ -7,10 +7,10 @@ import { Layout } from "../../../components/main/layout";
 import { RichTextEditor } from "../../../components/journal/RichTextEditor";
 import { useDeleteEntryMutation, useMyEntryQuery, useUpdateEntryMutation } from "../../../generated/graphql";
 import { toHumanTime } from "../../../utils/toHumanTime";
-import { useDeepCompareEffect } from "../../../utils/useDeepCompareEffect";
+import { useDeepCompareEffect } from "../../../hooks/util/useDeepCompareEffect";
 import { useDebounce } from "use-debounce";
 import _ from "lodash";
-import { useSavePrompt } from "../../../utils/useSavePrompt";
+import { useSavePrompt } from "../../../hooks/util/useSavePrompt";
 
 const EntryId: React.FC = ({ }) => {
 

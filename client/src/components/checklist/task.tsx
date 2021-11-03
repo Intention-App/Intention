@@ -7,7 +7,8 @@ import React, { useEffect, useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { FaCheckCircle, FaRegCircle } from "react-icons/fa";
 import { useArchiveTaskMutation } from "../../generated/graphql";
-import { ClientBoard } from "../../pages/checklist/board/[boardId]";
+import { ClientBoard, EditorItem } from "../../pages/checklist/board/[boardId]";
+import { colors } from "../../styles/theme";
 import { toHumanTime } from "../../utils/toHumanTime";
 
 // Task for Kanban board
@@ -26,23 +27,25 @@ interface TaskProps {
     setBoard: React.Dispatch<React.SetStateAction<ClientBoard | undefined>>;
 
     // Toggles task editor
-    toggleDrawer: (...props: any) => any;
+    toggleDrawer: (item: EditorItem | undefined) => (
+        event: React.KeyboardEvent | React.MouseEvent | undefined,
+    ) => any;
 };
 
 // Style of task item
 const StyledPaper = withStyles({
     root: {
-        border: "1px solid var(--border)",
+        border: `1px solid ${colors.border.secondary}`,
         borderRadius: 8,
         cursor: "pointer",
         transition: "background 250ms",
-        backgroundColor: "var(--bg-primary)",
+        backgroundColor: colors.background.primary,
         "&:focus": {
-            backgroundColor: "var(--bg-hover)",
+            backgroundColor: colors.background.hover,
             outline: "none"
         },
         "&:hover": {
-            backgroundColor: "var(--bg-hover)"
+            backgroundColor: colors.background.hover
         },
     }
 })(Paper);
@@ -140,12 +143,12 @@ export const Task: React.FC<TaskProps> = ({ children, id, rootId, index, dueAt, 
                         <StyledPaper
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            elevation={2}
+                            variant="outlined"
                             tabIndex={0}
-                            onDoubleClick={toggleDrawer(true, id)}
+                            onDoubleClick={toggleDrawer({ type: "task", id })}
                             style={{
                                 ...provided.draggableProps.style,
-                                backgroundColor: snapshot.isDragging ? "var(--bg-hover)" : undefined
+                                backgroundColor: snapshot.isDragging ? colors.background.hover : undefined
                             }}
                         >
 
@@ -155,7 +158,7 @@ export const Task: React.FC<TaskProps> = ({ children, id, rootId, index, dueAt, 
                                 {/* Archive button */}
                                 {archived
                                     ? <FaCheckCircle style={{
-                                        color: "var(--icon)",
+                                        color: colors.icon.primary,
                                         marginRight: 8,
                                         cursor: "pointer",
                                         width: 18,
@@ -164,7 +167,7 @@ export const Task: React.FC<TaskProps> = ({ children, id, rootId, index, dueAt, 
                                         onClick={() => { setArchived(false) }}
                                     />
                                     : <FaRegCircle style={{
-                                        color: "var(--icon)",
+                                        color: colors.icon.primary,
                                         marginRight: 8,
                                         cursor: "pointer",
                                         width: 18,

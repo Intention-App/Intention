@@ -5,13 +5,22 @@ import React from "react";
 
 export const Error: React.FC = ({ }) => {
 
+    // Get error queries from router
     const router = useRouter();
     const { code, msg, link } = router.query;
 
     return (
+
+        // Display of errors and back button
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+
+            {/* Error code */}
             <h1>{code}</h1>
+
+            {/* Error message */}
             <p>{msg}</p>
+
+            {/* Link back to a certain page */}
             {link &&
                 <Link href={link as string}>
                     <a style={{ color: "blue", textDecoration: "underline" }}>

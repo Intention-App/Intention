@@ -2,10 +2,14 @@ import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
 import React from "react";
 
+// Button for registration page
+
 interface RegisterButtonProps {
+    // Is button disabled?
     disabled?: boolean;
 }
 
+// Button styles
 const StyledButton = withStyles({
     root: {
         padding: 12,
@@ -17,6 +21,7 @@ const StyledButton = withStyles({
 
 export const RegisterButton: React.FC<RegisterButtonProps> = ({ children, disabled }) => {
     return (
+        // Button with children
         <StyledButton
             type="submit"
             color="primary"

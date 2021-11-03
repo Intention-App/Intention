@@ -1,5 +1,9 @@
 import { IntentionModule } from ".";
 
+// #PLACEHOLDER
+// #TODO move modules to backend
+
+// Example module: Arguments against Procrastination
 export const delayArguments: IntentionModule = {
     name: "Arguments against Procrastination",
     journal: {

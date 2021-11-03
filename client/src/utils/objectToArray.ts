@@ -1,3 +1,5 @@
+// Takes an object and turns it into an array of values
+
 export const objectToArray = <T>(object: Record<string, T>): T[] => {
     const keys = Object.keys(object);
     const array = [];

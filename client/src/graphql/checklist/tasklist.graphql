@@ -19,8 +19,8 @@ fragment RegularTasklist on Tasklist {
 # Create Tasklist
 mutation createTasklist ($title: String, $color: String, $boardId: String!) {
   createTasklist(options:{
-    title: $title
-    color: $color
+    title: $title,
+    color: $color,
     boardId: $boardId
   }) {
     ...RegularTasklist
