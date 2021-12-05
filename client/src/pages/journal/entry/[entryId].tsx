@@ -1,16 +1,15 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { FaTrash } from "react-icons/fa";
-import { Descendant } from "slate";
 import { HeadWrapper } from "../../../components/main/HeadWrapper";
 import { Layout } from "../../../components/main/layout";
 import { RichTextEditor } from "../../../components/journal/RichTextEditor";
 import { useDeleteEntryMutation, useMyEntryQuery, useUpdateEntryMutation } from "../../../generated/graphql";
 import { toHumanTime } from "../../../utils/toHumanTime";
-import { useDeepCompareEffect } from "../../../hooks/util/useDeepCompareEffect";
 import { useDebounce } from "use-debounce";
 import _ from "lodash";
 import { useSavePrompt } from "../../../hooks/util/useSavePrompt";
+import { Loading } from "../../../components/filler/loading";
 
 const EntryId: React.FC = ({ }) => {
 
@@ -26,11 +25,11 @@ const EntryId: React.FC = ({ }) => {
     const [, deleteEntry] = useDeleteEntryMutation();
 
     // Value of entry content
-    const [value, setValue] = useState<Descendant[] | undefined>(undefined)
+    const [value, setValue] = useState<string | undefined>(undefined)
 
     // Only set entry content on first fetch
     useEffect(() => {
-        if (data?.myEntry.content && !value) setValue(data?.myEntry.content as Descendant[]);
+        if (data?.myEntry.content !== undefined && value === undefined) setValue(data?.myEntry.content);
     }, [data]);
 
     // Redirect to error page if no data is found
@@ -41,13 +40,13 @@ const EntryId: React.FC = ({ }) => {
     }, [entryId, fetching, data])
 
     // calls API if no change is detected after 5s for autosave
-    const [debounceValue] = useDebounce(value, 5000, { equalityFn: (prev, next) => _.isEqual(prev, next) });
-    useDeepCompareEffect(() => {
+    const [debounceValue] = useDebounce(value, 5000);
+    useEffect(() => {
         if (debounceValue && data?.myEntry) updateEntry({ id: data.myEntry.id, content: debounceValue })
     }, [debounceValue])
 
     // Prompts when page is closed but app is still saving
-    useSavePrompt([value, debounceValue], ()=>{
+    useSavePrompt([value, debounceValue], () => {
         if (value && data?.myEntry) updateEntry({ id: data.myEntry.id, content: value })
     })
 
@@ -91,12 +90,15 @@ const EntryId: React.FC = ({ }) => {
                 titleChanger={handleTitleChange}
             >
                 {/* Rich text editor component for journal */}
-                <RichTextEditor
-                    useValue={[value, setValue]}
-                    save={async () => {
-                        if (data?.myEntry) { updateEntry({ id: data.myEntry.id, content: value }) }
-                    }}
-                />
+                {value !== undefined
+                    ? <RichTextEditor
+                        useValue={[value, setValue]}
+                        save={async () => {
+                            if (data?.myEntry) { updateEntry({ id: data.myEntry.id, content: value }) }
+                        }}
+                    />
+                    : <Loading />
+                }
             </HeadWrapper>
         </Layout>
     );

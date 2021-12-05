@@ -29,7 +29,7 @@ query myEntry($entryId: String!) {
 ## Mutations
 
 # Create Entry
-mutation CreateEntry($title: String, $content: JSON, $folderId: String) {
+mutation CreateEntry($title: String, $content: String, $folderId: String) {
     createEntry(
         options: { title: $title, content: $content, folderId: $folderId }
     ) {
@@ -38,7 +38,7 @@ mutation CreateEntry($title: String, $content: JSON, $folderId: String) {
 }
 
 # Update Entry
-mutation UpdateEntry($id: String!, $title: String, $content: JSON) {
+mutation UpdateEntry($id: String!, $title: String, $content: String) {
     updateEntry(id: $id, options: { title: $title, content: $content }) {
         ...RegularEntry
     }

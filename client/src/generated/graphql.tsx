@@ -14,8 +14,6 @@ export type Scalars = {
   Float: number;
   /** The javascript `Date` as string. Type represents date and time as the ISO Date string. */
   DateTime: any;
-  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
-  JSON: any;
 };
 
 export type Board = {
@@ -51,7 +49,7 @@ export type Entry = {
   __typename?: 'Entry';
   id: Scalars['String'];
   title: Scalars['String'];
-  content: Scalars['JSON'];
+  content: Scalars['String'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
   rootFolderId?: Maybe<Scalars['String']>;
@@ -59,7 +57,7 @@ export type Entry = {
 
 export type EntryOptionsInput = {
   title?: Maybe<Scalars['String']>;
-  content?: Maybe<Scalars['JSON']>;
+  content?: Maybe<Scalars['String']>;
   folderId?: Maybe<Scalars['String']>;
 };
 
@@ -84,7 +82,6 @@ export type FolderOptionsInput = {
   folderId?: Maybe<Scalars['String']>;
   title?: Maybe<Scalars['String']>;
 };
-
 
 export type LoginInput = {
   email: Scalars['String'];
@@ -643,7 +640,7 @@ export type MyEntryQuery = (
 
 export type CreateEntryMutationVariables = Exact<{
   title?: Maybe<Scalars['String']>;
-  content?: Maybe<Scalars['JSON']>;
+  content?: Maybe<Scalars['String']>;
   folderId?: Maybe<Scalars['String']>;
 }>;
 
@@ -659,7 +656,7 @@ export type CreateEntryMutation = (
 export type UpdateEntryMutationVariables = Exact<{
   id: Scalars['String'];
   title?: Maybe<Scalars['String']>;
-  content?: Maybe<Scalars['JSON']>;
+  content?: Maybe<Scalars['String']>;
 }>;
 
 
@@ -1056,7 +1053,7 @@ export function useMyEntryQuery(options: Omit<Urql.UseQueryArgs<MyEntryQueryVari
   return Urql.useQuery<MyEntryQuery>({ query: MyEntryDocument, ...options });
 };
 export const CreateEntryDocument = gql`
-    mutation CreateEntry($title: String, $content: JSON, $folderId: String) {
+    mutation CreateEntry($title: String, $content: String, $folderId: String) {
   createEntry(options: {title: $title, content: $content, folderId: $folderId}) {
     ...RegularEntry
   }
@@ -1067,7 +1064,7 @@ export function useCreateEntryMutation() {
   return Urql.useMutation<CreateEntryMutation, CreateEntryMutationVariables>(CreateEntryDocument);
 };
 export const UpdateEntryDocument = gql`
-    mutation UpdateEntry($id: String!, $title: String, $content: JSON) {
+    mutation UpdateEntry($id: String!, $title: String, $content: String) {
   updateEntry(id: $id, options: {title: $title, content: $content}) {
     ...RegularEntry
   }

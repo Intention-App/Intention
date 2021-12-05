@@ -1,5 +1,4 @@
 import { Field, ObjectType } from "type-graphql";
-import { GraphQLJSON } from 'graphql-type-json';
 import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import User from "./User";
 import Folder from "./Folder";
@@ -19,9 +18,9 @@ export default class Entry extends BaseEntity {
     title!: string;
 
     // Content of the entry stored as an object
-    @Field(() => GraphQLJSON)
-    @Column({ type: "jsonb", default: [{ type: 'paragraph', children: [{ text: '' }] }] })
-    content: {}[];
+    @Field()
+    @Column({ default: "" })
+    content!: string;
 
     // Creating date of the entry
     @Field()

@@ -11,7 +11,9 @@ import { FaClipboardList } from "react-icons/fa";
 import { Gradient } from "../../components/util/gradient";
 import { colors } from "../../styles/theme";
 
-const Journal: React.FC = ({ }) => {
+// Displays list of boards
+
+const Checklist: React.FC = ({ }) => {
 
     // Router query for later
     const router = useRouter();
@@ -108,4 +110,4 @@ const Journal: React.FC = ({ }) => {
     );
 };
 
-export default Journal;
+export default Checklist;

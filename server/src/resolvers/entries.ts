@@ -1,6 +1,5 @@
 import { ExpressContext } from "../types";
 import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
-import { GraphQLJSON } from 'graphql-type-json';
 import { isAuth } from "../middleware/isAuth";
 import { IsNull } from "typeorm";
 import Entry from "../entities/Entry";
@@ -9,8 +8,8 @@ import Entry from "../entities/Entry";
 class EntryOptionsInput {
     @Field({ nullable: true })
     title: string;
-    @Field(() => GraphQLJSON, { nullable: true })
-    content: {}[];
+    @Field({ nullable: true })
+    content: string;
     @Field({ nullable: true })
     folderId: string;
 }

@@ -1,91 +1,82 @@
-import Box from "@material-ui/core/Box";
-import React, { useCallback, useMemo } from "react";
-import { createEditor, Descendant } from "slate";
-import { withReact, Slate, Editable } from "slate-react";
-import { withLists } from "../../slate/constraints";
-import { toSlateElements } from "../../slate/toSlateElements";
+import Box from '@material-ui/core/Box';
+import { Toolbar } from "./toolbar";
 import { colors } from "../../styles/theme";
-import { insertModule } from "./InsertModule";
-import { renderElement as renderElementFunction, renderLeaf } from "./SlateElements";
-import { SlateToolbar } from "./SlateToolbar";
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Underline from '@tiptap/extension-underline';
+import makeStyles from '@material-ui/styles/makeStyles';
+import { useEffect } from 'react';
 
 // Rich Text Editor for the Journal
 
 interface RichTextEditorProps {
 
     // Use value of slate nodes
-    useValue: [Descendant[] | undefined, React.Dispatch<React.SetStateAction<Descendant[] | undefined>>];
+    useValue: [string, React.Dispatch<React.SetStateAction<string | undefined>>];
 
     // Function to save text to database
     save?: (...params: any) => any;
 };
 
+const useStyles = makeStyles({
+
+    //editor style
+    editor: {
+        height: "100%",
+
+        "&:focus": {
+            outline: "none"
+        }
+    },
+
+    editorWrapper: {
+        height: "100%",
+        backgroundColor: colors.background.secondary,
+        padding: 16,
+        borderRadius: "0px 0px 8px 8px"
+    }
+});
+
 export const RichTextEditor: React.FC<RichTextEditorProps> = ({ useValue, save }) => {
+    const styles = useStyles();
 
-    // Slate Editor with React with custom list constraints
-    const editor = useMemo(() => withLists(withReact(createEditor())), []);
-
-    // Value of the rich text
     const [value, setValue] = useValue;
 
-    // Function to render slate elements
-    const renderElement = useCallback(renderElementFunction, [])
+    const editor = useEditor({
+        extensions: [
+            StarterKit,
+            Underline,
+        ],
+        content: value,
+        onUpdate: ({ editor }) => {
+            setValue(editor.getHTML());
+        }
+    })
+
+    useEffect(() => {
+        editor?.view.dom.classList.add(styles.editor)
+    }, [editor])
 
     return (
-        // Slate editor area
-        <Slate editor={editor} value={value || [
-            {
-                type: 'paragraph',
-                children: [{ text: '' }],
-            },
-        ]} onChange={value => setValue(value)}>
-            {/* Box to align and scroll editable section */}
-            <Box
-                paddingX={4}
-                padding={4}
-                display="flex"
-                flexDirection="column"
-                flex="300px"
-                flexGrow={1}
-                flexShrink={1}
-                width="calc(100vw - 250px)"
-                bgcolor={colors.background.secondary}
-                style={{ overflowY: "scroll" }}
-            >
-
-                {/* Editing area of slate */}
-                <Editable
-                    renderElement={renderElement}
-                    renderLeaf={renderLeaf}
-                    onKeyDown={e => {
-                        // Control keys with functions
-                        if (e.ctrlKey) {
-
-                            // "Ctrl s" saves the entry
-                            if (e.key === "s" && save) {
-                                save();
-                                e.preventDefault();
-                            }
-
-                            // #TEST
-                            // "Ctrl m" inserts test module
-                            if (e.key === "m") {
-                                insertModule("delayArguments", editor)
-                            }
-                        }
-                        toSlateElements(e, editor)
-                    }}
-                    spellCheck="false"
-                    autoCorrect="false"
-                    autoCapitalize="false"
-                    style={{ height: "100%" }}
-                />
-
-                {/* Box to align slate toolbar */}
-                <Box position="absolute" bottom={24}>
-                    <SlateToolbar editor={editor} />
+        // Box to align and scroll editable section
+        <Box
+            paddingX={4}
+            padding={4}
+            display="flex"
+            flexDirection="column"
+            flex="300px"
+            flexGrow={1}
+            flexShrink={1}
+            width="calc(100vw - 250px)"
+            style={{ overflowY: "scroll" }}
+        >
+            {/* Box to align toolbar */}
+            {editor &&
+                <Box borderRadius="8px 8px 0px 0px">
+                    <Toolbar editor={editor} />
                 </Box>
-            </Box>
-        </Slate>
-    );
-};
+            }
+            <EditorContent editor={editor} className={styles.editorWrapper} />
+        </Box >
+    )
+}
