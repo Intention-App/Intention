@@ -3,7 +3,7 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Box from '@material-ui/core/Box';
-import { Divider } from './divider';
+import { Divider } from "./divider";
 
 // Icon button with menu
 

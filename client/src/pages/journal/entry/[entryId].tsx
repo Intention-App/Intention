@@ -7,9 +7,9 @@ import { RichTextEditor } from "../../../components/journal/RichTextEditor";
 import { useDeleteEntryMutation, useMyEntryQuery, useUpdateEntryMutation } from "../../../generated/graphql";
 import { toHumanTime } from "../../../utils/toHumanTime";
 import { useDebounce } from "use-debounce";
-import _ from "lodash";
 import { useSavePrompt } from "../../../hooks/util/useSavePrompt";
 import { Loading } from "../../../components/filler/loading";
+import { IconContainer } from "../../../components/util/IconContainer";
 
 const EntryId: React.FC = ({ }) => {
 
@@ -81,7 +81,6 @@ const EntryId: React.FC = ({ }) => {
                     name: "Delete Entry",
                     fn: handleEntryDeletion
                 }]}
-                buttonIcon={FaTrash}
                 backlink={data?.myEntry?.rootFolderId
                     ? `/journal/folder/${data?.myEntry?.rootFolderId}`
                     : "/journal"

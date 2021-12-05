@@ -10,6 +10,7 @@ import { FaFileAlt, FaFolder, FaPlus } from "react-icons/fa";
 import { ListViewItem } from "../../components/util/ListViewItem";
 import { Gradient } from "../../components/util/gradient";
 import { colors } from "../../styles/theme";
+import { IconContainer } from "../../components/util/IconContainer";
 
 const Journal: React.FC = ({ }) => {
 
@@ -49,11 +50,7 @@ const Journal: React.FC = ({ }) => {
                     fn: handleFolderCreation
                 }
             ]}
-                buttonIcon={() => (
-                    <Box>
-                        <FaPlus />
-                    </Box>
-                )}
+                iconContainer={<IconContainer icon={FaPlus} />}
                 buttonColor={colors.action.primary}
             >
 

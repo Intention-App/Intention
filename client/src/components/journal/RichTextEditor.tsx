@@ -20,39 +20,53 @@ interface RichTextEditorProps {
 
 const useStyles = makeStyles({
 
-    //editor style
+    // Editor style
     editor: {
-        height: "100%",
+        flex: "200px 1 1",
+        padding: 16,
+        overflowY: "scroll",
 
         "&:focus": {
             outline: "none"
         }
     },
 
+    // Editor container
     editorWrapper: {
-        height: "100%",
+        flex: "200px 1 1",
         backgroundColor: colors.background.secondary,
-        padding: 16,
-        borderRadius: "0px 0px 8px 8px"
+        borderRadius: "0px 0px 8px 8px",
+        display: "flex",
+        flexDirection:"column"
     }
 });
 
 export const RichTextEditor: React.FC<RichTextEditorProps> = ({ useValue, save }) => {
+
+    // Styles of of editors
     const styles = useStyles();
 
+    // State of editor content (for debounce saving)
     const [value, setValue] = useValue;
 
+    // Tiptap editor
     const editor = useEditor({
         extensions: [
+            // Extensions for styling
             StarterKit,
             Underline,
         ],
+
+        // Content from backend
         content: value,
+
+        // Sets value to be saved
         onUpdate: ({ editor }) => {
             setValue(editor.getHTML());
         }
     })
 
+    // Appends editor class to element
     useEffect(() => {
         editor?.view.dom.classList.add(styles.editor)
     }, [editor])
@@ -62,13 +76,13 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ useValue, save }
         <Box
             paddingX={4}
             padding={4}
+            paddingTop={0}
             display="flex"
             flexDirection="column"
             flex="300px"
             flexGrow={1}
             flexShrink={1}
             width="calc(100vw - 250px)"
-            style={{ overflowY: "scroll" }}
         >
             {/* Box to align toolbar */}
             {editor &&
@@ -76,6 +90,8 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ useValue, save }
                     <Toolbar editor={editor} />
                 </Box>
             }
+
+            {/* Tiptap editor */}
             <EditorContent editor={editor} className={styles.editorWrapper} />
         </Box >
     )
