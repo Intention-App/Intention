@@ -3,11 +3,20 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
 
-export const Error: React.FC = ({ }) => {
+interface ErrorProps {
+    error?: {
+        code: number;
+        msg: string;
+        link: string;
+    }
+}
+
+export const Error: React.FC<ErrorProps> = ({ error }) => {
 
     // Get error queries from router
     const router = useRouter();
-    const { code, msg, link } = router.query;
+
+    const { code, msg, link } = error || router.query;
 
     return (
 

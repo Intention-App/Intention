@@ -12,8 +12,10 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "@sendgrid/mail": "^7.6.0",
         "apollo-server-express": "^2.25.1",
         "argon2": "^0.28.2",
+        "connect-redis": "^6.0.0",
         "cors": "^2.8.5",
         "crypto": "^1.0.1",
         "dotenv": "^10.0.0",
@@ -29,10 +31,12 @@
         "typeorm": "^0.2.34"
     },
     "devDependencies": {
-        "@types/connect-pg-simple": "^4.2.2",
+        "@types/connect-redis": "0.0.17",
         "@types/express": "^4.17.12",
         "@types/express-session": "^1.17.3",
+        "@types/ioredis": "^4.28.2",
         "@types/node": "^15.12.2",
+        "@types/uuid": "^8.3.3",
         "@types/validator": "^13.7.0",
         "class-validator": "^0.13.2",
         "nodemon": "^2.0.7",

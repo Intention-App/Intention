@@ -9,10 +9,15 @@ import { COOKIE_NAME, __prod__ } from "./constants";
 import { ExpressContext } from "./types";
 import getResolvers from "./resolvers";
 import getEntities from "./entities";
+import Redis from "ioredis";
+import connectReddis from "connect-redis"
 
 const main = async () => {
 
     dotenv.config();
+
+    const RedisStore = connectReddis(express_session);
+    const redis = new Redis();
 
     // Initialize Postgres database
     const entities = await getEntities();
@@ -53,6 +58,10 @@ const main = async () => {
     app.use(
         express_session({
             name: COOKIE_NAME,
+            store: new RedisStore({
+                client: redis,
+                disableTouch: true
+            }),
             cookie: {
                 maxAge: 1000 * 60 * 60 * 24 * 7,
                 httpOnly: true,
@@ -69,7 +78,7 @@ const main = async () => {
     const resolvers = await getResolvers();
     const apolloServer = new ApolloServer({
         schema: await buildSchema({ resolvers: resolvers, validate: false }),
-        context: ({ req, res }): ExpressContext => ({ req, res }),
+        context: ({ req, res }): ExpressContext => ({ req, res, redis }),
     });
 
     // Integrate apollo server to express

@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { FaTrash } from "react-icons/fa";
 import { HeadWrapper } from "../../../components/main/HeadWrapper";
 import { Layout } from "../../../components/main/layout";
 import { RichTextEditor } from "../../../components/journal/RichTextEditor";
@@ -9,7 +8,6 @@ import { toHumanTime } from "../../../utils/toHumanTime";
 import { useDebounce } from "use-debounce";
 import { useSavePrompt } from "../../../hooks/util/useSavePrompt";
 import { Loading } from "../../../components/filler/loading";
-import { IconContainer } from "../../../components/util/IconContainer";
 
 const EntryId: React.FC = ({ }) => {
 

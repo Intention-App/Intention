@@ -18,13 +18,13 @@ export type Scalars = {
 
 export type Board = {
   __typename?: 'Board';
-  id: Scalars['String'];
-  title: Scalars['String'];
-  tasklistOrder?: Maybe<Array<Scalars['String']>>;
   createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
+  id: Scalars['String'];
+  tasklistOrder?: Maybe<Array<Scalars['String']>>;
   tasklists?: Maybe<Array<Tasklist>>;
   tasks?: Maybe<Array<Task>>;
+  title: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
 };
 
 export type BoardOptionsInput = {
@@ -32,33 +32,39 @@ export type BoardOptionsInput = {
 };
 
 export type CreateTaskOptionsInput = {
-  title?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   dueAt?: Maybe<Scalars['DateTime']>;
   tasklistId: Scalars['String'];
+  title?: Maybe<Scalars['String']>;
 };
 
 export type CreateTasklistOptionsInput = {
-  title?: Maybe<Scalars['String']>;
-  color?: Maybe<Scalars['String']>;
   boardId: Scalars['String'];
+  color?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
 };
 
+
+export type EmailResponse = {
+  __typename?: 'EmailResponse';
+  errors?: Maybe<Array<FieldError>>;
+  success?: Maybe<Scalars['Boolean']>;
+};
 
 export type Entry = {
   __typename?: 'Entry';
-  id: Scalars['String'];
-  title: Scalars['String'];
   content: Scalars['String'];
   createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
+  id: Scalars['String'];
   rootFolderId?: Maybe<Scalars['String']>;
+  title: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
 };
 
 export type EntryOptionsInput = {
-  title?: Maybe<Scalars['String']>;
   content?: Maybe<Scalars['String']>;
   folderId?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
 };
 
 export type FieldError = {
@@ -69,13 +75,13 @@ export type FieldError = {
 
 export type Folder = {
   __typename?: 'Folder';
-  id: Scalars['String'];
-  title: Scalars['String'];
   createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
-  rootFolderId?: Maybe<Scalars['String']>;
   entries?: Maybe<Array<Entry>>;
   folders?: Maybe<Array<Folder>>;
+  id: Scalars['String'];
+  rootFolderId?: Maybe<Scalars['String']>;
+  title: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
 };
 
 export type FolderOptionsInput = {
@@ -90,128 +96,42 @@ export type LoginInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  archiveTask?: Maybe<Task>;
   /** Create a new board */
   createBoard: Board;
-  /** Delete a board by id */
-  deleteBoard: Scalars['Boolean'];
-  /** Update a board by id */
-  updateBoard: Board;
-  updateOrder: Board;
   /** Create a new entry */
   createEntry: Entry;
-  /** Delete a specific entry by id */
-  deleteEntry?: Maybe<Scalars['String']>;
-  /** Update a specific existing entry */
-  updateEntry: Entry;
   /** Create a new folder */
   createFolder: Folder;
-  /** Delete a folder by id */
-  deleteFolder?: Maybe<Scalars['String']>;
-  /** Update a folder by id */
-  updateFolder: Folder;
+  createTask: Task;
   /** Create a new tasklist */
   createTasklist: Tasklist;
+  /** Delete a board by id */
+  deleteBoard: Scalars['Boolean'];
+  /** Delete a specific entry by id */
+  deleteEntry?: Maybe<Scalars['String']>;
+  /** Delete a folder by id */
+  deleteFolder?: Maybe<Scalars['String']>;
+  deleteTask?: Maybe<Scalars['Boolean']>;
   /** Delete a specific tasklist */
   deleteTasklist: Scalars['Boolean'];
-  updateTasklist: Tasklist;
-  createTask: Task;
-  deleteTask?: Maybe<Scalars['Boolean']>;
-  updateTask: Task;
-  archiveTask?: Maybe<Task>;
-  /** Register a new user */
-  register: UserResponse;
   /** Authenticate a user */
   login: UserResponse;
   /** Disconnect user */
   logout: Scalars['Boolean'];
-};
-
-
-export type MutationCreateBoardArgs = {
-  options: BoardOptionsInput;
-};
-
-
-export type MutationDeleteBoardArgs = {
-  id: Scalars['String'];
-};
-
-
-export type MutationUpdateBoardArgs = {
-  options: BoardOptionsInput;
-  id: Scalars['String'];
-};
-
-
-export type MutationUpdateOrderArgs = {
-  tasklistOrder?: Maybe<Array<Scalars['String']>>;
-  tasklists: Array<TasklistInput>;
-  id: Scalars['String'];
-};
-
-
-export type MutationCreateEntryArgs = {
-  options: EntryOptionsInput;
-};
-
-
-export type MutationDeleteEntryArgs = {
-  id: Scalars['String'];
-};
-
-
-export type MutationUpdateEntryArgs = {
-  options: EntryOptionsInput;
-  id: Scalars['String'];
-};
-
-
-export type MutationCreateFolderArgs = {
-  options: FolderOptionsInput;
-};
-
-
-export type MutationDeleteFolderArgs = {
-  explode?: Maybe<Scalars['Boolean']>;
-  id: Scalars['String'];
-};
-
-
-export type MutationUpdateFolderArgs = {
-  options: FolderOptionsInput;
-  id: Scalars['String'];
-};
-
-
-export type MutationCreateTasklistArgs = {
-  options: CreateTasklistOptionsInput;
-};
-
-
-export type MutationDeleteTasklistArgs = {
-  id: Scalars['String'];
-};
-
-
-export type MutationUpdateTasklistArgs = {
-  options: TasklistOptionsInput;
-  id: Scalars['String'];
-};
-
-
-export type MutationCreateTaskArgs = {
-  options: CreateTaskOptionsInput;
-};
-
-
-export type MutationDeleteTaskArgs = {
-  id: Scalars['String'];
-};
-
-
-export type MutationUpdateTaskArgs = {
-  options: TaskOptionsInput;
-  id: Scalars['String'];
+  /** Register a new user */
+  register: UserResponse;
+  /** Update a board by id */
+  updateBoard: Board;
+  /** Update a specific existing entry */
+  updateEntry: Entry;
+  /** Update a folder by id */
+  updateFolder: Folder;
+  updateOrder: Board;
+  updateTask: Task;
+  updateTasklist: Tasklist;
+  /** Verify email of new user */
+  verifyEmail: EmailResponse;
 };
 
 
@@ -221,8 +141,54 @@ export type MutationArchiveTaskArgs = {
 };
 
 
-export type MutationRegisterArgs = {
-  options: RegisterInput;
+export type MutationCreateBoardArgs = {
+  options: BoardOptionsInput;
+};
+
+
+export type MutationCreateEntryArgs = {
+  options: EntryOptionsInput;
+};
+
+
+export type MutationCreateFolderArgs = {
+  options: FolderOptionsInput;
+};
+
+
+export type MutationCreateTaskArgs = {
+  options: CreateTaskOptionsInput;
+};
+
+
+export type MutationCreateTasklistArgs = {
+  options: CreateTasklistOptionsInput;
+};
+
+
+export type MutationDeleteBoardArgs = {
+  id: Scalars['String'];
+};
+
+
+export type MutationDeleteEntryArgs = {
+  id: Scalars['String'];
+};
+
+
+export type MutationDeleteFolderArgs = {
+  explode?: Maybe<Scalars['Boolean']>;
+  id: Scalars['String'];
+};
+
+
+export type MutationDeleteTaskArgs = {
+  id: Scalars['String'];
+};
+
+
+export type MutationDeleteTasklistArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -230,51 +196,100 @@ export type MutationLoginArgs = {
   options: LoginInput;
 };
 
+
+export type MutationRegisterArgs = {
+  options: RegisterInput;
+};
+
+
+export type MutationUpdateBoardArgs = {
+  id: Scalars['String'];
+  options: BoardOptionsInput;
+};
+
+
+export type MutationUpdateEntryArgs = {
+  id: Scalars['String'];
+  options: EntryOptionsInput;
+};
+
+
+export type MutationUpdateFolderArgs = {
+  id: Scalars['String'];
+  options: FolderOptionsInput;
+};
+
+
+export type MutationUpdateOrderArgs = {
+  id: Scalars['String'];
+  tasklistOrder?: Maybe<Array<Scalars['String']>>;
+  tasklists: Array<TasklistInput>;
+};
+
+
+export type MutationUpdateTaskArgs = {
+  id: Scalars['String'];
+  options: TaskOptionsInput;
+};
+
+
+export type MutationUpdateTasklistArgs = {
+  id: Scalars['String'];
+  options: TasklistOptionsInput;
+};
+
+
+export type MutationVerifyEmailArgs = {
+  options: LoginInput;
+};
+
 export type Query = {
   __typename?: 'Query';
-  /** DEV TOOL | Get all boards */
-  boards: Array<Board>;
   /** DEV TOOL | Get specific board by ID */
   board: Board;
-  /** Get all the user's boards */
-  myBoards: Array<Board>;
-  /** Get a specific user's board */
-  myBoard: Board;
+  /** DEV TOOL | Get all boards */
+  boards: Array<Board>;
   /** DEV TOOL | Get all entries */
   entries: Array<Entry>;
   /** DEV TOOL | Get a specific entry by ID */
   entry: Entry;
+  /** DEV TOOL | Get a specific folder by ID */
+  folder: Folder;
+  /** DEV TOOL | Get all folders */
+  folders: Array<Folder>;
+  /** Get self authenticated user */
+  me?: Maybe<User>;
+  /** Get a specific user's board */
+  myBoard: Board;
+  /** Get all the user's boards */
+  myBoards: Array<Board>;
   /** Get all entries of an authenticated user */
   myEntries: Array<Entry>;
   /** Get a specific entry by id of an authenticated used */
   myEntry: Entry;
-  /** DEV TOOL | Get all folders */
-  folders: Array<Folder>;
-  /** DEV TOOL | Get a specific folder by ID */
-  folder: Folder;
-  /** Get all folders of an authenticated user */
-  myFolders: Array<Folder>;
   /** Get a specific folder by ID of an authenticated user */
   myFolder: Folder;
-  /** DEV TOOL | Get all tasklists */
-  tasklists: Array<Tasklist>;
-  /** DEV TOOL | Get specific tasklist by ID */
-  tasklist: Tasklist;
-  /** Get user's tasklists */
-  myTasklists: Array<Tasklist>;
+  /** Get all folders of an authenticated user */
+  myFolders: Array<Folder>;
+  myTask: Task;
   /** Get user's specific tasklist by id */
   myTasklist: Tasklist;
+  /** Get user's tasklists */
+  myTasklists: Array<Tasklist>;
+  myTasks: Array<Task>;
+  task: Task;
+  /** DEV TOOL | Get specific tasklist by ID */
+  tasklist: Tasklist;
+  /** DEV TOOL | Get all tasklists */
+  tasklists: Array<Tasklist>;
   /** DEV TOOL | Get all tasks */
   tasks: Array<Task>;
-  task: Task;
-  myTasks: Array<Task>;
-  myTask: Task;
-  /** DEV TOOL | Get all users */
-  users: Array<User>;
   /** DEV TOOL | Get user by id */
   user?: Maybe<User>;
-  /** Get self authenticated user */
-  me?: Maybe<User>;
+  /** DEV TOOL | Get all users */
+  users: Array<User>;
+  /** Verify token of email verification process */
+  verifyEmailToken?: Maybe<Scalars['String']>;
 };
 
 
@@ -283,12 +298,17 @@ export type QueryBoardArgs = {
 };
 
 
-export type QueryMyBoardArgs = {
+export type QueryEntryArgs = {
   id: Scalars['String'];
 };
 
 
-export type QueryEntryArgs = {
+export type QueryFolderArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryMyBoardArgs = {
   id: Scalars['String'];
 };
 
@@ -303,7 +323,7 @@ export type QueryMyEntryArgs = {
 };
 
 
-export type QueryFolderArgs = {
+export type QueryMyFolderArgs = {
   id: Scalars['String'];
 };
 
@@ -313,12 +333,7 @@ export type QueryMyFoldersArgs = {
 };
 
 
-export type QueryMyFolderArgs = {
-  id: Scalars['String'];
-};
-
-
-export type QueryTasklistArgs = {
+export type QueryMyTaskArgs = {
   id: Scalars['String'];
 };
 
@@ -333,7 +348,7 @@ export type QueryTaskArgs = {
 };
 
 
-export type QueryMyTaskArgs = {
+export type QueryTasklistArgs = {
   id: Scalars['String'];
 };
 
@@ -342,42 +357,47 @@ export type QueryUserArgs = {
   id: Scalars['String'];
 };
 
+
+export type QueryVerifyEmailTokenArgs = {
+  token: Scalars['String'];
+};
+
 export type RegisterInput = {
   firstName: Scalars['String'];
   lastName: Scalars['String'];
-  email: Scalars['String'];
   password: Scalars['String'];
+  token: Scalars['String'];
 };
 
 export type Task = {
   __typename?: 'Task';
-  id: Scalars['String'];
-  title: Scalars['String'];
+  archivedAt?: Maybe<Scalars['DateTime']>;
+  boardId: Scalars['String'];
+  createdAt: Scalars['DateTime'];
   description?: Maybe<Scalars['String']>;
   dueAt?: Maybe<Scalars['DateTime']>;
-  archivedAt?: Maybe<Scalars['DateTime']>;
-  createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
+  id: Scalars['String'];
   tasklistId: Scalars['String'];
-  boardId: Scalars['String'];
+  title: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
 };
 
 export type TaskOptionsInput = {
-  title?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
   dueAt?: Maybe<Scalars['DateTime']>;
+  title?: Maybe<Scalars['String']>;
 };
 
 export type Tasklist = {
   __typename?: 'Tasklist';
-  id: Scalars['String'];
-  title: Scalars['String'];
-  color?: Maybe<Scalars['String']>;
-  taskOrder?: Maybe<Array<Scalars['String']>>;
-  createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
-  tasks?: Maybe<Array<Task>>;
   boardId: Scalars['String'];
+  color?: Maybe<Scalars['String']>;
+  createdAt: Scalars['DateTime'];
+  id: Scalars['String'];
+  taskOrder?: Maybe<Array<Scalars['String']>>;
+  tasks?: Maybe<Array<Task>>;
+  title: Scalars['String'];
+  updatedAt: Scalars['DateTime'];
 };
 
 export type TasklistInput = {
@@ -386,23 +406,23 @@ export type TasklistInput = {
 };
 
 export type TasklistOptionsInput = {
-  title?: Maybe<Scalars['String']>;
   color?: Maybe<Scalars['String']>;
+  title?: Maybe<Scalars['String']>;
 };
 
 export type User = {
   __typename?: 'User';
-  id: Scalars['String'];
-  firstName: Scalars['String'];
-  lastName: Scalars['String'];
-  email: Scalars['String'];
-  createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
   boards?: Maybe<Array<Board>>;
+  createdAt: Scalars['DateTime'];
+  email: Scalars['String'];
+  entries?: Maybe<Array<Entry>>;
+  firstName: Scalars['String'];
+  folders?: Maybe<Array<Folder>>;
+  id: Scalars['String'];
+  lastName: Scalars['String'];
   tasklists?: Maybe<Array<Tasklist>>;
   tasks?: Maybe<Array<Task>>;
-  entries?: Maybe<Array<Entry>>;
-  folders?: Maybe<Array<Folder>>;
+  updatedAt: Scalars['DateTime'];
 };
 
 export type UserResponse = {
@@ -771,10 +791,38 @@ export type MeQuery = (
   )> }
 );
 
+export type VerifyEmailMutationVariables = Exact<{
+  email: Scalars['String'];
+  password: Scalars['String'];
+}>;
+
+
+export type VerifyEmailMutation = (
+  { __typename?: 'Mutation' }
+  & { verifyEmail: (
+    { __typename?: 'EmailResponse' }
+    & Pick<EmailResponse, 'success'>
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>> }
+  ) }
+);
+
+export type VerifyEmailTokenQueryVariables = Exact<{
+  token: Scalars['String'];
+}>;
+
+
+export type VerifyEmailTokenQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'verifyEmailToken'>
+);
+
 export type RegisterMutationVariables = Exact<{
   firstName: Scalars['String'];
   lastName: Scalars['String'];
-  email: Scalars['String'];
+  token: Scalars['String'];
   password: Scalars['String'];
 }>;
 
@@ -1154,10 +1202,34 @@ export const MeDocument = gql`
 export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
 };
+export const VerifyEmailDocument = gql`
+    mutation VerifyEmail($email: String!, $password: String!) {
+  verifyEmail(options: {email: $email, password: $password}) {
+    errors {
+      field
+      message
+    }
+    success
+  }
+}
+    `;
+
+export function useVerifyEmailMutation() {
+  return Urql.useMutation<VerifyEmailMutation, VerifyEmailMutationVariables>(VerifyEmailDocument);
+};
+export const VerifyEmailTokenDocument = gql`
+    query VerifyEmailToken($token: String!) {
+  verifyEmailToken(token: $token)
+}
+    `;
+
+export function useVerifyEmailTokenQuery(options: Omit<Urql.UseQueryArgs<VerifyEmailTokenQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<VerifyEmailTokenQuery>({ query: VerifyEmailTokenDocument, ...options });
+};
 export const RegisterDocument = gql`
-    mutation Register($firstName: String!, $lastName: String!, $email: String!, $password: String!) {
+    mutation Register($firstName: String!, $lastName: String!, $token: String!, $password: String!) {
   register(
-    options: {firstName: $firstName, lastName: $lastName, email: $email, password: $password}
+    options: {firstName: $firstName, lastName: $lastName, token: $token, password: $password}
   ) {
     errors {
       field

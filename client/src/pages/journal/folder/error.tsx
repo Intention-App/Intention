@@ -1,6 +1,6 @@
 import React from "react";
 import { Layout } from "../../../components/main/layout";
-import { Error } from "../../../components/util/error";
+import { Error } from "../../../components/filler/error";
 
 const ErrorPage: React.FC = ({}) => {
     return(

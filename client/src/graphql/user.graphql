@@ -18,18 +18,34 @@ query Me {
 
 ## Mutations
 
+# Verify email by sending a link to said emailt
+mutation VerifyEmail($email: String!, $password: String!) {
+	verifyEmail(options: { email: $email, password: $password }) {
+		errors {
+			field
+			message
+		}
+		success
+	}
+}
+
+# Verify email token via checking redis
+query VerifyEmailToken($token: String!) {
+	verifyEmailToken(token: $token)
+}
+
 # Create New Account with Cookie and Session
 mutation Register(
 	$firstName: String!
 	$lastName: String!
-	$email: String!
+	$token: String!
 	$password: String!
 ) {
 	register(
 		options: {
 			firstName: $firstName
 			lastName: $lastName
-			email: $email
+			token: $token
 			password: $password
 		}
 	) {
