@@ -163,8 +163,7 @@ export default class UserResolver {
                 to: options.email, // Recipient
                 from: 'intention.app.dev@gmail.com', // Verified sender
                 subject: 'Intention Email Verification',
-                // Html with temporary link and image
-                // #WIP
+                // #WIP: Html with temporary link and image
                 html: `
                 <div style="background-color: #130f26; padding: 4rem; display: flex; align-items: center;">
                     <img src="https://media.discordapp.net/attachments/871463246635343942/884129513506766848/IntentionLogo.png"
@@ -178,6 +177,8 @@ export default class UserResolver {
                 </div>
                 `,
             }
+
+            // #TODO: Invalidate previous token when new token is sent
 
             // Send email to registrant
             sgMail.send(msg)

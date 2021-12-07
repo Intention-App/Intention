@@ -48,7 +48,7 @@ const validateConfPass = (value: string, confirm: string): string | undefined =>
 
 const register: React.FC = () => {
 
-    // Registration operation for later
+    // Verify email operation for later
     const [{ fetching }, verifyEmail] = useVerifyEmailMutation();
 
     // State to check whether email has been sent
@@ -61,79 +61,84 @@ const register: React.FC = () => {
             {/* Sign up header */}
             <h1 style={{ color: colors.text.title, marginBottom: 24 }}>{sent ? "Verify Email" : "Sign Up"}</h1>
 
+            {/* Show registration form verification email has not already been sent, else show message */}
+            {!sent &&
+                // Formik form
+                < Formik
+                    // form fields
+                    initialValues={{ email: "", password: "", confirmPassword: "" }}
+                    onSubmit={async (values, { setErrors }) => {
 
-            {// Show registration form verification email has not already been sent, else show message
-                !sent ?
-                    // Formik form
-                    < Formik
-                        // form fields
-                        initialValues={{ email: "", password: "", confirmPassword: "" }}
-                        onSubmit={async (values, { setErrors }) => {
+                        // Register in backend
+                        const response = await verifyEmail({
+                            email: values.email,
+                            password: values.password
+                        });
 
-                            // Register in backend
-                            const response = await verifyEmail({
-                                email: values.email,
-                                password: values.password
-                            });
+                        // Reroutes to dashboard if valid, set input errors if not
+                        if (response.data?.verifyEmail.success) {
+                            setSent(values.email);
+                        }
+                        else if (response.data?.verifyEmail.errors) {
+                            setErrors(toErrorMap(response.data.verifyEmail.errors))
+                        }
+                    }}
+                >
+                    {({ values }) => (
+                        <Form>
 
-                            // Reroutes to dashboard if valid, set input errors if not
-                            if (response.data?.verifyEmail.success) {
-                                setSent(values.email);
-                            }
-                            else if (response.data?.verifyEmail.errors) {
-                                setErrors(toErrorMap(response.data.verifyEmail.errors))
-                            }
-                        }}
-                    >
-                        {({ values }) => (
-                            <Form>
+                            {/* Box center aligns values */}
+                            <Box display="flex" alignItems="center" flexDirection="column">
 
-                                {/* Box center aligns values */}
-                                <Box display="flex" alignItems="center" flexDirection="column">
-
-                                    {/*
+                                {/*
                                         Input Fields
                                     */}
 
-                                    <RegisterInput
-                                        type="email"
-                                        label="Email"
-                                        name="email"
-                                        validate={validateEmail}
-                                        required
-                                    />
-                                    <RegisterInput
-                                        type="password"
-                                        label="Password"
-                                        name="password"
-                                        validate={validatePass}
-                                        required
-                                    />
-                                    <RegisterInput
-                                        type="password"
-                                        label="Confirm Password"
-                                        name="confirmPassword"
-                                        validate={() => validateConfPass(values.password, values.confirmPassword)}
-                                        required
-                                    />
+                                <RegisterInput
+                                    type="email"
+                                    label="Email"
+                                    name="email"
+                                    validate={validateEmail}
+                                    required
+                                />
+                                <RegisterInput
+                                    type="password"
+                                    label="Password"
+                                    name="password"
+                                    validate={validatePass}
+                                    required
+                                />
+                                <RegisterInput
+                                    type="password"
+                                    label="Confirm Password"
+                                    name="confirmPassword"
+                                    validate={() => validateConfPass(values.password, values.confirmPassword)}
+                                    required
+                                />
 
-                                    {/* Submits form, disabled when submitting */}
-                                    <RegisterButton
-                                        disabled={fetching}
-                                    >
-                                        Sign Up
-                                    </RegisterButton>
-                                </Box>
-                            </Form>
-                        )}
-                    </Formik>
-                    : <Box display="flex" flexDirection="column" alignItems="center">
-                        <p style={{ marginBottom: 16 }}>An email containing a verification link has just been sent to{" "}
-                            <strong>{sent}</strong>
-                        </p>
-                        <p style={{ marginBottom: 16 }}>Please verify you email by clicking on the provided link within 24 hours to continue the creation of your account!</p>
-                        <p>Did not recieve an email? Check your spam or resend it <a>here</a></p>
-                    </Box>
+                                {/* Submits form, disabled when submitting */}
+                                <RegisterButton
+                                    disabled={fetching}
+                                >
+                                    Sign Up
+                                </RegisterButton>
+                            </Box>
+                        </Form>
+                    )}
+                </Formik>
+            }
+
+            {/* Message to notify verification link has been sent */}
+            {sent &&
+                <Box display="flex" flexDirection="column" alignItems="center">
+                    <p style={{ marginBottom: 16 }}>An email containing a verification link has just been sent to{" "}
+                        <strong>{sent}</strong>
+                    </p>
+                    <p style={{ marginBottom: 16 }}>Please verify you email by clicking on the provided link within 24 hours to continue the creation of your account!</p>
+                    <p>Did not recieve an email? Check your spam or resend it <a>here</a></p>
+
+                    {/* #TODO: Add send new email function */}
+                </Box>
             }
 
 

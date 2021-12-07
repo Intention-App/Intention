@@ -70,8 +70,8 @@ const createAccount: React.FC = () => {
             {/* Sign up header */}
             <h1 style={{ color: colors.text.title, marginBottom: 24 }}>Sign Up</h1>
 
+            {/* Formik form when email exists */}
             {email &&
-                // Formik form when email exists
                 <Formik
 
                     // form fields
@@ -137,10 +137,12 @@ const createAccount: React.FC = () => {
                 </Formik>
             }
 
+            {/* If token is not valid, give 404 error */}
             {(!email && !verifyFetching) &&
                 <Error error={{ code: 404, msg: "Resource Not Found", link: "/register" }} />
             }
 
+            {/* If fetching, use loading animation */}
             {verifyFetching &&
                 <Box height={300}>
                     <Loading />
