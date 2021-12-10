@@ -9,7 +9,7 @@ html, body {
 }
 
 a {
-  color: #6e61fa;
+  color: inherit;
   text-decoration: none;
 }
 

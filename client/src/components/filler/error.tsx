@@ -32,7 +32,7 @@ export const Error: React.FC<ErrorProps> = ({ error }) => {
             {/* Link back to a certain page */}
             {link &&
                 <Link href={link as string}>
-                    <a style={{ color: "blue", textDecoration: "underline" }}>
+                    <a style={{ color: "#6e61fa", textDecoration: "underline" }}>
                         Go Back
                     </a>
                 </Link>

@@ -1,13 +1,16 @@
 import Box from "@material-ui/core/Box";
 import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
 import { Formik, Form } from "formik";
 import React, { useState } from "react";
-import { FaTrash } from "react-icons/fa";
+import { FaTimes, FaTrash } from "react-icons/fa";
 import { Tasklist, useCreateTasklistMutation, useDeleteTasklistMutation, useUpdateTasklistMutation } from "../../generated/graphql";
 import { ClientBoard } from "../../pages/checklist/board/[boardId]";
 import { colors } from "../../styles/theme";
+import { ModalState } from "../util/ConfirmModal";
+import { IconContainer } from "../util/IconContainer";
 import { InputField } from "../util/InputField";
-import { MenuButton } from "../util/menuButton";
+import { InputSelect } from "../util/InputSelect";
 
 // Tasklist Editor
 
@@ -17,7 +20,10 @@ export interface EditTasklistProps {
     setBoard: React.Dispatch<React.SetStateAction<ClientBoard | undefined>>;
 
     // Func for closing modal
-    closeModal: (e: any) => any;
+    closeModal: () => any;
+
+    // For confirming actions
+    setConfirmationModal: React.Dispatch<React.SetStateAction<ModalState | undefined>>;
 
     // Tasklist information
     tasklist?: Tasklist;
@@ -25,7 +31,7 @@ export interface EditTasklistProps {
 };
 
 
-export const EditTasklist: React.FC<EditTasklistProps> = ({ setBoard, tasklist, boardId, closeModal }) => {
+export const EditTasklist: React.FC<EditTasklistProps> = ({ setBoard, tasklist, boardId, setConfirmationModal, closeModal }) => {
 
     // CRUD operations for later
     const [, createTasklist] = useCreateTasklistMutation();
@@ -63,7 +69,7 @@ export const EditTasklist: React.FC<EditTasklistProps> = ({ setBoard, tasklist, 
         }
 
         // Closes editor
-        closeModal(event)
+        closeModal()
     };
 
     return (
@@ -71,20 +77,6 @@ export const EditTasklist: React.FC<EditTasklistProps> = ({ setBoard, tasklist, 
         // Box for all editor content
         <Box minWidth={500} padding={4} height="100%" display="flex" flexDirection="column">
 
-            {/* Box for header and menu options */}
-            <Box display="flex" justifyContent="space-between" alignItems="center" >
-                <h3>Edit Tasklist</h3>
-
-                {/* Delete button */}
-                <MenuButton options={[
-                    {
-                        name: "Delete Tasklist",
-                        fn: handleTasklistDeletion
-                    }
-                ]}>
-                    {<FaTrash style={{ width: 16, height: 16, color: colors.icon.primary, cursor: "pointer" }} />}
-                </MenuButton>
-            </Box>
             {/* Form with Formik */}
             <Formik
 
@@ -163,51 +155,129 @@ export const EditTasklist: React.FC<EditTasklistProps> = ({ setBoard, tasklist, 
                     }
 
                     // Closes editor
-                    closeModal(event)
+                    closeModal()
                 }}
             >
-                {/* Form with Formik controls */}
-                <Form style={{
-                    flexGrow: 1,
-                    flexShrink: 1,
-                    flexBasis: 300,
-                    display: "flex",
-                    flexDirection: "column"
-                }}>
 
-                    {/* Title field */}
-                    <InputField
-                        label="Title"
-                        name="title"
-                        autoComplete="off"
-                        placeholder="Untitled"
-                        variant="filled"
-                    />
+                {({ values }) => (<>
+                    {/* Box for header and menu options */}
+                    <Box display="flex" justifyContent="space-between" alignItems="center" >
+                        <h3>Edit Tasklist</h3>
 
-                    {/* Color field */}
-                    <InputField
-                        label="Color"
-                        name="color"
-                        autoComplete="off"
-                        placeholder=""
-                        variant="filled"
-                    />
 
-                    {/* Submit Button */}
-                    <Box marginTop="auto">
-                        <Button
-                            type="submit"
-                            color="primary"
-                            variant="contained"
-                            style={{ marginTop: 16 }}
-                            disabled={buttonDisabled}
-                        >
-                            Save Tasklist
-                        </Button>
+                        <Box display="flex" alignItems="center">
+                            {/* Delete button, but only when editing existing tasklist */}
+                            {tasklist &&
+                                <IconButton
+                                    onClick={() => {
+                                        setConfirmationModal({
+                                            message: "Are you sure you want to delete this tasklist?",
+                                            fn: handleTasklistDeletion
+                                        })
+                                    }}
+                                >
+                                    <FaTrash style={{ width: 20, height: 20, color: colors.icon.primary, cursor: "pointer" }} />
+                                </IconButton>
+                            }
+
+                            {/* Cancel Changes Button */}
+                            <IconButton
+                                onClick={() => {
+
+                                    // Open confirmation modal if there are unsaved changes
+                                    if (
+                                        tasklist?.title != values.title ||
+                                        tasklist?.color != values.color
+                                    ) {
+                                        setConfirmationModal({
+                                            message: "There are unsaved changes. Do you still want to cancel?",
+                                            fn: closeModal
+                                        })
+                                    }
+
+                                    // Otherwise, directly close it
+                                    else {
+                                        closeModal();
+                                    }
+                                }}
+                            >
+                                {<IconContainer icon={FaTimes} />}
+                            </IconButton>
+                        </Box>
                     </Box>
-                </Form>
+
+                    {/* Form with Formik controls */}
+                    < Form style={{
+                        flexGrow: 1,
+                        flexShrink: 1,
+                        flexBasis: 300,
+                        display: "flex",
+                        flexDirection: "column"
+                    }}>
+
+                        {/* Title field */}
+                        <InputField
+                            label="Title"
+                            name="title"
+                            autoComplete="off"
+                            placeholder="Untitled"
+                            variant="filled"
+                        />
+
+                        {/* #TODO: Make this more accessible and clear */}
+                        {/* Color field */}
+                        <InputSelect
+                            label="Color"
+                            name="color"
+                            variant="filled"
+                            options={[
+                                {
+                                    name: "Purple",
+                                    value: "#6e61fa"
+                                },
+                                {
+                                    name: "Blue",
+                                    value: "#246eB9"
+                                },
+                                {
+                                    name: "Sea Green",
+                                    value: "#00a6a6"
+                                },
+                                {
+                                    name: "Yellow",
+                                    value: "#efca08"
+                                },
+                                {
+                                    name: "Tomato",
+                                    value: "#f15025"
+                                },
+                                {
+                                    name: "Orange",
+                                    value: "#f08700"
+                                },
+                                {
+                                    name: "Green",
+                                    value: "#5efc8d"
+                                },
+                            ]}
+                        />
+
+                        {/* Submit Button */}
+                        <Box marginTop="auto">
+                            <Button
+                                type="submit"
+                                color="primary"
+                                variant="contained"
+                                style={{ marginTop: 16 }}
+                                disabled={buttonDisabled}
+                            >
+                                Save Tasklist
+                            </Button>
+                        </Box>
+                    </Form>
+                </>)}
             </Formik>
-        </Box>
+        </Box >
     );
 };
 

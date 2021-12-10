@@ -48,8 +48,6 @@ export const Column: React.FC<ColumnProps> = ({ children, tasks, color, id, inde
                     {/* Container of tasklist */}
                     <Box
                         {...draggableProvided.draggableProps}
-                        marginRight={-1}
-                        margin={-2}
                         padding={2}
                         borderRadius={8}
                         bgcolor={snapshot.isDragging ? colors.background.hover : colors.background.primary}
