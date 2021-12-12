@@ -38,7 +38,7 @@ const useStyles = makeStyles({
         backgroundColor: "#F3F3F3",
         padding: "20px 16px 0px 16px",
         borderRadius: 16,
-        minWidth: 300,
+        minWidth: 350,
         border: "1px solid transparent",
         transition: "250ms",
 
@@ -82,7 +82,7 @@ const useStyles = makeStyles({
     // Style of input root container
     root: {
         marginTop: 0,
-        height: 72
+        height: 60
     }
 });
 
@@ -135,6 +135,7 @@ export const RegisterInput: React.FC<RegisterInputProps> = ({
                                 }
                             }}
                             className={classes.root}
+                            style={{height: form.errors[name] && form.touched[name] ? 72 : 60}}
                             {...field}
                             label={label}
                             multiline={multiline}

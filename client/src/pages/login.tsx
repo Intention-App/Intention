@@ -9,6 +9,7 @@ import { RegisterButton } from "../components/user/RegisterButton";
 import { colors } from "../styles/theme";
 import { Divider } from "../components/util/divider";
 import Link from "next/link";
+import { BrandingHeader } from "../components/branding/BrandingHeader";
 
 // Validation functions, checks if first email value is valid
 const validateEmail = (value: string): string | undefined => {
@@ -40,70 +41,77 @@ const login: React.FC = () => {
 
     return (
         // Box to center align content
-        <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" height="100vh">
+        <Box display="flex" flexDirection="column" height="100vh">
 
-            {/* Sign up header */}
-            <h1 style={{ color: colors.text.title, marginBottom: 24 }}>Log in</h1>
+            {/* Header for project branding */}
+            <BrandingHeader />
 
-            {/* Formik form */}
-            <Formik
+            {/* Box to center content */}
+            <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" flexGrow={1} >
 
-                // Form fields
-                initialValues={{ email: "", password: "" }}
+                {/* Sign up header */}
+                <h1 style={{ color: colors.text.title, fontSize: "3em", marginBottom: 24 }}>Log in</h1>
 
-                onSubmit={async (values, { setErrors }) => {
+                {/* Formik form */}
+                <Formik
 
-                    // Login in backend
-                    const response = await login(values);
+                    // Form fields
+                    initialValues={{ email: "", password: "" }}
 
-                    // Reroutes to dashboard if valid, set input errors if not
-                    if (response.data?.login?.user) {
-                        router.push("/dashboard")
-                    }
-                    else if (response.data?.login?.errors) {
-                        setErrors(toErrorMap(response.data.login.errors))
-                    }
-                }}
-            >
-                <Form>
+                    onSubmit={async (values, { setErrors }) => {
 
-                    {/* Box center aligns values */}
-                    <Box display="flex" alignItems="center" flexDirection="column">
+                        // Login in backend
+                        const response = await login(values);
 
-                        {/*
+                        // Reroutes to dashboard if valid, set input errors if not
+                        if (response.data?.login?.user) {
+                            router.push("/dashboard")
+                        }
+                        else if (response.data?.login?.errors) {
+                            setErrors(toErrorMap(response.data.login.errors))
+                        }
+                    }}
+                >
+                    <Form>
+
+                        {/* Box center aligns values */}
+                        <Box display="flex" alignItems="center" flexDirection="column">
+
+                            {/*
                                 Input Fields
                             */}
 
-                        <RegisterInput
-                            type="email"
-                            label="Email"
-                            name="email"
-                            validate={validateEmail}
-                            required
-                        />
-                        <RegisterInput
-                            type="password"
-                            label="Password"
-                            name="password"
-                            validate={validatePass}
-                            required
-                        />
+                            <RegisterInput
+                                type="email"
+                                label="Email"
+                                name="email"
+                                validate={validateEmail}
+                                required
+                            />
+                            <RegisterInput
+                                type="password"
+                                label="Password"
+                                name="password"
+                                validate={validatePass}
+                                required
+                            />
 
-                        {/* Submits form, disabled when submitting */}
-                        <RegisterButton
-                            disabled={fetching}
-                        >
-                            Log In
-                        </RegisterButton>
-                    </Box>
-                </Form>
-            </Formik>
+                            {/* Submits form, disabled when submitting */}
+                            <RegisterButton
+                                disabled={fetching}
+                            >
+                                Log In
+                            </RegisterButton>
+                        </Box>
+                    </Form>
+                </Formik>
 
-            {/* Divider and registration link */}
-            <Divider length={250} marginTop={4} marginBottom={2} />
+                {/* Divider and registration link */}
+                <Divider length={250} marginTop={3} marginBottom={4} />
 
-            {/* Link to redirect to signup */}
-            <Link href="/register"><a style={{ color: colors.action.primary }}>Create a new account</a></Link>
+                {/* Link to redirect to signup */}
+                <Link href="/register"><a style={{ color: colors.action.primary }}>Create a new account</a></Link>
+            </Box>
         </Box>
     );
 };

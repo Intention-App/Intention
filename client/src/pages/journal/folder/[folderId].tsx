@@ -134,8 +134,8 @@ const FolderId: React.FC = ({ }) => {
                             {data?.myFolder.folders && data.myFolder.folders.map(folder =>
                                 <ListViewItem
                                     key={`folder-${folder.id}`}
-                                    createdAt={toHumanTime(folder.createdAt)}
-                                    updatedAt={toHumanTime(folder.updatedAt)}
+                                    createdAt={toHumanTime(folder.createdAt)!}
+                                    updatedAt={toHumanTime(folder.updatedAt)!}
                                     icon={FaFolder}
                                     href={`/journal/folder/${folder.id}`}
                                 >
@@ -147,8 +147,8 @@ const FolderId: React.FC = ({ }) => {
                             {data?.myFolder.entries && data.myFolder.entries.map(entry =>
                                 <ListViewItem
                                     key={`entry-${entry.id}`}
-                                    createdAt={toHumanTime(entry.createdAt)}
-                                    updatedAt={toHumanTime(entry.updatedAt)}
+                                    createdAt={toHumanTime(entry.createdAt)!}
+                                    updatedAt={toHumanTime(entry.updatedAt)!}
                                     icon={FaFileAlt}
                                     href={`/journal/entry/${entry.id}`}
                                 >
@@ -162,7 +162,7 @@ const FolderId: React.FC = ({ }) => {
                     </Box>
 
                     {/* Button to add new folders and entries */}
-                    <AddNew buttonFunctions={[
+                    <AddNew variant="bordered" buttonFunctions={[
                         {
                             name: "New Entry",
                             fn: handleEntryCreation
@@ -182,7 +182,3 @@ const FolderId: React.FC = ({ }) => {
 };
 
 export default FolderId;
-
-function deleteEntry(arg0: { id: string; }) {
-    throw new Error("Function not implemented.");
-}

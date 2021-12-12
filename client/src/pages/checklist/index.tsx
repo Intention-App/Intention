@@ -81,8 +81,8 @@ const Checklist: React.FC = ({ }) => {
                             {data?.myBoards && data?.myBoards.map(board =>
                                 <ListViewItem
                                     key={board.id}
-                                    createdAt={toHumanTime(board.createdAt)}
-                                    updatedAt={toHumanTime(board.updatedAt)}
+                                    createdAt={toHumanTime(board.createdAt)!}
+                                    updatedAt={toHumanTime(board.updatedAt)!}
                                     icon={FaClipboardList}
                                     href={`/checklist/board/${board.id}`}
                                 >
@@ -96,7 +96,7 @@ const Checklist: React.FC = ({ }) => {
                     </Box>
 
                     {/* Button to add new boards */}
-                    <AddNew buttonFunctions={[
+                    <AddNew variant="bordered" buttonFunctions={[
                         {
                             name: "New Board",
                             fn: handleBoardCreation

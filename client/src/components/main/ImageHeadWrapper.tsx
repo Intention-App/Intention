@@ -48,7 +48,7 @@ interface ImageHeadWrapperProps {
 export const ImageHeadWrapper: React.FC<ImageHeadWrapperProps> = ({ title, subtitle, helper, src, children }) => {
 
     // Classes to implement styles
-    const classes = useStyles();
+    const styles = useStyles();
 
     return (
 
@@ -63,20 +63,20 @@ export const ImageHeadWrapper: React.FC<ImageHeadWrapperProps> = ({ title, subti
             </Box>
 
             {/* Background image */}
-            <Box height={175} className={classes.imageWrapper} position="absolute" zIndex={-1}>
+            <Box height={175} className={styles.imageWrapper} position="absolute" zIndex={-1}>
 
                 {typeof src === "string"
                     // Source type link
-                    ? <img src={src} className={classes.image} />
+                    ? <img src={src} className={styles.image} />
 
                     // Source type image
                     : src
-                        ? <Image src={src} className={classes.image} />
+                        ? <Image src={src} className={styles.image} />
 
                         // Placeholder image otherwise
-                        : <Image src={PlaceholderImage} className={classes.image} />
+                        : <Image src={PlaceholderImage} className={styles.image} />
                 }
-                <Box height={175} width="100%" className={classes.imageMask} zIndex={1} />
+                <Box height={175} width="100%" className={styles.imageMask} zIndex={1} />
             </Box>
 
             {/* Flex container for children */}
