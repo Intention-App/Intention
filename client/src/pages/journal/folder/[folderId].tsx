@@ -1,24 +1,38 @@
 import Box from "@material-ui/core/Box";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { AddNew } from "../../../components/util/AddNew";
+import { AddNew } from "../../../components/buttons/AddNew";
 import { HeadWrapper } from "../../../components/main/HeadWrapper";
 import { Layout } from "../../../components/main/layout";
-import { useCreateEntryMutation, useMyFolderQuery, useUpdateFolderMutation, useCreateFolderMutation, useDeleteEntryMutation, useDeleteFolderMutation } from "../../../generated/graphql";
+import { useCreateEntryMutation, useMyFolderQuery, useUpdateFolderMutation, useCreateFolderMutation, useDeleteFolderMutation, useFolderPathQuery } from "../../../generated/graphql";
 import { toHumanTime } from "../../../utils/toHumanTime";
-import { FaFolder, FaFileAlt } from "react-icons/fa";
+import { FaFolder, FaFileAlt, FaPlus, FaBook } from "react-icons/fa";
 import { ListViewItem } from "../../../components/util/ListViewItem";
 import { Gradient } from "../../../components/util/gradient";
 import { colors } from "../../../styles/theme";
+import { Breadcrumbs } from "../../../components/util/breadcrumbs";
+import { GetStaticPaths, GetStaticProps, NextPage } from "next";
+import { IconContainer } from "../../../components/buttons/IconContainer";
 
-const FolderId: React.FC = ({ }) => {
+interface FolderProps {
+    folderId: string;
+}
+
+const FolderId: NextPage<FolderProps> = ({ folderId }) => {
 
     // FolderId from router query
     const router = useRouter();
-    const { folderId } = router.query;
 
     // Fetch data based on id
-    const [{ data, fetching }] = useMyFolderQuery({ variables: { id: (folderId as string) } });
+    const [{ data, fetching }] = useMyFolderQuery({ variables: { id: folderId } });
+    const [{ data: pathData }] = useFolderPathQuery({ variables: { id: folderId } });
+
+    // Path data (excluding current folder)
+    const folderPath = pathData?.folderPath?.map(folder => ({
+        name: folder.title,
+        href: `/journal/folder/${folder.id}`
+    }));
+    folderPath?.pop()
 
     // Folder CRUD operations
     const [{ fetching: updateFetching }, updateFolder] = useUpdateFolderMutation();
@@ -69,7 +83,7 @@ const FolderId: React.FC = ({ }) => {
         // Sidebar & Header Wrappers
         <Layout>
             <HeadWrapper
-                header={data?.myFolder?.title || "Untitled"}
+                header={"Journal"}
                 buttonFunctions={[
                     {
                         name: "New Entry",
@@ -79,22 +93,30 @@ const FolderId: React.FC = ({ }) => {
                         name: "New Folder",
                         fn: handleFolderCreation
                     },
-                    "divider",
-                    {
-                        name: "Delete Folder",
-                        fn: handleFolderDeletion
-                    }
                 ]}
-                helper={updateFetching ? "Saving..." : `Last edited ${toHumanTime(data?.myFolder.updatedAt)}`}
-                backlink={data?.myFolder?.rootFolderId
-                    ? `/journal/folder/${data?.myFolder?.rootFolderId}`
-                    : "/journal"
-                }
-                titleChanger={handleTitleChange}
+                icon={FaBook}
+                iconContainer={<IconContainer icon={FaPlus} />}
             >
 
                 {/* Box for content of page */}
                 <Box display="flex" flexDirection="column" height="100%" marginX={4} paddingBottom={2} color={colors.text.primary}>
+
+                    {/* Links to previous pages and functions for current page */}
+                    <Breadcrumbs
+                        links={[{
+                            name: "My Entries",
+                            href: "/journal"
+                        }, ...(folderPath || [])]}
+                        current={data?.myFolder?.title || "Untitled"}
+                        options={[
+                            {
+                                name: "Delete Folder",
+                                fn: handleFolderDeletion
+                                // #TODO: add confirmation modal to delete button
+                            }]}
+                        titleChanger={handleTitleChange}
+                        helper={updateFetching ? "Saving..." : toHumanTime(data?.myFolder.updatedAt) ? `Last edited ${toHumanTime(data?.myFolder.updatedAt)}` : "Loading..."}
+                    />
 
                     {/* Box for list head */}
                     <Box
@@ -182,3 +204,19 @@ const FolderId: React.FC = ({ }) => {
 };
 
 export default FolderId;
+
+export const getStaticPaths: GetStaticPaths<{ folderId: string }> = async () => {
+
+    return {
+        paths: [], //indicates that no page needs be created at build time
+        fallback: 'blocking' //indicates the type of fallback
+    }
+}
+
+export const getStaticProps: GetStaticProps<FolderProps> = async (context) => {
+    const folderId = context.params?.folderId as string;
+
+    return {
+        props: { folderId }, // will be passed to the page component as props
+    }
+}

@@ -243,6 +243,12 @@ export type MutationVerifyEmailArgs = {
   options: LoginInput;
 };
 
+export type PathResponse = {
+  __typename?: 'PathResponse';
+  id: Scalars['String'];
+  title: Scalars['String'];
+};
+
 export type Query = {
   __typename?: 'Query';
   /** DEV TOOL | Get specific board by ID */
@@ -255,6 +261,8 @@ export type Query = {
   entry: Entry;
   /** DEV TOOL | Get a specific folder by ID */
   folder: Folder;
+  /** Get a specific folder by ID of an authenticated user */
+  folderPath: Array<PathResponse>;
   /** DEV TOOL | Get all folders */
   folders: Array<Folder>;
   /** Get self authenticated user */
@@ -304,6 +312,11 @@ export type QueryEntryArgs = {
 
 
 export type QueryFolderArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryFolderPathArgs = {
   id: Scalars['String'];
 };
 
@@ -736,6 +749,19 @@ export type MyFolderQuery = (
   ) }
 );
 
+export type FolderPathQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type FolderPathQuery = (
+  { __typename?: 'Query' }
+  & { folderPath: Array<(
+    { __typename?: 'PathResponse' }
+    & Pick<PathResponse, 'title' | 'id'>
+  )> }
+);
+
 export type CreateFolderMutationVariables = Exact<{
   title?: Maybe<Scalars['String']>;
   folderId?: Maybe<Scalars['String']>;
@@ -1132,7 +1158,7 @@ export function useDeleteEntryMutation() {
   return Urql.useMutation<DeleteEntryMutation, DeleteEntryMutationVariables>(DeleteEntryDocument);
 };
 export const MyFoldersDocument = gql`
-    query myFolders($rootFolderId: String) {
+    query MyFolders($rootFolderId: String) {
   myFolders(rootFolderId: $rootFolderId) {
     ...RegularFolder
   }
@@ -1143,7 +1169,7 @@ export function useMyFoldersQuery(options: Omit<Urql.UseQueryArgs<MyFoldersQuery
   return Urql.useQuery<MyFoldersQuery>({ query: MyFoldersDocument, ...options });
 };
 export const MyFolderDocument = gql`
-    query myFolder($id: String!) {
+    query MyFolder($id: String!) {
   myFolder(id: $id) {
     ...RegularFolder
     folders {
@@ -1159,6 +1185,18 @@ ${RegularEntryFragmentDoc}`;
 
 export function useMyFolderQuery(options: Omit<Urql.UseQueryArgs<MyFolderQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MyFolderQuery>({ query: MyFolderDocument, ...options });
+};
+export const FolderPathDocument = gql`
+    query FolderPath($id: String!) {
+  folderPath(id: $id) {
+    title
+    id
+  }
+}
+    `;
+
+export function useFolderPathQuery(options: Omit<Urql.UseQueryArgs<FolderPathQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<FolderPathQuery>({ query: FolderPathDocument, ...options });
 };
 export const CreateFolderDocument = gql`
     mutation CreateFolder($title: String, $folderId: String) {

@@ -3,11 +3,14 @@ import React, { useEffect, useState } from "react";
 import { HeadWrapper } from "../../../components/main/HeadWrapper";
 import { Layout } from "../../../components/main/layout";
 import { RichTextEditor } from "../../../components/journal/RichTextEditor";
-import { useDeleteEntryMutation, useMyEntryQuery, useUpdateEntryMutation } from "../../../generated/graphql";
+import { useDeleteEntryMutation, useFolderPathQuery, useMyEntryQuery, useUpdateEntryMutation } from "../../../generated/graphql";
 import { toHumanTime } from "../../../utils/toHumanTime";
 import { useDebounce } from "use-debounce";
 import { useSavePrompt } from "../../../hooks/util/useSavePrompt";
 import { Loading } from "../../../components/filler/loading";
+import { Breadcrumbs } from "../../../components/util/breadcrumbs";
+import { FaBook } from "react-icons/fa";
+import Box from "@material-ui/core/Box";
 
 const EntryId: React.FC = ({ }) => {
 
@@ -17,6 +20,13 @@ const EntryId: React.FC = ({ }) => {
 
     // Fetch data based on id
     const [{ data, fetching }] = useMyEntryQuery({ variables: { entryId: (entryId as string) } });
+    const [{ data: pathData }] = useFolderPathQuery({ variables: { id: (data?.myEntry?.rootFolderId) as string } });
+
+    // Path data (excluding current entry)
+    const folderPath = pathData?.folderPath?.map(folder => ({
+        name: folder.title,
+        href: `/journal/folder/${folder.id}`
+    }));
 
     // CRUD operations
     const [{ fetching: updateFetching }, updateEntry] = useUpdateEntryMutation();
@@ -74,18 +84,31 @@ const EntryId: React.FC = ({ }) => {
         // Sidebar & Header Wrappers
         <Layout>
             <HeadWrapper
-                header={data?.myEntry.title || "Untitled"}
-                buttonFunctions={[{
-                    name: "Delete Entry",
-                    fn: handleEntryDeletion
-                }]}
-                backlink={data?.myEntry?.rootFolderId
-                    ? `/journal/folder/${data?.myEntry?.rootFolderId}`
-                    : "/journal"
-                }
-                helper={updateFetching ? "Saving..." : `Last edited ${toHumanTime(data?.myEntry.updatedAt)}`}
-                titleChanger={handleTitleChange}
+                header={"My Entries"}
+                icon={FaBook}
             >
+
+                {/* Box for links */}
+                <Box marginX={4} paddingBottom={1}>
+
+                    {/* Links to previous pages and functions for current page */}
+                    <Breadcrumbs
+                        links={[{
+                            name: "My Entries",
+                            href: "/journal"
+                        }, ...(folderPath || [])]}
+                        current={data?.myEntry?.title || "Untitled"}
+                        options={[
+                            {
+                                name: "Delete Folder",
+                                fn: handleEntryDeletion
+                                // #TODO: add confirmation modal to delete button
+                            }]}
+                        titleChanger={handleTitleChange}
+                        helper={updateFetching ? "Saving..." : toHumanTime(data?.myEntry.updatedAt) ? `Last edited ${toHumanTime(data?.myEntry.updatedAt)}` : "Loading..."}
+                    />
+                </Box>
+
                 {/* Rich text editor component for journal */}
                 {value !== undefined
                     ? <RichTextEditor

@@ -9,11 +9,11 @@ import { IoAlarm } from "react-icons/io5";
 import { Task, useCreateTaskMutation, useDeleteTaskMutation, useUpdateTaskMutation } from "../../generated/graphql";
 import { ClientBoard } from "../../pages/checklist/board/[boardId]";
 import { colors } from "../../styles/theme";
-import { ModalState } from "../util/ConfirmModal";
-import { DatePicker } from "../util/datePicker";
-import { IconContainer } from "../util/IconContainer";
-import { InputCheckbox } from "../util/InputCheckbox";
-import { InputField } from "../util/InputField";
+import { ModalState } from "../modals/ConfirmModal";
+import { DatePicker } from "../form/datePicker";
+import { IconContainer } from "../buttons/IconContainer";
+import { InputCheckbox } from "../form/InputCheckbox";
+import { InputField } from "../form/InputField";
 
 // Task Editor
 

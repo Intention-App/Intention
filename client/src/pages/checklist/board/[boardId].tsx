@@ -17,17 +17,18 @@ import { toHumanTime } from "../../../utils/toHumanTime";
 import { toServerBoard } from "../../../utils/toServerBoard";
 import { useDeepCompareEffect } from "../../../hooks/util/useDeepCompareEffect";
 import { useSavePrompt } from "../../../hooks/util/useSavePrompt";
-import { SideModalProps } from "../../../components/util/SideModal";
-import { GetStaticPaths, GetStaticProps } from "next";
+import { SideModalProps } from "../../../components/modals/SideModal";
+import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { useBoardOps } from "../../../hooks/checklist/useBoardOps";
-import { FaPlus } from "react-icons/fa";
-import { IconContainer } from "../../../components/util/IconContainer";
-import { AddNew } from "../../../components/util/AddNew";
-import { ConfirmModal, ModalState } from "../../../components/util/ConfirmModal";
+import { FaCheckCircle, FaPlus } from "react-icons/fa";
+import { IconContainer } from "../../../components/buttons/IconContainer";
+import { AddNew } from "../../../components/buttons/AddNew";
+import { ConfirmModal, ModalState } from "../../../components/modals/ConfirmModal";
 import { Loading } from "../../../components/filler/loading";
+import { Breadcrumbs } from "../../../components/util/breadcrumbs";
 
 const Column = dynamic<ColumnProps>(() => import("../../../components/checklist/column").then(component => component.Column), { ssr: false });
-const SideModal = dynamic<SideModalProps>(() => import("../../../components/util/SideModal").then(component => component.SideModal), { ssr: false });
+const SideModal = dynamic<SideModalProps>(() => import("../../../components/modals/SideModal").then(component => component.SideModal), { ssr: false });
 const EditTask = dynamic<EditTaskProps>(() => import("../../../components/checklist/editTask").then(component => component.EditTask), { ssr: false });
 const EditTasklist = dynamic<EditTasklistProps>(() => import("../../../components/checklist/editTasklist").then(component => component.EditTasklist), { ssr: false });
 const DragDropContext = dynamic<DragDropContextProps>(() => import("react-beautiful-dnd").then(component => component.DragDropContext), { loading: () => <Loading />, ssr: false });
@@ -66,7 +67,7 @@ interface EditorTasklist {
 
 export type EditorItem = EditorTask | EditorTasklist;
 
-const Checklist: React.FC<BoardProps> = ({ boardId }) => {
+const Checklist: NextPage<BoardProps> = ({ boardId }) => {
 
     // BoardId from router query
     const router = useRouter();
@@ -175,28 +176,41 @@ const Checklist: React.FC<BoardProps> = ({ boardId }) => {
         // Sidebar & Header Wrappers
         <Layout>
             <HeadWrapper
-                header={board?.info.title || "Untitled"}
-                helper={updateFetching || updateOrderFetching ? "Saving..." : `Last edited ${toHumanTime(board?.info.updatedAt)}`}
+                header="Checklist"
                 buttonFunctions={[
                     {
                         name: "New Tasklist",
                         fn: toggleEditorModal({ type: "tasklist", id: undefined, props: { boardId } })
-                    },
-                    "divider",
-                    {
-                        name: "Delete Board",
-                        fn: () => {
-                            setConfirmationModal({
-                                message: "Are you sure you want to delete this board?",
-                                fn: handleBoardDeletion
-                            })
-                        }
                     }
                 ]}
-                titleChanger={handleTitleChange}
-                backlink="/checklist"
+                icon={FaCheckCircle}
                 iconContainer={<IconContainer icon={FaPlus} />}
             >
+
+                {/* Box for links */}
+                <Box marginX={4}>
+
+                    {/* Links to previous pages and functions for current page */}
+                    <Breadcrumbs
+                        links={[{
+                            name: "My Todos",
+                            href: "/checklist"
+                        }]}
+                        current={board?.info.title || "Untitled"}
+                        options={[{
+                            name: "Delete Board",
+                            fn: () => {
+                                setConfirmationModal({
+                                    message: "Are you sure you want to delete this board?",
+                                    fn: handleBoardDeletion
+                                })
+                            }
+                        }]}
+                        titleChanger={handleTitleChange}
+                        helper={updateFetching || updateOrderFetching ? "Saving..." : `Last edited ${toHumanTime(board?.info.updatedAt)}`}
+                    />
+                </Box>
+
                 {/* Modal container */}
                 <SideModal
                     toggleModal={toggleEditorModal}

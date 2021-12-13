@@ -1,16 +1,17 @@
 import Box from "@material-ui/core/Box";
 import { useRouter } from "next/router";
 import React from "react";
-import { AddNew } from "../../components/util/AddNew";
+import { AddNew } from "../../components/buttons/AddNew";
 import { HeadWrapper } from "../../components/main/HeadWrapper";
 import { Layout } from "../../components/main/layout";
 import { useCreateEntryMutation, useCreateFolderMutation, useMyEntriesQuery, useMyFoldersQuery } from "../../generated/graphql";
 import { toHumanTime } from "../../utils/toHumanTime";
-import { FaFileAlt, FaFolder, FaPlus } from "react-icons/fa";
+import { FaBook, FaFileAlt, FaFolder, FaPlus } from "react-icons/fa";
 import { ListViewItem } from "../../components/util/ListViewItem";
 import { Gradient } from "../../components/util/gradient";
 import { colors } from "../../styles/theme";
-import { IconContainer } from "../../components/util/IconContainer";
+import { IconContainer } from "../../components/buttons/IconContainer";
+import { Breadcrumbs } from "../../components/util/breadcrumbs";
 
 const Journal: React.FC = ({ }) => {
 
@@ -40,22 +41,29 @@ const Journal: React.FC = ({ }) => {
     return (
         // Sidebar & Header Wrappers
         <Layout>
-            <HeadWrapper header="My Journal" buttonFunctions={[
-                {
-                    name: "New Entry",
-                    fn: handleEntryCreation
-                },
-                {
-                    name: "New Folder",
-                    fn: handleFolderCreation
-                }
-            ]}
+            <HeadWrapper
+                header="Journal"
+                buttonFunctions={[
+                    {
+                        name: "New Entry",
+                        fn: handleEntryCreation
+                    },
+                    {
+                        name: "New Folder",
+                        fn: handleFolderCreation
+                    },
+                ]}
+                icon={FaBook}
                 iconContainer={<IconContainer icon={FaPlus} />}
-                buttonColor={colors.action.primary}
             >
 
                 {/* Box for content of page */}
                 <Box display="flex" flexDirection="column" height="100%" marginX={4} paddingBottom={2} color={colors.text.primary}>
+
+                    {/* Links to previous pages and functions for current page */}
+                    <Breadcrumbs
+                        current={"My Entries"}
+                    />
 
                     {/* Box for list head */}
                     <Box

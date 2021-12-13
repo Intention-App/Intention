@@ -7,10 +7,10 @@ import { FaTimes, FaTrash } from "react-icons/fa";
 import { Tasklist, useCreateTasklistMutation, useDeleteTasklistMutation, useUpdateTasklistMutation } from "../../generated/graphql";
 import { ClientBoard } from "../../pages/checklist/board/[boardId]";
 import { colors } from "../../styles/theme";
-import { ModalState } from "../util/ConfirmModal";
-import { IconContainer } from "../util/IconContainer";
-import { InputField } from "../util/InputField";
-import { InputSelect } from "../util/InputSelect";
+import { ModalState } from "../modals/ConfirmModal";
+import { IconContainer } from "../buttons/IconContainer";
+import { InputField } from "../form/InputField";
+import { InputSelect } from "../form/InputSelect";
 
 // Tasklist Editor
 

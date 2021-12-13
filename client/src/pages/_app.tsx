@@ -1,4 +1,5 @@
 import { ThemeProvider } from "@material-ui/core/styles";
+import Head from "next/head";
 import React from "react";
 import { useEffect } from "react";
 import { Provider } from "urql";
@@ -24,12 +25,23 @@ const MyApp: React.FC<MyAppProps> = ({ Component, pageProps }) => {
     }, [])
 
     return (
-        // Provider for URQL and MUI themes
-        <Provider value={urqlClient}>
-            <ThemeProvider theme={theme}>
-                <Component {...pageProps} />
-            </ThemeProvider>
-        </Provider>
+        <>
+            <Head>
+                {/* Link to Roboto font for styles */}
+                <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
+
+                {/* #WIP: Make more robust */}
+                <title>Intention</title>
+                <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+            </Head>
+
+            {/* Provider for URQL and MUI themes */}
+            <Provider value={urqlClient}>
+                <ThemeProvider theme={theme}>
+                    <Component {...pageProps} />
+                </ThemeProvider>
+            </Provider>
+        </>
     );
 };
 

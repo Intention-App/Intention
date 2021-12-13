@@ -1,5 +1,5 @@
 import { ServerStyleSheets } from '@material-ui/core/styles';
-import Document, { DocumentContext, Html, Head, Main, NextScript } from 'next/document'
+import Document, { DocumentContext, Html, Head, Main, NextScript } from 'next/document';
 import React from 'react';
 import { resetServerContext } from 'react-beautiful-dnd';
 
@@ -37,8 +37,7 @@ class MyDocument extends Document {
             // Renders HTML with header and body
             <Html>
                 <Head>
-                    {/* Link to Roboto font for styles */}
-                    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
+                    {/* #TODO: Add meta data */}
                 </Head>
                 <body>
                     <Main />

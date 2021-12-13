@@ -1,15 +1,17 @@
 import Box from "@material-ui/core/Box";
 import { useRouter } from "next/router";
 import React from "react";
-import { AddNew } from "../../components/util/AddNew";
+import { AddNew } from "../../components/buttons/AddNew";
 import { HeadWrapper } from "../../components/main/HeadWrapper";
 import { Layout } from "../../components/main/layout";
 import { useCreateBoardMutation, useMyBoardsQuery } from "../../generated/graphql";
 import { toHumanTime } from "../../utils/toHumanTime";
 import { ListViewItem } from "../../components/util/ListViewItem";
-import { FaClipboardList } from "react-icons/fa";
+import { FaCheckCircle, FaClipboardList, FaPlus } from "react-icons/fa";
 import { Gradient } from "../../components/util/gradient";
 import { colors } from "../../styles/theme";
+import { Breadcrumbs } from "../../components/util/breadcrumbs";
+import { IconContainer } from "../../components/buttons/IconContainer";
 
 // Displays list of boards
 
@@ -33,21 +35,31 @@ const Checklist: React.FC = ({ }) => {
     return (
         // Sidebar & Header Wrappers
         <Layout>
-            <HeadWrapper header="My Checklists" buttonFunctions={[
-                {
-                    name: "New Kanban Board",
-                    fn: handleBoardCreation
-                }
-            ]}>
+            <HeadWrapper
+                header="Checklist"
+                buttonFunctions={[
+                    {
+                        name: "New Kanban Board",
+                        fn: handleBoardCreation
+                    }
+                ]}
+                icon={FaCheckCircle}
+                iconContainer={<IconContainer icon={FaPlus} />}
+            >
 
                 {/* Box for content of page */}
                 <Box display="flex" flexDirection="column" height="100%" marginX={4} paddingBottom={2} color={colors.text.primary}>
+
+                    {/* Links to previous pages and functions for current page */}
+                    <Breadcrumbs
+                        current="My Todos"
+                    />
 
                     {/* Box for list head */}
                     <Box
                         display="grid"
                         gridTemplateColumns="1fr 200px 200px"
-                        borderBottom={`1px solid ${colors.background.primary}`}
+                        borderBottom={`1px solid ${colors.border.primary}`}
                         paddingBottom={1}
                         paddingRight={3.5}
                         marginBottom={1}

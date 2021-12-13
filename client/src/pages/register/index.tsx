@@ -6,7 +6,7 @@ import { toErrorMap } from "../../utils/toErrorMap";
 import Box from "@material-ui/core/Box";
 import { RegisterInput } from "../../components/user/RegisterInput";
 import { RegisterButton } from "../../components/user/RegisterButton";
-import { Divider } from "../../components/util/divider";
+import { Divider } from "../../components/filler/divider";
 import Link from "next/link";
 import { colors } from "../../styles/theme";
 import { BrandingHeader } from "../../components/branding/BrandingHeader";

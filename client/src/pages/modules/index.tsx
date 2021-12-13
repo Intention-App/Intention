@@ -1,7 +1,6 @@
 import React from "react";;
 import { ImageHeadWrapper } from "../../components/main/ImageHeadWrapper";
 import { Layout } from "../../components/main/layout";
-import DeskWallpaper from "../../graphics/Desk.png"
 
 // Modules Page
 // #WIP
@@ -13,7 +12,7 @@ const Modules: React.FC = ({ }) => {
             <ImageHeadWrapper
                 title="Modules"
                 subtitle="for self-improvement, productivity, and more!"
-                src={DeskWallpaper}
+                src="/images/Desk.png"
             >
             </ImageHeadWrapper>
         </Layout>

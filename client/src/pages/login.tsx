@@ -7,7 +7,7 @@ import { toErrorMap } from "../utils/toErrorMap";
 import { RegisterInput } from "../components/user/RegisterInput";
 import { RegisterButton } from "../components/user/RegisterButton";
 import { colors } from "../styles/theme";
-import { Divider } from "../components/util/divider";
+import { Divider } from "../components/filler/divider";
 import Link from "next/link";
 import { BrandingHeader } from "../components/branding/BrandingHeader";
 

@@ -12,14 +12,14 @@ fragment RegularFolder on Folder {
 ## Queries
 
 # All Folders (no relations)
-query myFolders($rootFolderId: String) {
+query MyFolders($rootFolderId: String) {
     myFolders(rootFolderId: $rootFolderId) {
         ...RegularFolder
     }
 }
 
 # Single Folder (with relations)
-query myFolder($id: String!) {
+query MyFolder($id: String!) {
     myFolder(id: $id) {
         ...RegularFolder
         folders {
@@ -28,6 +28,14 @@ query myFolder($id: String!) {
         entries {
             ...RegularEntry
         }
+    }
+}
+
+# Folders Path (list of name and id)
+query FolderPath($id: String!) {
+    folderPath(id: $id) {
+        title
+        id
     }
 }
 

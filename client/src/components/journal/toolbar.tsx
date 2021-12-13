@@ -9,7 +9,7 @@ import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import FormatListNumberedIcon from '@material-ui/icons/FormatListNumbered';
 import { colors } from "../../styles/theme";
 import { Editor } from "@tiptap/react";
-import { Divider } from "../util/divider";
+import { Divider } from "../filler/divider";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 

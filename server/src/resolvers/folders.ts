@@ -1,6 +1,6 @@
-import { Arg, Ctx, Field, InputType, Mutation, Query, Resolver, UseMiddleware } from "type-graphql";
+import { Arg, Ctx, Field, InputType, Mutation, ObjectType, Query, Resolver, UseMiddleware } from "type-graphql";
 import { isAuth } from "../middleware/isAuth";
-import { getRepository, IsNull } from "typeorm";
+import { getManager, getRepository, IsNull } from "typeorm";
 import { ExpressContext } from "../types";
 import Entry from "../entities/Entry";
 import Folder from "../entities/Folder";
@@ -11,6 +11,16 @@ class FolderOptionsInput {
     folderId: string;
     @Field({ nullable: true })
     title: string;
+}
+
+// Folder path
+@ObjectType()
+class PathResponse {
+    @Field()
+    title: string;
+
+    @Field()
+    id: string;
 }
 
 /*
@@ -61,6 +71,41 @@ export default class FolderResolver {
         return await Folder.findOne({ where: { userId: req.session.userId, id }, relations })
     }
 
+    // Get folder by ID of an authenticated user
+    @Query(() => [PathResponse], { description: "Get a specific folder by ID of an authenticated user" })
+    @UseMiddleware(isAuth)
+    async folderPath(
+        @Ctx() { req }: ExpressContext,
+        @Arg("id") id: string
+    ): Promise<PathResponse[] | undefined> {
+        // #WIP: check if this is the best way of finding path
+
+        // Find folder, return undefined if not found
+        const folder = await Folder.findOne({ where: { userId: req.session.userId, id }, relations });
+        if (!folder) return undefined;
+
+        // TypeORM to get trees and fetch folder path
+        const manager = getManager();
+        const repository = await manager.getTreeRepository(Folder);
+
+        // Gets ancestor tree of folders
+        const ancestorTree = await repository.findAncestorsTree(folder);
+
+        // Recursively reads parent folder to get info and returns path of folder
+        const recursiveRead = (folder: Folder): PathResponse[] => {
+            const folderInfo = {
+                title: folder.title,
+                id: folder.id
+            };
+
+            if (!folder.rootFolder) return [folderInfo];
+
+            return [...recursiveRead(folder.rootFolder), folderInfo];
+        };
+
+        return recursiveRead(ancestorTree);
+    }
+
     // Create a new folder
     @Mutation(() => Folder, { description: "Create a new folder" })
     @UseMiddleware(isAuth)
@@ -71,9 +116,13 @@ export default class FolderResolver {
 
         const folder = await Folder.create({
             userId: req.session.userId,
-            rootFolderId: options.folderId,
             title: options.title
-        }).save();
+        })
+        
+        // Do it this way to ensure tree structure is properly established
+        folder.rootFolder = await Folder.findOne({ where: { userId: req.session.userId, id: options.folderId }, relations });
+        
+        folder.save();
 
         return folder;
     }
@@ -108,7 +157,7 @@ export default class FolderResolver {
                     .where(`rootFolderId = :rootFolderId`, { rootFolderId: id })
                     .execute();
             }
-            
+
 
             await Folder.delete({ id, userId: req.session.userId })
         }

@@ -2,7 +2,6 @@ import Box from "@material-ui/core/Box";
 import { makeStyles } from "@material-ui/core/styles";
 import Image from 'next/image'
 import React from "react";
-import PlaceholderImage from "../../graphics/Nature.png"
 
 // Wrapper with header & image background for pages
 
@@ -48,7 +47,7 @@ interface ImageHeadWrapperProps {
 export const ImageHeadWrapper: React.FC<ImageHeadWrapperProps> = ({ title, subtitle, helper, src, children }) => {
 
     // Classes to implement styles
-    const styles = useStyles();
+    const classes = useStyles();
 
     return (
 
@@ -63,20 +62,20 @@ export const ImageHeadWrapper: React.FC<ImageHeadWrapperProps> = ({ title, subti
             </Box>
 
             {/* Background image */}
-            <Box height={175} className={styles.imageWrapper} position="absolute" zIndex={-1}>
+            <Box height={175} className={classes.imageWrapper} position="absolute" zIndex={-1}>
 
                 {typeof src === "string"
                     // Source type link
-                    ? <img src={src} className={styles.image} />
+                    ? <img src={src} className={classes.image} />
 
                     // Source type image
                     : src
-                        ? <Image src={src} className={styles.image} />
+                        ? <Image src={src} className={classes.image} />
 
                         // Placeholder image otherwise
-                        : <Image src={PlaceholderImage} className={styles.image} />
+                        : <img src="/images/Nature.png" className={classes.image} />
                 }
-                <Box height={175} width="100%" className={styles.imageMask} zIndex={1} />
+                <Box height={175} width="100%" className={classes.imageMask} zIndex={1} />
             </Box>
 
             {/* Flex container for children */}

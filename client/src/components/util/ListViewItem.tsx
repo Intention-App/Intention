@@ -54,7 +54,7 @@ const useStyles = makeStyles({
 export const ListViewItem: React.FC<ListViewItemProps> = ({ children, createdAt, updatedAt, icon, href }) => {
 
     // Styles for list item
-    const styles = useStyles();
+    const classes = useStyles();
 
     // Redefine icon capitalized to signify component
     const Icon = icon;
@@ -62,7 +62,7 @@ export const ListViewItem: React.FC<ListViewItemProps> = ({ children, createdAt,
     return (
         // Link to destination
         <Link href={href}>
-            <a className={styles.item}>
+            <a className={classes.item}>
                 {/* Display of file name, and update or create times */}
                 <Box display="grid" gridTemplateColumns="1fr 200px 200px" alignItems="center" paddingY={1.5}>
                     <span style={{ marginLeft: 12, display: "flex", alignItems: "center" }}>

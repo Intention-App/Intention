@@ -5,7 +5,7 @@ import { useLogoutMutation, User } from "../../generated/graphql";
 import { NavButton } from "./NavButton";
 import { FaBook, FaCheckCircle, FaHome, FaProjectDiagram, FaTrash } from "react-icons/fa";
 import { IoSettingsOutline, IoSearchOutline, IoPersonOutline } from "react-icons/io5";
-import { Divider } from "../util/divider";
+import { Divider } from "../filler/divider";
 import { colors } from "../../styles/theme";
 
 interface SidebarProps {

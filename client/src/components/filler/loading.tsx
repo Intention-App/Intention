@@ -151,7 +151,7 @@ export const Loading: React.FC<LoadingProps> = ({ disp = 15, speed = 1 }) => {
         },
     })
 
-    const styles = useStyles();
+    const classes = useStyles();
 
     return (
         // Grid to center the loading animation
@@ -159,15 +159,15 @@ export const Loading: React.FC<LoadingProps> = ({ disp = 15, speed = 1 }) => {
 
             {/* Intention loading screen */}
             <Box display="grid" gridTemplateColumns="repeat(3, 30px)" gridTemplateRows="repeat(3, 30px)">
-                <Box className={styles["block-1-1"].concat(" ", styles["block"])}></Box>
-                <Box className={styles["block-1-2"].concat(" ", styles["block"])}></Box>
-                <Box className={styles["block-1-3"].concat(" ", styles["block"])}></Box>
-                <Box className={styles["block-2-1"].concat(" ", styles["block"])}></Box>
-                <Box className={styles["block"]}></Box>
-                <Box className={styles["block-2-3"].concat(" ", styles["block"])}></Box>
-                <Box className={styles["block-3-1"].concat(" ", styles["block"])}></Box>
-                <Box className={styles["block-3-2"].concat(" ", styles["block"])}></Box>
-                <Box className={styles["block-3-3"].concat(" ", styles["block"])}></Box>
+                <Box className={classes["block-1-1"].concat(" ", classes["block"])}></Box>
+                <Box className={classes["block-1-2"].concat(" ", classes["block"])}></Box>
+                <Box className={classes["block-1-3"].concat(" ", classes["block"])}></Box>
+                <Box className={classes["block-2-1"].concat(" ", classes["block"])}></Box>
+                <Box className={classes["block"]}></Box>
+                <Box className={classes["block-2-3"].concat(" ", classes["block"])}></Box>
+                <Box className={classes["block-3-1"].concat(" ", classes["block"])}></Box>
+                <Box className={classes["block-3-2"].concat(" ", classes["block"])}></Box>
+                <Box className={classes["block-3-3"].concat(" ", classes["block"])}></Box>
             </Box>
 
         </Box>

@@ -35,7 +35,7 @@ export const AddNew: React.FC<AddNewProps> = ({ buttonFunctions, variant, childr
             marginTop: 8,
             cursor: "pointer",
             transition: "background 250ms",
-            backgroundColor: colors.background.primary,
+            backgroundColor: "transparent",
             border: variant == "bordered" ? `2px dashed ${colors.border.primary}` : "none",
             borderRadius: variant == "bordered" ? 100 : "default",
             "&:focus": {

@@ -44,7 +44,7 @@ const useStyles = makeStyles({
 export const RichTextEditor: React.FC<RichTextEditorProps> = ({ useValue, save }) => {
 
     // Styles of of editors
-    const styles = useStyles();
+    const classes = useStyles();
 
     // State of editor content (for debounce saving)
     const [value, setValue] = useValue;
@@ -68,7 +68,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ useValue, save }
 
     // Appends editor class to element
     useEffect(() => {
-        editor?.view.dom.classList.add(styles.editor)
+        editor?.view.dom.classList.add(classes.editor)
     }, [editor])
 
     return (
@@ -92,7 +92,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({ useValue, save }
             }
 
             {/* Tiptap editor */}
-            <EditorContent editor={editor} className={styles.editorWrapper} />
+            <EditorContent editor={editor} className={classes.editorWrapper} />
         </Box >
     )
 }

@@ -8,7 +8,7 @@ import { FaCircle, FaEllipsisH } from "react-icons/fa";
 import { Task as TaskType, useCreateTaskMutation } from "../../generated/graphql";
 import { ClientBoard, EditorItem } from "../../pages/checklist/board/[boardId]";
 import { colors } from "../../styles/theme";
-import { AddNew } from "../util/AddNew";
+import { AddNew } from "../buttons/AddNew";
 import { Task } from "./task";
 
 // Tasklist for Kanban Board

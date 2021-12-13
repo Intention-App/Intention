@@ -1,5 +1,11 @@
 import { UpdateResolver } from "@urql/exchange-graphcache";
-import { CreateEntryMutationVariables, CreateFolderMutationVariables, DeleteEntryMutationVariables, DeleteFolderMutationVariables } from "../../generated/graphql";
+import {
+    CreateEntryMutationVariables,
+    CreateFolderMutationVariables,
+    DeleteEntryMutationVariables,
+    DeleteFolderMutationVariables,
+    UpdateFolderMutationVariables
+} from "../../generated/graphql";
 import { invalidateAll } from "../utils";
 
 /*
@@ -49,6 +55,11 @@ export const journalExchanges: Record<string, UpdateResolver> = {
             __typename: "Folder",
             id: (args as DeleteFolderMutationVariables).id
         })
+    },
+
+    // Renews updated Folder
+    updateFolder: (result, { options }: { options: UpdateFolderMutationVariables }, cache, info) => {
+        invalidateAll(cache, "folderPath");
     },
 }
 

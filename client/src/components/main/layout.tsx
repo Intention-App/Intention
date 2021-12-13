@@ -15,6 +15,8 @@ export const Layout: React.FC = ({ children }) => {
         router.push("/login");
     }
 
+    // #TODO: Make confirmation modal global
+
     return (
         // Adds sidebar to application, renders nothing if not logged in
         data?.me

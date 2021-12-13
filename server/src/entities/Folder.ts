@@ -1,10 +1,11 @@
 import { Field, ObjectType } from "type-graphql";
-import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Tree, TreeChildren, TreeParent, UpdateDateColumn } from "typeorm";
 import Entry from "./Entry";
 import User from "./User";
 
 @ObjectType()
 @Entity()
+@Tree("closure-table")
 export default class Folder extends BaseEntity {
 
     // Primary unique ID of the folder
@@ -42,8 +43,8 @@ export default class Folder extends BaseEntity {
     @Column({type: "uuid", nullable: true })
     rootFolderId: string;
 
-    @ManyToOne(() => Folder, folder => folder.folders)
-    rootFolder: Folder;
+    @TreeParent()
+    rootFolder: Folder | undefined;
 
     // Entries in the folder
     // Once the folder is destroyed, it also destroys entries it contains
@@ -54,7 +55,7 @@ export default class Folder extends BaseEntity {
     // Other subdirectories inside the folder
     // Once the folder is destroyed, it also destroys its inner folders
     @Field(() => [Folder], { nullable: true })
-    @OneToMany(() => Folder, folder => folder.rootFolder, { onDelete: "CASCADE" })
+    @TreeChildren({ cascade: true })
     folders: Folder[];
 
 }
