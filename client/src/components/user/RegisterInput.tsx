@@ -35,7 +35,7 @@ const useStyles = makeStyles({
 
     // Normal input styles
     input: {
-        backgroundColor: "#F3F3F3",
+        backgroundColor: colors.background.input,
         padding: "20px 16px 0px 16px",
         borderRadius: 16,
         minWidth: 350,
@@ -43,19 +43,19 @@ const useStyles = makeStyles({
         transition: "250ms",
 
         "&:hover": {
-            backgroundColor: "#E7E7E7",
+            backgroundColor: colors.background.hover,
         }
     },
 
     // Input style when focused
     inputFocused: {
-        backgroundColor: "#E7E7E7",
+        backgroundColor: colors.background.hover,
         border: `1px solid ${colors.action.primary}`,
     },
 
     // Input style when error
     inputError: {
-        backgroundColor: "#E7E7E7",
+        backgroundColor: colors.background.hover,
         border: `1px solid ${colors.action.warning}`,
     },
 

@@ -3,7 +3,7 @@ import Paper from "@material-ui/core/Paper";
 import React from "react";
 import { useLogoutMutation, User } from "../../generated/graphql";
 import { NavButton } from "./NavButton";
-import { FaBook, FaCheckCircle, FaHome, FaProjectDiagram, FaTrash } from "react-icons/fa";
+import { FaBook, FaCheckCircle, FaCube, FaHome, FaProjectDiagram, FaTrash } from "react-icons/fa";
 import { IoSettingsOutline, IoSearchOutline, IoPersonOutline } from "react-icons/io5";
 import { Divider } from "../filler/divider";
 import { colors } from "../../styles/theme";
@@ -49,7 +49,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ user }) => {
                 {/* <NavButton href="/schedule" icon={FaCalendar}>Schedule</NavButton> */}
                 <NavButton href="/checklist" icon={FaCheckCircle}>Checklist</NavButton>
                 <NavButton href="/journal" icon={FaBook}>Journal</NavButton>
-                <NavButton href="/modules" icon={FaProjectDiagram}>Modules</NavButton>
+                <NavButton href="/modules" icon={FaCube}>Modules</NavButton>
                 {/* <NavButton href="/goals" Icon={FaFlag}>Goal Setting</NavButton> */}
             </Box>
 

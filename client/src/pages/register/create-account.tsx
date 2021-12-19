@@ -1,6 +1,6 @@
 
 import { Formik, Form } from "formik";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useRegisterMutation, useVerifyEmailTokenQuery } from "../../generated/graphql";
 import { toErrorMap } from "../../utils/toErrorMap";
 import { useRouter } from 'next/router'
@@ -13,6 +13,7 @@ import { colors } from "../../styles/theme";
 import { Error } from "../../components/filler/error";
 import { Loading } from "../../components/filler/loading";
 import { BrandingHeader } from "../../components/branding/BrandingHeader";
+import { useIsAuth } from "../../hooks/util/useIsAuth";
 
 // Validation functions, checks if first name value is valid
 const validateFirstName = (value: string): string | undefined => {
@@ -63,6 +64,9 @@ const createAccount: React.FC = () => {
 
     // Registration operation for later
     const [{ fetching }, register] = useRegisterMutation();
+
+    // Checks if user is already logged in
+    useIsAuth();
 
     return (
         // Box to center align content

@@ -10,6 +10,7 @@ import { Divider } from "../../components/filler/divider";
 import Link from "next/link";
 import { colors } from "../../styles/theme";
 import { BrandingHeader } from "../../components/branding/BrandingHeader";
+import { useIsAuth } from "../../hooks/util/useIsAuth";
 
 
 // Validation functions, checks if email value is valid
@@ -54,6 +55,9 @@ const register: React.FC = () => {
 
     // State to check whether email has been sent
     const [sent, setSent] = useState<string | undefined>();
+
+    // Checks if user is already logged in
+    useIsAuth();
 
     return (
         // Box to center align content

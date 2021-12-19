@@ -1,8 +1,7 @@
 import Box from "@material-ui/core/Box";
-import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
+import React from "react";
 import { IconType } from "react-icons";
-import { FaArrowLeft, FaEllipsisV } from "react-icons/fa";
+import { FaEllipsisV } from "react-icons/fa";
 import { colors } from "../../styles/theme";
 import { MenuButton } from "../buttons/menuButton";
 

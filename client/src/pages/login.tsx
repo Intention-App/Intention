@@ -10,6 +10,7 @@ import { colors } from "../styles/theme";
 import { Divider } from "../components/filler/divider";
 import Link from "next/link";
 import { BrandingHeader } from "../components/branding/BrandingHeader";
+import { useIsAuth } from "../hooks/util/useIsAuth";
 
 // Validation functions, checks if first email value is valid
 const validateEmail = (value: string): string | undefined => {
@@ -39,6 +40,9 @@ const login: React.FC = () => {
     // Login operation for later
     const [{ fetching }, login] = useLoginMutation();
 
+    // Checks if user is already logged in
+    useIsAuth();
+
     return (
         // Box to center align content
         <Box display="flex" flexDirection="column" height="100vh">
@@ -65,10 +69,10 @@ const login: React.FC = () => {
 
                         // Reroutes to dashboard if valid, set input errors if not
                         if (response.data?.login?.user) {
-                            router.push("/dashboard")
+                            router.push(router.query.next as string || "/dashboard");
                         }
                         else if (response.data?.login?.errors) {
-                            setErrors(toErrorMap(response.data.login.errors))
+                            setErrors(toErrorMap(response.data.login.errors));
                         }
                     }}
                 >

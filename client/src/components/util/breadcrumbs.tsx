@@ -154,7 +154,7 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ links, options, curren
 
                 {options &&
                     // Dropdown menu for oissuble actions
-                    < MenuButton dropdown options={titleChanger ? [...options, {
+                    < MenuButton dropdown options={titleChanger ? [{
                         // Additional action to rename file if titlechanger exists
                         name: "Rename File",
                         fn: () => {
@@ -164,7 +164,7 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ links, options, curren
                             // Focuses on input after 100ms (ensures there is enough time for input to open) 
                             setTimeout(() => { inputEl.current?.focus(); }, 100)
                         }
-                    }] : options} />
+                    }, ...options] : options} />
                 }
             </Box>
 

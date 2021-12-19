@@ -5,7 +5,7 @@ import { ModulesHeadWrapper } from "../../components/modules/ModulesHeadWrapper"
 // Modules Page
 // #WIP
 
-const Modules: React.FC = ({ }) => {
+const Library: React.FC = ({ }) => {
     return (
         // Sidebar & Image Header Wrappers
         <Layout>
@@ -14,4 +14,4 @@ const Modules: React.FC = ({ }) => {
     );
 };
 
-export default Modules;
+export default Library;
