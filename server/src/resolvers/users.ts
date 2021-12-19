@@ -170,7 +170,7 @@ export default class UserResolver {
                         alt="Intention Logo" style="max-width: 200px;" />
                     <div style="margin-left: 4rem;">
                         <h1 style="font-size: 4em; color: #ffffff; font-family: Roboto, sans-serif; margin-top: 0px;">Intention</h1>
-                        <a href="http://localhost:3000/register/create-account/${token}"
+                        <a href="http://localhost:3000/register/create-account?v=${token}"
                             style="padding: 1rem 3rem; background-color: #6e61f9; color: #ffffff; border-radius: 64px; text-decoration: none; font-family: Roboto, sans-serif; font-size: 1.25em;">Verify
                             Email</a>
                     </div>

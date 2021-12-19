@@ -10,7 +10,7 @@ export const colors = {
     background: {
         primary: "#ffffff",
         secondary: "#f9f9f9",
-        hover: "#d5d5d5",
+        hover: "#e5e5e5",
     },
     border: {
         primary: "#cecdd2",

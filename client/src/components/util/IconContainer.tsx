@@ -1,9 +1,9 @@
-import { Box } from "@material-ui/core";
+import Box, { BoxProps } from "@material-ui/core/Box"
 import React from "react";
 import { IconType } from "react-icons";
 import { colors } from "../../styles/theme";
 
-interface IconContainerProps {
+interface IconContainerProps extends BoxProps {
     // Icon used at left of button
     icon: IconType;
 
@@ -17,13 +17,13 @@ interface IconContainerProps {
     borderRadius?: number | "square" | "circular";
 };
 
-export const IconContainer: React.FC<IconContainerProps> = ({ icon, size = 24, borderRadius = 8, iconColor }) => {
+export const IconContainer: React.FC<IconContainerProps> = ({ icon, size = 24, borderRadius = 8, iconColor, ...props }) => {
 
     // Redefine icon capitalized to signify component
     const Icon = icon;
 
     return (
-        <Box width={size} height={size}
+        <Box {...props} width={size} height={size}
             display="flex" alignItems="center" justifyContent="center"
             borderRadius={
                 borderRadius == "square"

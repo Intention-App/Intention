@@ -158,16 +158,7 @@ const Checklist: React.FC<BoardProps> = ({ boardId }) => {
 
     const [activeItem, setActiveItem] = useState<undefined | EditorItem>();
 
-    const toggleEditorModal = useCallback((item: EditorItem | undefined = undefined) => (
-        event: React.KeyboardEvent | React.MouseEvent | undefined,
-    ) => {
-        if (
-            event?.type === 'keydown' &&
-            ((event as React.KeyboardEvent).key === 'Tab' ||
-                (event as React.KeyboardEvent).key === 'Shift')
-        ) {
-            return;
-        }
+    const toggleEditorModal = useCallback((item: EditorItem | undefined = undefined) => () => {
 
         if (item) {
             setActiveItem(item)
@@ -176,6 +167,7 @@ const Checklist: React.FC<BoardProps> = ({ boardId }) => {
         }
     }, []);
 
+    // Hook to keep track of modal messages
     const [confirmationModal, setConfirmationModal] = useState<undefined | ModalState>();
 
     return (
@@ -212,6 +204,8 @@ const Checklist: React.FC<BoardProps> = ({ boardId }) => {
                 >
                     {(closeModal) => {
 
+                        // #TODO: Give modal closing confirmation message as well
+
                         // Modal form based on active item type
                         switch (activeItem?.type) {
                             case "task":
@@ -229,6 +223,7 @@ const Checklist: React.FC<BoardProps> = ({ boardId }) => {
                                 return (
                                     // Tasklist editor modal
                                     <EditTasklist
+                                        setConfirmationModal={setConfirmationModal}
                                         closeModal={closeModal}
                                         setBoard={setBoard}
                                         tasklist={activeItem?.id ? board?.tasklists?.[activeItem?.id] : undefined}

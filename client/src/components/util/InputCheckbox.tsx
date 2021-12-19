@@ -9,9 +9,8 @@ import { colors } from "../../styles/theme";
 // Formik form controlled checkbox
 
 interface InputCheckboxProps extends CheckboxProps {
-    // Label, helper text, and name of the input
+    // Label and name of the input
     label: string;
-    helper?: string;
     name: string;
 
     // Validtion function for input value
@@ -27,7 +26,6 @@ interface InputCheckboxProps extends CheckboxProps {
 export const InputCheckbox: React.FC<InputCheckboxProps> = ({
     name,
     label,
-    helper,
     containerStyle,
     validate,
     value: _,
@@ -42,13 +40,12 @@ export const InputCheckbox: React.FC<InputCheckboxProps> = ({
         // Container and field wrapper for Input
         <Box style={containerStyle}>
             <Field name={name} validate={validate}>
-                {({ field, form }: FieldProps) => {
+                {({ field }: FieldProps) => {
                     return (
 
                         // Form controlled element with label
                         <FormControlLabel
                             control={
-
                                 // Check box with custom icon
                                 <Checkbox
                                     {...props}

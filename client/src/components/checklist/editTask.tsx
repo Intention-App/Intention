@@ -23,7 +23,7 @@ export interface EditTaskProps {
     setBoard: React.Dispatch<React.SetStateAction<ClientBoard | undefined>>;
 
     // Func for closing modal
-    closeModal: (e: any) => any;
+    closeModal: () => any;
 
     // For confirming actions
     setConfirmationModal: React.Dispatch<React.SetStateAction<ModalState | undefined>>;
@@ -79,38 +79,12 @@ export const EditTask: React.FC<EditTaskProps> = ({ setBoard, task, tasklistId, 
         }
 
         // Closes editor
-        closeModal(event);
+        closeModal();
     };
 
     return (
         // Box for all editor content
         <Box minWidth={500} padding={4} height="100%" display="flex" flexDirection="column">
-
-            {/* Box for header and menu options */}
-            <Box display="flex" justifyContent="space-between" alignItems="center" >
-                <h2>Edit Task</h2>
-
-                <Box display="flex" alignItems="center">
-                    {/* Delete button */}
-                    <IconButton
-                        onClick={handleTaskDeletion}
-                    >
-                        {<FaTrash style={{ width: 20, height: 20, color: colors.icon.primary, cursor: "pointer" }} />}
-                    </IconButton>
-
-                    {/* Cancel Changes Button */}
-                    <IconButton
-                        onClick={() => {
-                            setConfirmationModal({
-                                message: "There are unsaved changes, do you still want to cancel?",
-                                fn: closeModal
-                            })
-                        }}
-                    >
-                        {<IconContainer icon={FaTimes} />}
-                    </IconButton>
-                </Box>
-            </Box>
 
             {/* Form with Formik */}
             <Formik
@@ -198,67 +172,127 @@ export const EditTask: React.FC<EditTaskProps> = ({ setBoard, task, tasklistId, 
                     }
 
                     // Closes editor
-                    closeModal(event);
+                    closeModal();
                 }}
             >
-                {/* Form with Formik controls */}
-                <Form style={{
-                    flexGrow: 1,
-                    flexShrink: 1,
-                    flexBasis: 300,
-                    display: "flex",
-                    flexDirection: "column"
-                }}>
 
-                    {/* Title field */}
-                    <InputField
-                        label="Title"
-                        name="title"
-                        autoComplete="off"
-                        placeholder="Untitled"
-                        variant="filled"
-                    />
+                {({ values, setValues }) => (<>
 
-                    {/* Description field */}
-                    <InputField
-                        label="Description"
-                        name="description"
-                        autoComplete="off"
-                        placeholder=""
-                        variant="filled"
-                        multiline
-                        style={{ fontSize: 14, color: colors.text.primary }}
-                    />
+                    {/* Box for header and menu options */}
+                    <Box display="flex" justifyContent="space-between" alignItems="center" >
+                        <h2>Edit Task</h2>
 
-                    <Box marginY={4}>
-                        {/* Checkbox for due date */}
-                        <InputCheckbox
-                            label="Deadline"
-                            name="deadline"
-                            icon={IoAlarm}
-                        />
+                        <Box display="flex" alignItems="center">
+                            {/* Delete button, but only when editing existing task */}
+                            {task &&
+                                <IconButton
+                                    onClick={() => {
+                                        setConfirmationModal({
+                                            message: "Are you sure you want to delete this task?",
+                                            fn: handleTaskDeletion
+                                        })
+                                    }}
+                                >
+                                    <FaTrash style={{ width: 20, height: 20, color: colors.icon.primary, cursor: "pointer" }} />
+                                </IconButton>
+                            }
 
-                        {/* Due date (collapsed if checkbox unchecked) */}
-                        <DatePicker
-                            label=""
-                            name="dueAt"
+                            {/* Cancel Changes Button */}
+                            <IconButton
+                                onClick={() => {
+
+                                    // Open confirmation modal if there are unsaved changes
+                                    if (
+                                        task?.title != values.title ||
+                                        task?.description != values.description ||
+                                        task?.dueAt != values.dueAt
+                                    ) {
+                                        setConfirmationModal({
+                                            message: "There are unsaved changes. Do you still want to cancel?",
+                                            fn: closeModal
+                                        })
+                                    }
+
+                                    // Otherwise, directly close it
+                                    else {
+                                        closeModal();
+                                    }
+                                }}
+                            >
+                                <IconContainer icon={FaTimes} />
+                            </IconButton>
+                        </Box>
+                    </Box>
+
+                    {/* Form with Formik controls */}
+                    <Form style={{
+                        flexGrow: 1,
+                        flexShrink: 1,
+                        flexBasis: 300,
+                        display: "flex",
+                        flexDirection: "column"
+                    }}>
+
+                        {/* Title field */}
+                        <InputField
+                            label="Title"
+                            name="title"
+                            autoComplete="off"
+                            placeholder="Untitled"
                             variant="filled"
                         />
-                    </Box>
 
-                    {/* Submit button */}
-                    <Box marginTop="auto">
-                        <Button
-                            type="submit"
-                            color="primary"
-                            variant="contained"
-                            style={{ marginTop: 16 }}
-                            disabled={buttonDisabled}
-                        >
-                            Save Task
-                        </Button>
-                    </Box>
-                </Form>
+                        {/* Description field */}
+                        <InputField
+                            label="Description"
+                            name="description"
+                            autoComplete="off"
+                            placeholder=""
+                            variant="filled"
+                            multiline
+                            style={{ fontSize: 14, color: colors.text.primary }}
+                        />
+                        
+                        <Box marginY={4}>
+                            {/* Checkbox for due date */}
+                            <InputCheckbox
+                                label="Deadline"
+                                name="deadline"
+                                icon={IoAlarm}
+                                onClick={()=>{
+                                    // Set due at value to now if user adds deadline
+                                    if (!values.dueAt) {
+                                        setValues({
+                                            ...values,
+                                            deadline: true,
+                                            dueAt: new Date()
+                                        }, false)
+                                    }
+                                }}
+                            />
+
+                            {/* Due date (collapsed if checkbox unchecked) */}
+                            <DatePicker
+                                label=""
+                                name="dueAt"
+                                variant="filled"
+                            />
+                        </Box>
+
+                        {/* Submit button */}
+                        <Box marginTop="auto">
+                            <Button
+                                type="submit"
+                                color="primary"
+                                variant="contained"
+                                style={{ marginTop: 16 }}
+                                disabled={buttonDisabled}
+                            >
+                                Save Task
+                            </Button>
+                        </Box>
+                    </Form>
+                </>)}
             </Formik>
         </Box>
     );

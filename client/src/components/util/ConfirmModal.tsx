@@ -45,15 +45,15 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({ children, open, clos
                     {children}
 
                     {/* Flexbox for buttins */}
-                    <Box display="flex" alignItems="center" justifyContent="space-around" marginTop={2}>
+                    <Box display="flex" alignItems="center" justifyContent="flex-end" marginTop={4}>
 
                         {/* Cancel button */}
-                        <Button onClick={closeModal}>
+                        <Button onClick={closeModal} style={{color: "inherit", marginRight: 8, width: 100}}>
                             Cancel
                         </Button>
 
                         {/* Confirm button that runs function */}
-                        <Button variant="contained" color="primary" onClick={() => {
+                        <Button variant="contained" color="primary" style={{width: 100}} onClick={() => {
                             if (fn) fn();
                             closeModal();
                         }}>

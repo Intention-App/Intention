@@ -95,8 +95,8 @@ const Journal: React.FC = ({ }) => {
                             {folderData?.myFolders && folderData?.myFolders.map(folder =>
                                 <ListViewItem
                                     key={`folder-${folder.id}`}
-                                    createdAt={toHumanTime(folder.createdAt)}
-                                    updatedAt={toHumanTime(folder.updatedAt)}
+                                    createdAt={toHumanTime(folder.createdAt)!}
+                                    updatedAt={toHumanTime(folder.updatedAt)!}
                                     icon={FaFolder}
                                     href={`/journal/folder/${folder.id}`}
                                 >
@@ -108,8 +108,8 @@ const Journal: React.FC = ({ }) => {
                             {entryData?.myEntries && entryData?.myEntries.map(entry =>
                                 <ListViewItem
                                     key={`entry-${entry.id}`}
-                                    createdAt={toHumanTime(entry.createdAt)}
-                                    updatedAt={toHumanTime(entry.updatedAt)}
+                                    createdAt={toHumanTime(entry.createdAt)!}
+                                    updatedAt={toHumanTime(entry.updatedAt)!}
                                     icon={FaFileAlt}
                                     href={`/journal/entry/${entry.id}`}
                                 >
@@ -123,7 +123,7 @@ const Journal: React.FC = ({ }) => {
                     </Box>
 
                     {/* Button to add new folders and entries */}
-                    <AddNew buttonFunctions={[
+                    <AddNew variant="bordered" buttonFunctions={[
                         {
                             name: "New Entry",
                             fn: handleEntryCreation

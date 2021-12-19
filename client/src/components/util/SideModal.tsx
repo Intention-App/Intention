@@ -7,10 +7,10 @@ export interface SideModalProps {
     open: boolean;
 
     // Toggles modal
-    toggleModal: (item: EditorItem | undefined) => (e: any) => any;
+    toggleModal: (item: EditorItem | undefined) => () => any;
 
     // Pass closemodal function to children
-    children: (closeModal: (e: any) => any) => React.ReactNode;
+    children: (closeModal: () => any) => React.ReactNode;
 };
 
 export const SideModal: React.FC<SideModalProps> = ({ children, toggleModal, open }) => {

@@ -1,6 +1,6 @@
 // Transforms dateString into human readable time
 
-export const toHumanTime = (dateString: string): string => {
+export const toHumanTime = (dateString: string): string|undefined => {
     const date = new Date(dateString);
     const now = new Date();
 
@@ -59,6 +59,6 @@ export const toHumanTime = (dateString: string): string => {
                 minute: "numeric"
             })}`;
         }
-        return "";
+        return undefined;
     }
 }

@@ -10,6 +10,7 @@ import { useArchiveTaskMutation } from "../../generated/graphql";
 import { ClientBoard, EditorItem } from "../../pages/checklist/board/[boardId]";
 import { colors } from "../../styles/theme";
 import { toHumanTime } from "../../utils/toHumanTime";
+import Checkbox from "@material-ui/core/Checkbox";
 
 // Task for Kanban board
 
@@ -44,10 +45,7 @@ const StyledPaper = withStyles({
             backgroundColor: colors.background.hover,
             outline: "none"
         },
-        "&:hover": {
-            backgroundColor: colors.background.hover
-        },
-    }
+    },
 })(Paper);
 
 export const Task: React.FC<TaskProps> = ({ children, id, rootId, index, dueAt, toggleDrawer, setBoard }) => {
@@ -155,33 +153,25 @@ export const Task: React.FC<TaskProps> = ({ children, id, rootId, index, dueAt, 
                             {/* Box for checkbox and text */}
                             <Box display="flex" alignItems="center" padding={1.5}>
 
-                                {/* Archive button */}
-                                {archived
-                                    ? <FaCheckCircle style={{
+                                <Checkbox
+                                    checked={archived}
+                                    checkedIcon={<FaCheckCircle style={{ width: 18, height: 18 }} />}
+                                    icon={<FaRegCircle style={{ width: 18, height: 18 }} />}
+                                    style={{
                                         color: colors.icon.primary,
+                                        backgroundColor: "transparent",
+                                        padding: 8,
+                                        margin: -8,
                                         marginRight: 8,
-                                        cursor: "pointer",
-                                        width: 18,
-                                        height: 18
                                     }}
-                                        onClick={() => { setArchived(false) }}
-                                    />
-                                    : <FaRegCircle style={{
-                                        color: colors.icon.primary,
-                                        marginRight: 8,
-                                        cursor: "pointer",
-                                        width: 18,
-                                        height: 18
-                                    }}
-                                        onClick={() => { setArchived(true) }}
-                                    />
-                                }
+                                    onClick={() => { setArchived(!archived) }}
+                                />
 
                                 {/* Text and due date helper (if needed) */}
                                 <Box>
                                     {children}
                                     <br />
-                                    {dueAt &&
+                                    {(dueAt && toHumanTime(dueAt)) &&
                                         <span style={{ color: "red", fontSize: 14 }}>Due {toHumanTime(dueAt)}</span>
                                     }
                                 </Box>

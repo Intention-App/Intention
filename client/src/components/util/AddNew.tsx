@@ -12,6 +12,9 @@ interface AddNewProps {
 
     // Possible actions on clicking the button
     buttonFunctions: action[];
+
+    // Style of button
+    variant?: "regular" | "bordered"
 };
 
 // Name and function of a button function
@@ -23,27 +26,29 @@ interface action {
 // Height of each menu item
 const ITEM_HEIGHT = 48;
 
-// Styles for add new button
-const StyledBox = withStyles({
-    root: {
-        marginTop: 8,
-        cursor: "pointer",
-        transition: "background 250ms",
-        backgroundColor: colors.background.primary,
-        "&:focus": {
-            backgroundColor: colors.background.hover,
-            color: colors.action.primary,
-            outline: "none"
-        },
-        "&:hover": {
-            backgroundColor: colors.background.hover,
-            color: colors.action.primary
-        },
-    }
-})(Box);
 
+export const AddNew: React.FC<AddNewProps> = ({ buttonFunctions, variant, children }) => {
 
-export const AddNew: React.FC<AddNewProps> = ({ buttonFunctions, children }) => {
+    // Styles for add new button
+    const StyledBox = withStyles({
+        root: {
+            marginTop: 8,
+            cursor: "pointer",
+            transition: "background 250ms",
+            backgroundColor: colors.background.primary,
+            border: variant == "bordered" ? `2px dashed ${colors.border.primary}` : "none",
+            borderRadius: variant == "bordered" ? 100 : "default",
+            "&:focus": {
+                backgroundColor: colors.background.hover,
+                color: colors.action.primary,
+                outline: "none"
+            },
+            "&:hover": {
+                backgroundColor: colors.background.hover,
+                color: colors.action.primary
+            },
+        }
+    })(Box);
 
     // Anchor element decides whether menu is open
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
