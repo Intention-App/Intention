@@ -108,3 +108,9 @@ build
 
 #redis dump
 dump.rdb
+
+# macOS users
+.DS_Store
+
+# VSCode directory
+.vscode/
