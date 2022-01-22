@@ -33,12 +33,6 @@ const useStyles = makeStyles({
         "&:not(:last-child)": {
             marginBottom: 1
         },
-        "&:not(:last-child)::after": {
-            content: '""',
-            width: "calc(100% - 24px)",
-            borderBottom: `1px solid ${colors.background.secondary}`,
-            position: "absolute",
-        },
         "&:focus": {
             outline: "none"
         },

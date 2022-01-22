@@ -21,13 +21,22 @@ const useStyles = makeStyles({
         backgroundColor: colors.background.input,
         padding: "4px 16px",
         borderRadius: 16,
-        minWidth: 250,
+        width: 250,
         border: "1px solid transparent",
         transition: "250ms",
         color: colors.text.primary,
 
         "&:placeholder": {
             backgroundColor: "#8d8d8d",
+        },
+
+        "@media screen and (max-width: 1000px)": {
+            backgroundColor: "transparent",
+            width: 0,
+
+            "&::placeholder": {
+                display: "none"
+            },
         }
     },
 
@@ -69,7 +78,7 @@ export const ModulesHeadWrapper: React.FC<ModulesHeadWrapperProps> = ({
     return (
 
         // Grid for header + content
-        <Box display="grid" gridTemplateRows="80px 1fr" height="100%">
+        <Box display="grid" gridTemplateRows="80px 1fr" height="100%" position="relative">
 
             {/* Header */}
             <Box display="flex" alignItems="center" justifyContent="space-between" padding={4} paddingY={2}>
@@ -82,9 +91,9 @@ export const ModulesHeadWrapper: React.FC<ModulesHeadWrapperProps> = ({
                 </Box>
 
                 {/* Library and my modules */}
-                <Box display="flex" alignItems="center" marginRight="auto" marginLeft={8}>
+                <Box display="flex" alignItems="center" marginRight="auto" marginLeft={7}>
                     <Link href="/modules"><a className={route == "library" ? classes.link : classes["active-link"]}>
-                       My Modules
+                        My Modules
                     </a></Link>
 
                     <Link href="/modules/library"><a className={route === "library" ? classes["active-link"] : classes.link}>
@@ -92,6 +101,7 @@ export const ModulesHeadWrapper: React.FC<ModulesHeadWrapperProps> = ({
                     </a></Link>
                 </Box>
 
+                {/* #WIP: Make search bar work on small screens */}
                 {/* Search Bar */}
                 <TextField
                     InputProps={{
@@ -115,8 +125,10 @@ export const ModulesHeadWrapper: React.FC<ModulesHeadWrapperProps> = ({
             </Box >
 
             {/* Flex container for children */}
-            < Box display="flex" flexDirection="column" position="relative" >
-                {children}
+            <Box display="flex" flexDirection="column" position="relative" width="calc(100vw - 250px)">
+                <Box flex="1 1 500px" overflow="scroll" position="relative" paddingLeft={4} paddingRight={2.5} width="100%" style={{ overflowX: "hidden" }}>
+                    {children}
+                </Box>
             </Box >
         </Box >
     );

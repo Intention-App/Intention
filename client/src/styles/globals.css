@@ -6,6 +6,7 @@ html, body {
   margin: 0;
   font-family: "Roboto", Arial, Helvetica, sans-serif;
   color: #6D6D6D;
+  scrollbar-color: transparent #C2D2E4;
 }
 
 a {
@@ -23,6 +24,7 @@ Scrollbar Styles
 **************************/
 ::-webkit-scrollbar {
   width: 12px;
+  height: 12px;
 }
 
 ::-webkit-scrollbar-track {
