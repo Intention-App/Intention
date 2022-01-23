@@ -60,7 +60,8 @@ const main = async () => {
             name: COOKIE_NAME,
             store: new RedisStore({
                 client: redis,
-                disableTouch: true
+                disableTouch: true,
+                url: process.env.REDIS_URL
             }),
             cookie: {
                 maxAge: 1000 * 60 * 60 * 24 * 7,
@@ -80,6 +81,8 @@ const main = async () => {
         schema: await buildSchema({ resolvers: resolvers, validate: false }),
         context: ({ req, res }): ExpressContext => ({ req, res, redis }),
     });
+
+    await apolloServer.start();
 
     // Integrate apollo server to express
     apolloServer.applyMiddleware({ app, cors: false });
