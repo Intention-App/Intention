@@ -18,6 +18,7 @@ const main = async () => {
 
     const RedisStore = connectReddis(express_session);
     const redis = new Redis(process.env.REDIS_URL, {
+        connectTimeout: 10000,
         tls: {
             rejectUnauthorized: false
         }
@@ -34,6 +35,7 @@ const main = async () => {
             logging: true,
             synchronize: true,
             entities: entities,
+            ssl: true
         });
     } else {
         // Initialize with local database
@@ -45,6 +47,7 @@ const main = async () => {
             logging: true,
             synchronize: true,
             entities: entities,
+            ssl: true
         });
     }
 
