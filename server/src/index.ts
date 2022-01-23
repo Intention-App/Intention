@@ -17,7 +17,11 @@ const main = async () => {
     dotenv.config();
 
     const RedisStore = connectReddis(express_session);
-    const redis = new Redis();
+    const redis = new Redis(process.env.REDIS_URL, {
+        tls: {
+            rejectUnauthorized: false
+        }
+    });
 
     // Initialize Postgres database
     const entities = await getEntities();
@@ -60,8 +64,7 @@ const main = async () => {
             name: COOKIE_NAME,
             store: new RedisStore({
                 client: redis,
-                disableTouch: true,
-                url: process.env.REDIS_URL
+                disableTouch: true
             }),
             cookie: {
                 maxAge: 1000 * 60 * 60 * 24 * 7,
