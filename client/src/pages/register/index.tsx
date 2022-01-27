@@ -56,9 +56,6 @@ const register: React.FC = () => {
     // State to check whether email has been sent
     const [sent, setSent] = useState<string | undefined>();
 
-    // Checks if user is already logged in
-    useIsAuth();
-
     return (
         // Box to center align content
         <Box display="flex" flexDirection="column" height="100vh">

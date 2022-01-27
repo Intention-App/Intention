@@ -71,7 +71,7 @@ const main = async () => {
                 maxAge: 1000 * 60 * 60 * 24 * 7,
                 httpOnly: true,
                 secure: __prod__,
-                sameSite: "lax"
+                sameSite: "none" // change in real production server
             },
             saveUninitialized: false,
             secret: process.env.SECRET!,

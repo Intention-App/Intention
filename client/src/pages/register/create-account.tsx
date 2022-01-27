@@ -65,9 +65,6 @@ const createAccount: React.FC = () => {
     // Registration operation for later
     const [{ fetching }, register] = useRegisterMutation();
 
-    // Checks if user is already logged in
-    useIsAuth();
-
     return (
         // Box to center align content
         <Box display="flex" flexDirection="column" height="100vh">

@@ -8,7 +8,7 @@ import { userExchanges } from "./exchanges/user";
 URQL Caching Client
 */
 export const urqlClient = createClient({
-    url: 'http://localhost:4000/graphql',
+    url: 'https://intention-dev-server.herokuapp.com/graphql',
     fetchOptions: {
         credentials: "include",
     },
