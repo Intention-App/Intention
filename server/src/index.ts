@@ -17,12 +17,7 @@ const main = async () => {
     dotenv.config();
 
     const RedisStore = connectReddis(express_session);
-    const redis = new Redis(process.env.REDIS_URL, {
-        connectTimeout: 10000,
-        tls: {
-            rejectUnauthorized: false
-        }
-    });
+    const redis = new Redis(process.env.REDIS_URL);
 
     // Initialize Postgres database
     const entities = await getEntities();
@@ -35,7 +30,11 @@ const main = async () => {
             logging: true,
             synchronize: true,
             entities: entities,
-            ssl: true
+            extra: {
+                ssl: {
+                    rejectUnauthorized: false,
+                },
+            }
         });
     } else {
         // Initialize with local database
@@ -47,7 +46,6 @@ const main = async () => {
             logging: true,
             synchronize: true,
             entities: entities,
-            ssl: true
         });
     }
 
