@@ -58,6 +58,9 @@ const main = async () => {
         })
     );
 
+    // TODO: Make cookies secure. This is very vulnerable to CSRF attacks.
+    app.set('trust proxy', 1); // Test to have heroku set cookies
+
     // Init express-session middleware
     // TODO: Replace express-session with custom authentication
     app.use(
@@ -71,7 +74,7 @@ const main = async () => {
                 maxAge: 1000 * 60 * 60 * 24 * 7,
                 httpOnly: true,
                 secure: __prod__,
-                sameSite: "none" // change in real production server
+                sameSite: "none", // change in real production server
             },
             saveUninitialized: false,
             secret: process.env.SECRET!,
